@@ -10,7 +10,7 @@ import ComponentSkeleton from './ComponentSkeleton';
 
 // ===============================|| SHADOW BOX ||=============================== //
 
-function ShadowBox({ shadow }) {
+export function ShadowBox({ shadow }) {
   return (
     <MainCard border={false} sx={{ boxShadow: shadow }}>
       <Stack spacing={1} justifyContent="center" alignItems="center">
@@ -27,7 +27,7 @@ ShadowBox.propTypes = {
 
 // ===============================|| CUSTOM - SHADOW BOX ||=============================== //
 
-function CustomShadowBox({ shadow, label, color, bgcolor }) {
+export function CustomShadowBox({ shadow, label, color, bgcolor }) {
   return (
     <MainCard border={false} sx={{ bgcolor: bgcolor || 'inherit', boxShadow: shadow }}>
       <Stack spacing={1} justifyContent="center" alignItems="center">

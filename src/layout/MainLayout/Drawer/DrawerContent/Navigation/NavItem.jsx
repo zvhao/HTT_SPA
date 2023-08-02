@@ -7,9 +7,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 function NavItem({ item }) {
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+
 
   const handleClick = () => {
     setOpen(!open);
@@ -56,6 +59,7 @@ function NavItem({ item }) {
                     pl: 4,
                     '&.active': {
                       bgcolor: "primary.lighter",
+                      borderRight: `3px solid ${theme.palette.primary.main}`,
                       color: "primary.main"
                     },
                     '&.active .MuiListItemIcon-root span': {

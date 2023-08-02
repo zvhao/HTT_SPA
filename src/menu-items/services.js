@@ -9,6 +9,7 @@ import {
 	MenuOutlined,
 	MenuUnfoldOutlined
 } from '@ant-design/icons';
+import { Path } from 'constant/path';
 
 // icons
 const icons = {
@@ -33,25 +34,25 @@ const services = {
 		{
 			id: 'ant-servicetype-icons',
 			title: 'Loại dịch vụ',
-			url: '/servicetype',
+			url: Path.ServiceType,
 			icon: icons.MenuOutlined,
 		},
 		{
 			id: 'ant-service-icons',
 			title: 'Dịch vụ',
-			url: '/service',
+			url: Path.Service,
 			icon: icons.MenuOutlined,
 		},
 		{
 			id: 'ant-course-icons',
 			title: 'Liệu trình',
-			url: '/course',
+			url: Path.Course,
 			icon: icons.MenuOutlined,
 		},
 		{
 			id: 'ant-combo-icons',
 			title: 'Combos',
-			url: '/combo',
+			url: Path.Combo,
 			icon: icons.MenuOutlined,
 		},
 	]
