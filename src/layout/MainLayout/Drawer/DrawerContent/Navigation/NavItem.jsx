@@ -28,7 +28,7 @@ function NavItem({ item }) {
         onClick={item.url ? null : handleClick}
         sx={{
           '&.active': {
-						bgcolor: "primary.lighter",
+						bgcolor: "z",
             color: "primary.main"
           },
           '&.active .MuiListItemIcon-root span': {
@@ -58,12 +58,12 @@ function NavItem({ item }) {
                   sx={{
                     pl: 4,
                     '&.active': {
-                      bgcolor: "primary.lighter",
-                      borderRight: `3px solid ${theme.palette.primary.main}`,
-                      color: "primary.main"
+                      bgcolor: "primary.dark",
+                      borderRight: `5px solid ${theme.palette.warning.main}`,
+                      color: "primary.lighter"
                     },
                     '&.active .MuiListItemIcon-root span': {
-                      color: "primary.main"
+                      color: "primary.lighter"
                     }
                   }}
                 >

@@ -13,7 +13,7 @@ const Palette = (mode) => {
   const colors = presetPalettes;
 
   const greyPrimary = [
-    '#ffffff',
+    '#ededed',
     '#fafafa',
     '#f5f5f5',
     '#f0f0f0',

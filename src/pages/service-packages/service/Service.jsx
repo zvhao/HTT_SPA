@@ -80,7 +80,7 @@ const Service = () => {
   }, [open]);
 
   return (
-    <Box>
+    <MainCard>
       <Typography sx={{ mb: 1 }} variant="h4">
         Các dịch vụ
       </Typography>
@@ -133,7 +133,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
           <Button onClick={handleClose}>Subscribe</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </MainCard>
   );
 };
 

@@ -39,7 +39,9 @@ export default function ThemeCustomization({ children }) {
           paddingBottom: 8
         }
       },
-      palette: theme.palette,
+      palette: {
+        ...theme.palette,
+      },
       customShadows: themeCustomShadows,
       typography: themeTypography
     }),

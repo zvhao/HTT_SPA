@@ -1,12 +1,18 @@
 import { LoadingButton } from '@mui/lab';
 import { InputAdornment, MenuItem, TextField } from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
-import React from 'react';
-import * as yup from 'yup';
-import NumericFormat from 'react-number-format';
 import PropTypes from 'prop-types';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import NumericFormat from 'react-number-format';
+import ReactQuill from 'react-quill';
+import * as yup from 'yup';
+import rehypeRaw from 'rehype-raw';
+import rehypeHighlight from 'rehype-highlight';
+import EditorToolbar, { formats, modules } from './Toolbar';
+import "./App.css";
+import "react-quill/dist/quill.snow.css";
+
 export const validationSchema = yup.object({
   // email: yup.string().email('Email hợp lệ: example@gmail.com').required('Email là bắt buộc'),
   // password: yup.string().min(8, 'Mật khẩu phải từ 8 ký tự trở lên').required('Mật khẩu là bắt buộc')
@@ -77,6 +83,10 @@ function FormAddEditService({ initialValues, onSubmit }) {
   //     [event.target.name]: event.target.value
   //   });
   // };
+  const [state, setState] = useState({ value: '<h1>Hello</h1>' });
+  const handleChange = (content) => {
+    setState({ value: content });
+  };
 
   return (
     <FormikProvider value={formik}>
@@ -161,25 +171,24 @@ function FormAddEditService({ initialValues, onSubmit }) {
             </MenuItem>
           ))}
         </TextField>
-
-        <CKEditor
-          editor={ClassicEditor}
-          data=""
-          onReady={(editor) => {
-            // You can store the "editor" and use when it is needed.
-            console.log('Editor is ready to use!', editor);
-          }}
-          onChange={(event, editor) => {
-            const data = editor.getData();
-            console.log({ event, editor, data });
-          }}
-          onBlur={(event, editor) => {
-            console.log('Blur.', editor);
-          }}
-          onFocus={(event, editor) => {
-            console.log('Focus.', editor);
-          }}
+        <EditorToolbar  />
+        <ReactQuill 
+          theme="snow"
+          className="editor"
+          bounds={'#editor'}
+          value={state.value}
+          onChange={handleChange}
+          placeholder={'Write something awesome...'}
+          modules={modules}
+          formats={formats}
         />
+
+        {/* <ReactQuill theme="bubble" readOnly value={state.value} /> */}
+
+        {/* <div className="" style={{ padding: 0 }}> */}
+        <ReactMarkdown className="ql-editor" rehypePlugins={[rehypeRaw, rehypeHighlight]}>
+          {state.value}
+        </ReactMarkdown>
 
         <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={false} variant="contained">
           <span>Submit</span>

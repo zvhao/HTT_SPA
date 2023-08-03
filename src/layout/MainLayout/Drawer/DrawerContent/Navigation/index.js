@@ -7,9 +7,9 @@ import NestedList from './Nav';
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
 const Navigation = () => {
-  
 
-  return <Box sx={{ pt: 2 }}>
+
+  return <Box sx={{ pt: 2, }}>
     <NestedList />
   </Box>;
 };

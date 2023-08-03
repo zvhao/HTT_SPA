@@ -22,7 +22,7 @@ const Header = ({ open, handleDrawerToggle }) => {
 
   // common header
   const mainHeader = (
-    <Toolbar>
+    <Toolbar sx={{ background:"linear-gradient(135deg, #ededed, #096dd9)" }}>
       <IconButton
         disableRipple
         aria-label="open drawer"
