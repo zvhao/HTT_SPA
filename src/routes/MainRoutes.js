@@ -3,7 +3,6 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
-import ServiceDetail from 'pages/service-packages/service/ServiceDetail';
 import { Path } from 'constant/path';
 
 
@@ -19,10 +18,16 @@ const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
 const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
 const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
 const Service = Loadable(lazy(() => import('pages/service-packages/service/Service')));
+const ServiceDetail = Loadable(lazy(() => import('pages/service-packages/service/ServiceDetail')));
 const ServiceForm = Loadable(lazy(() => import('pages/service-packages/service/ServiceForm')));
 const ServiceType = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceType')));
 const Course = Loadable(lazy(() => import('pages/service-packages/course/Course')));
 const Combo = Loadable(lazy(() => import('pages/service-packages/combo/Combo')));
+
+const Staff = Loadable(lazy(() => import('pages/hrm/manager/Staff')));
+const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
+
+
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -98,8 +103,22 @@ const MainRoutes = {
       element: <ServiceDetail />
     },
     {
-      path: Path.ServiceDetail + ':slug',
-      element: <ServiceDetail />
+      path: Path.Staff,
+      children: [
+        {
+          // path: '',
+          index: true,
+          element: <Staff />
+        },
+        {
+          path: 'add',
+          element: <StaffForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <StaffForm />
+        },
+      ]
     },
   ]
 };

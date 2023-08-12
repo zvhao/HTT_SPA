@@ -1,10 +1,12 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material';
+import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material';
 import { Button, Card, CardActions, CardContent, CardMedia } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+
 const CardComponent = ({ title, image, description, slug, click }) => (
   <Card component={MainCard} border={false} sx={{ boxShadow: 4 }}>
     <CardMedia component="img" alt={title} height="140" image={image} />
@@ -30,7 +32,7 @@ const CardComponent = ({ title, image, description, slug, click }) => (
   </Card>
 );
 
-const Service = () => {
+const Staff = () => {
   const [cards, _setCards] = useState([
     {
       title: 'Massage body, cột sống',
@@ -82,59 +84,17 @@ const Service = () => {
   return (
     <MainCard>
       <Typography sx={{ mb: 1 }} variant="h4">
-        Các dịch vụ
+        Các nhân viên quản lý
       </Typography>
       <CardActions sx={{ mb: 1 }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Service + `/add`}>
-          Thêm dịch vụ
+        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={ Path.Staff + `/add`}>
+          Thêm nhân viên quản lý
         </Button>
       </CardActions>
 
-      <Grid container spacing={3}>
-        {cards.map((card, index) => (
-          <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-            <CardComponent
-              title={card.title}
-              image={card.image}
-              description={card.description}
-              slug={card.slug}
-              click={handleClickOpen('body')}
-            />
-          </Grid>
-        ))}
-      </Grid>
-      <Dialog
-        maxWidth
-        open={open}
-        onClose={handleClose}
-        scroll={scroll}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >
-        <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-        <DialogContent dividers={scroll === 'paper'}>
-          {/* <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            {[...new Array(50)]
-              .map(
-                () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
-              )
-              .join('\n')}
-          </DialogContentText> */}
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates occasionally. To subscribe to this
-            website, please enter your email address here. We will send updates occasionally. To subscribe to this website, please enter
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+      
     </MainCard>
   );
 };
 
-export default Service;
+export default Staff;

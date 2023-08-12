@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { InputAdornment, MenuItem, TextField } from '@mui/material';
+import { Grid, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -9,9 +9,9 @@ import ReactQuill from 'react-quill';
 import * as yup from 'yup';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
-import EditorToolbar, { formats, modules } from './Toolbar';
-import "./App.css";
-import "react-quill/dist/quill.snow.css";
+import EditorToolbar, { formats, modules } from '../../../../components/quill-editor/Toolbar';
+// import "./App.css";
+import 'react-quill/dist/quill.snow.css';
 
 export const validationSchema = yup.object({
   // email: yup.string().email('Email hợp lệ: example@gmail.com').required('Email là bắt buộc'),
@@ -114,65 +114,117 @@ function FormAddEditService({ initialValues, onSubmit }) {
           error={touched.password && Boolean(errors.password)}
           helperText={touched.password && errors.password}
         /> */}
-        <TextField fullWidth margin="normal" id="title" name="title" label="Tiêu đề" multiline maxRows={4} variant="standard" />
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Giá"
-          // value={values.numberformat}
-          // onChange={handleChange}
-          name="numberformat"
-          id="formatted-numberformat-input"
-          InputProps={{
-            inputComponent: NumericFormatCustom
-          }}
-          variant="standard"
-        />
-        <TextField
-          fullWidth
-          margin="normal"
-          id="duration"
-          name="duration"
-          label="Thời gian"
-          variant="standard"
-          InputProps={{
-            endAdornment: <InputAdornment position="start">Phút</InputAdornment>,
-            inputMode: 'numeric',
-            pattern: '[0-9]*'
-          }}
-        />
-        <TextField
-          fullWidth
-          margin="normal"
-          id="service-type"
-          name="service-type"
-          select
-          label="Loại dịch vụ"
-          defaultValue="EUR"
-          variant="standard"
-        >
-          {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField fullWidth margin="normal" id="combo" name="combo" select label="Combo" defaultValue="EUR" variant="standard">
-          {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField fullWidth margin="normal" id="course" name="course" select label="Liệu trình" defaultValue="EUR" variant="standard">
-          {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <EditorToolbar  />
-        <ReactQuill 
+        
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              margin="normal"
+              id="service-name"
+              name="service-name"
+              label="Tên dịch vụ"
+              multiline
+              maxRows={4}
+              variant="standard"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Giá"
+              // value={values.numberformat}
+              // onChange={handleChange}
+              name="numberformat"
+              id="formatted-numberformat-input"
+              InputProps={{
+                inputComponent: NumericFormatCustom
+              }}
+              variant="standard"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              margin="normal"
+              id="duration"
+              name="duration"
+              label="Thời gian"
+              variant="standard"
+              InputProps={{
+                endAdornment: <InputAdornment position="start">Phút</InputAdornment>
+              }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              margin="normal"
+              id="service-type"
+              name="service-type"
+              select
+              label="Loại dịch vụ"
+              defaultValue="EUR"
+              variant="standard"
+            >
+              {currencies.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField fullWidth margin="normal" id="combo" name="combo" select label="Combo" defaultValue="EUR" variant="standard">
+              {currencies.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField fullWidth margin="normal" id="course" name="course" select label="Liệu trình" defaultValue="EUR" variant="standard">
+              {currencies.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              margin="normal"
+              id="technician-commission"
+              name="technician-commission"
+              label="Hoa hồng Kỹ thuật viên"
+              type='number'
+              variant="standard"
+              InputProps={{
+                endAdornment: <InputAdornment position="start">%</InputAdornment>
+              }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              margin="normal"
+              id="consulting-commission"
+              name="consulting-commission"
+              label="Hoa hồng tư vấn"
+              type='number'
+              variant="standard"
+              InputProps={{
+                endAdornment: <InputAdornment position="start">%</InputAdornment>
+              }}
+            />
+          </Grid>
+          <Grid item xs={3}></Grid>
+        </Grid>
+
+        <EditorToolbar />
+        <ReactQuill
           theme="snow"
           className="editor"
           bounds={'#editor'}
