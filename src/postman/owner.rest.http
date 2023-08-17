@@ -1,0 +1,46 @@
+@url=http://localhost:8888/api/v1/owners
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+
+{
+	"fullname": "NVHao",
+"username": "zvhao",
+"phone": "0939410692",
+"email": "Hao@gmail.com",
+"shop_name": "ZVHAO SPA",
+"password": "Thuong08102001",
+"roles": ["64a639e9070a377cbf828939"]
+}
+
+### GET
+GET {{url}}
+
+### GET ID
+GET {{url}}/64a6abb778a2f2d5d44683ce
+
+### Update
+PATCH {{url}}/64a6abdab147e8ab6a84a2ac
+Content-Type: application/json
+
+{
+  "fullname": "Nguyễn Văn Hào",
+	"shop_name": "ZVH Spa",
+	"email": "nguyenvanhao29102001@gmail.com"
+}
+
+### Login
+POST {{ url }}/login
+Content-Type: application/json
+
+{
+	"username": "zvhao",
+	"password": "Thuong08102001"
+}
+
+### Logout
+GET {{ url }}/logout
+
+
+

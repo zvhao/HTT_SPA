@@ -1,0 +1,30 @@
+@url=http://localhost:8888/api/v1/permissions
+
+### CREATE
+POST {{url}}
+Content-Type: application/json
+
+{
+  "name": "Servicetype Delete",
+  "desc": "Xoá loại dịch vụ",
+  "alias": "servicetype.delete"
+}
+
+
+
+
+### Update
+PATCH {{url}}/64a62e740d8f3b349377957a
+Content-Type: application/json
+
+{
+  "name": "Product add",
+  "desc": "Thêm sản phẩm",
+  "alias": "product.add"
+}
+
+### GET
+GET {{url}}
+
+### GET ID
+GET {{url}}/64a62e740d8f3b349377957a
