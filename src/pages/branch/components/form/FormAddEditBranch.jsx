@@ -1,10 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Checkbox, FormControlLabel, Grid, InputAdornment, TextField, styled } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import dayjs from 'dayjs';
+import { Grid, InputAdornment, styled, TextField } from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -45,7 +40,8 @@ NumericFormatCustom.propTypes = {
 
 const CssTextField = styled(TextField)({ '& > div > input': { lineHeight: 2 }, '& > label': { lineHeight: 'normal' } });
 
-function FormAddEditStaff({ initialValues, onSubmit }) {
+
+function FormAddEditBranch({ initialValues, onSubmit }) {
   const formik = useFormik({
     initialValues: initialValues,
     enableReinitialize: true,
@@ -55,51 +51,12 @@ function FormAddEditStaff({ initialValues, onSubmit }) {
       onSubmit(values);
     }
   });
-
   const { errors, touched, handleSubmit, getFieldProps } = formik;
 
   const [state, setState] = useState({ value: '<h1>Hello</h1>' });
   const handleChange = (content) => {
     setState({ value: content });
   };
-  const [childChecked, setChildChecked] = useState([true, true, true, true, true, true, true]);
-  const [parentChecked, setParentChecked] = useState(true);
-
-  const handleParentChange = (event) => {
-    setParentChecked(event.target.checked);
-    setChildChecked(childChecked.map(() => event.target.checked));
-  };
-
-  const handleChangeChild = (index) => (event) => {
-    const newChildChecked = [...childChecked];
-    newChildChecked[index] = event.target.checked;
-    setChildChecked(newChildChecked);
-    setParentChecked(newChildChecked.every((checked) => checked));
-  };
-  const [value, setValue] = React.useState(dayjs('2023-08-07T20:00'));
-  const [cards, _setCards] = useState([
-    {
-      label: 'Thứ 2'
-    },
-    {
-      label: 'Thứ 3'
-    },
-    {
-      label: 'Thứ 4'
-    },
-    {
-      label: 'Thứ 5'
-    },
-    {
-      label: 'Thứ 6'
-    },
-    {
-      label: 'Thứ 7'
-    },
-    {
-      label: 'Chủ nhật'
-    }
-  ]);
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
@@ -217,110 +174,6 @@ function FormAddEditStaff({ initialValues, onSubmit }) {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="name-allowance-1"
-                      name="name-allowance-1"
-                      label="Phụ cấp 1"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="money-allowance-1"
-                      name="money-allowance-1"
-                      label="Khoản tiền"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                      InputProps={{
-                        inputComponent: NumericFormatCustom
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="name-allowance-2"
-                      name="name-allowance-2"
-                      label="Phụ cấp 2"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="money-allowance-2"
-                      name="money-allowance-2"
-                      label="Khoản tiền"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                      InputProps={{
-                        inputComponent: NumericFormatCustom
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="name-allowance-3"
-                      name="name-allowance-3"
-                      label="Phụ cấp 3"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="money-allowance-3"
-                      name="money-allowance-3"
-                      label="Khoản tiền"
-                      variant="outlined"
-                      sx={{ '& > label': { lineHeight: 'normal' } }}
-                      InputProps={{
-                        inputComponent: NumericFormatCustom
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Grid container>
-              <Grid item xs={12}>
-                <FormControlLabel label="Tất cả các ngày" control={<Checkbox checked={parentChecked} onChange={handleParentChange} />} />
-              </Grid>
-              {/* {children} */}
-              {cards.map((card, index) => (
-                <Grid key={index} item xs={12} sx={{ pl: 3, display: 'inline-flex', justifyContent: 'space-between', mb: 2 }}>
-                  <FormControlLabel
-                    label={card.label}
-                    control={<Checkbox checked={childChecked[index]} onChange={handleChangeChild(index)} />}
-                  />{' '}
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    {' '}
-                    <DemoContainer components={['TimePicker', 'TimePicker']}>
-                      <TimePicker label="Thời gian bắt đầu" defaultValue={dayjs('2022-04-17T09:00')} />
-                      <TimePicker label="Thời gian kết thúc" value={value} onChange={(newValue) => setValue(newValue)} />{' '}
-                    </DemoContainer>{' '}
-                  </LocalizationProvider>{' '}
-                </Grid>
-              ))}
-              <Grid item></Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -333,4 +186,4 @@ function FormAddEditStaff({ initialValues, onSubmit }) {
   );
 }
 
-export default FormAddEditStaff;
+export default FormAddEditBranch;

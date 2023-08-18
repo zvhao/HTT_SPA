@@ -27,6 +27,10 @@ const Combo = Loadable(lazy(() => import('pages/service-packages/combo/Combo')))
 const Staff = Loadable(lazy(() => import('pages/hrm/manager/Staff')));
 const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
 
+const Branch = Loadable(lazy(() => import('pages/branch/Branch')));
+const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
+
+
 
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -117,6 +121,24 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <StaffForm />
+        },
+      ]
+    },
+    {
+      path: Path.Branch,
+      children: [
+        {
+          // path: '',
+          index: true,
+          element: <Branch />
+        },
+        {
+          path: 'add',
+          element: <BranchForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <BranchForm />
         },
       ]
     },

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -28,6 +28,8 @@ import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { Path } from 'constant/path';
+import { login } from 'api/owners';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -42,23 +44,47 @@ const AuthLogin = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const navigation = useNavigate();
+
+  const handleSubmit = async (values) => {
+    // alert(JSON.stringify(values, null, 4))
+    // TODO: if check
+    try {
+      const result = await login(values.username, values.password);
+      if (result.metadata.user && result.metadata.token) {
+        const username = result.metadata.user
+        const token = result.metadata.token
+        localStorage.setItem('token', token)
+      }
+      console.log(result.metadata.user); // Xử lý kết quả đăng nhập từ backend
+      navigation(Path.Index, { replace: true });
+    } catch (error) {
+      console.error(error);
+    }
+
+
+  }
+
 
   return (
     <>
       <Formik
         initialValues={{
-          email: 'httspa@gmail.com',
-          password: '123456',
+          username: 'zvhao',
+          password: 'Thuong08102001',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Phải là một email hợp lệ').max(255).required('Email là bất buộc'),
+          // email: Yup.string().email('Phải là một email hợp lệ').max(255).required('Email là bất buộc'),
+          username: Yup.string().max(255).required('username là bất buộc'),
           password: Yup.string().max(255).required('Mật khẩu là bắt buộc')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             setStatus({ success: false });
             setSubmitting(false);
+            handleSubmit(values)
+
           } catch (err) {
             setStatus({ success: false });
             setErrors({ submit: err.message });
@@ -71,21 +97,21 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email</InputLabel>
+                  <InputLabel htmlFor="username-login">username</InputLabel>
                   <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    id="username-login"
+                    // type="username"
+                    value={values.username}
+                    name="username"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Nhập email"
+                    placeholder="Nhập username"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.username && errors.username)}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.email}
+                  {touched.username && errors.username && (
+                    <FormHelperText error id="standard-weight-helper-text-username-login">
+                      {errors.username}
                     </FormHelperText>
                   )}
                 </Stack>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -29,6 +29,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { Path } from 'constant/path';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
@@ -52,6 +53,15 @@ const AuthRegister = () => {
     changePassword('');
   }, []);
 
+  const navigation = useNavigate();
+
+  const handleSubmit = (values) => {
+    alert(JSON.stringify(values, null, 4))
+    // TODO: if check
+    navigation(Path.Index, { replace: true });
+
+  }
+
   return (
     <>
       <Formik
@@ -73,6 +83,7 @@ const AuthRegister = () => {
           try {
             setStatus({ success: false });
             setSubmitting(false);
+            handleSubmit(values)
           } catch (err) {
             console.error(err);
             setStatus({ success: false });
