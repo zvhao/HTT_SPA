@@ -80,16 +80,9 @@ const ownerService = {
 		}
 
 		const token = jwt.sign({ _id: user._id }, 'httspa', { expiresIn: '10d' });
+		console.log(token);
 
-		const cookieOptions = {
-			expires: new Date(Date.now() + 864000000),
-			httpOnly: true
-		};
-
-		const cookieString = cookie.serialize('token', token, cookieOptions);
-
-
-		return handleLogin(data, cookieString);
+		return handleLogin(data, token);
 	}
 }
 

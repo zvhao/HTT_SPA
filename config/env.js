@@ -7,6 +7,7 @@ const env = cleanEnv(process.env, {
    * ==================================
    */
   MONGO_URI: str({ default: "mongodb://127.0.0.1:27017/httspa" }),
+  // MONGO_URI: str({ default: "mongodb://103.173.226.168:27017/httspa" }),
 
   /**
    * ==================================
