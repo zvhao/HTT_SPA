@@ -1,10 +1,10 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormAddEditService } from '../components';
+import { FormAddEditCourse } from '../components';
 import { Path } from 'constant/path';
 
-const ServiceForm = () => {
+const CourseForm = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const [selected, setSelected] = useState(null);
@@ -16,16 +16,17 @@ const ServiceForm = () => {
     setLoading(true);
     const timer = setTimeout(() => {
       setSelected();
+
       setLoading(false);
     }, 1500);
 
     return () => clearTimeout(timer);
   }, [id]);
 
-  const initialValues = {...selected };
+  const initialValues = { ...selected };
 
   const handleSubmit = (values) => {
-    alert(JSON.stringify(values, null, 4))
+    alert(JSON.stringify(values, null, 4));
     if (isEditMode) {
       // TODO: Update
     } else {
@@ -36,18 +37,17 @@ const ServiceForm = () => {
 
     setTimeout(() => {
       setLoading(false);
-      navigation(Path.Service, { replace: true });
+      navigation(Path.Course, { replace: true });
     }, 1500);
   };
 
   return (
     <Box>
-      <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
-      <FormAddEditService initialValues={initialValues} onSubmit={handleSubmit} />
-      {/* <FormAddEditService onSubmit={handleSubmit} /> */}
+      <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} liệu trình</Typography>
+      <FormAddEditCourse initialValues={initialValues} onSubmit={handleSubmit} />
       {loading && <LinearProgress />}
     </Box>
   );
 };
 
-export default ServiceForm;
+export default CourseForm;

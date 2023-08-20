@@ -1,17 +1,31 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, InputAdornment, MenuItem, TextField, styled } from '@mui/material';
+import {
+  Button,
+  CardActions,
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  styled
+} from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import NumericFormat from 'react-number-format';
-import ReactQuill from 'react-quill';
 import * as yup from 'yup';
-import rehypeRaw from 'rehype-raw';
-import rehypeHighlight from 'rehype-highlight';
-import EditorToolbar, { formats, modules } from '../../../../components/quill-editor/Toolbar';
-// import "./App.css";
 import 'react-quill/dist/quill.snow.css';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Link } from 'react-router-dom';
+import { Path } from 'constant/path';
 
 export const validationSchema = yup.object({
   // email: yup.string().email('Email hợp lệ: example@gmail.com').required('Email là bắt buộc'),
@@ -44,7 +58,7 @@ NumericFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-function FormAddEditService({ initialValues, onSubmit }) {
+function FormAddEditCourse({ initialValues, onSubmit }) {
   const formik = useFormik({
     initialValues: initialValues,
     enableReinitialize: true,
@@ -56,33 +70,7 @@ function FormAddEditService({ initialValues, onSubmit }) {
   });
 
   const { errors, touched, handleSubmit, getFieldProps } = formik;
-  const currencies = [
-    {
-      value: 'USD',
-      label: '$'
-    },
-    {
-      value: 'EUR',
-      label: '€'
-    },
-    {
-      value: 'BTC',
-      label: '฿'
-    },
-    {
-      value: 'JPY',
-      label: '¥'
-    }
-  ];
-  // const [values, setValues] = React.useState({
-  //   numberformat: '1320'
-  // });
-  // const handleChange = (event) => {
-  //   setValues({
-  //     ...values,
-  //     [event.target.name]: event.target.value
-  //   });
-  // };
+
   const [state, setState] = useState({ value: '<h1>Hello</h1>' });
   const handleChange = (content) => {
     setState({ value: content });
@@ -93,9 +81,9 @@ function FormAddEditService({ initialValues, onSubmit }) {
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} mb={1}>
           <Grid item xs={6}>
-            <CssTextField fullWidth margin="normal" id="service-name" name="service-name" label="Tên dịch vụ" variant="outlined" />
+            <CssTextField fullWidth margin="normal" id="coursename" name="coursename" label="Tên liệu trình" variant="outlined" />
           </Grid>
           <Grid item xs={3}>
             <CssTextField
@@ -129,51 +117,6 @@ function FormAddEditService({ initialValues, onSubmit }) {
             <CssTextField
               fullWidth
               margin="normal"
-              id="service-type"
-              name="service-type"
-              select
-              label="Loại dịch vụ"
-              defaultValue="EUR"
-              variant="outlined"
-            >
-              {currencies.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </CssTextField>
-          </Grid>
-          <Grid item xs={3}>
-            <CssTextField fullWidth margin="normal" id="combo" name="combo" select label="Combo" defaultValue="EUR" variant="outlined">
-              {currencies.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </CssTextField>
-          </Grid>
-          <Grid item xs={3}>
-            <CssTextField
-              fullWidth
-              margin="normal"
-              id="course"
-              name="course"
-              select
-              label="Liệu trình"
-              defaultValue="EUR"
-              variant="outlined"
-            >
-              {currencies.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </CssTextField>
-          </Grid>
-          <Grid item xs={3}>
-            <CssTextField
-              fullWidth
-              margin="normal"
               id="technician-commission"
               name="technician-commission"
               label="Hoa hồng Kỹ thuật viên"
@@ -198,27 +141,60 @@ function FormAddEditService({ initialValues, onSubmit }) {
               }}
             />
           </Grid>
-          <Grid item xs={3}></Grid>
+          <Grid item xs={6}>
+            <CardActions sx={{ justifyContent: 'end' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                component={Link}
+                to={Path.Service + `/add`}
+                target="_blank"
+              >
+                Thêm dịch vụ mới
+              </Button>
+            </CardActions>
+          </Grid>
         </Grid>
 
-        <EditorToolbar />
-        <ReactQuill
-          theme="snow"
-          className="editor"
-          bounds={'#editor'}
-          value={state.value}
-          onChange={handleChange}
-          placeholder={'Write something awesome...'}
-          modules={modules}
-          formats={formats}
-        />
+        <Typography variant="h5">Gồm các dịch vụ:</Typography>
+        <TableContainer sx={{ marginBottom: '20px' }} component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>STT</TableCell>
+                <TableCell align="center">Tên dịch vụ</TableCell>
+                <TableCell align="center">Thao tác</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold' }}>1</TableCell>
+                <TableCell>
+                  <CssTextField fullWidth id="servicename" name="servicename" label="Tên dịch vụ" variant="outlined" />
+                </TableCell>
+                <TableCell>
+                  <CardActions sx={{ justifyContent: 'end' }}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteRow}
+                    >
+                      Xoá
+                    </Button>
+                  </CardActions>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableRow>
+              <TableCell colSpan={3}>
+                <Button fullWidth size="large" variant="outlined" color="primary" startIcon={<AddIcon />}></Button>
+              </TableCell>
+            </TableRow>
+          </Table>
+        </TableContainer>
 
-        {/* <ReactQuill theme="bubble" readOnly value={state.value} /> */}
-
-        {/* <div className="" style={{ padding: 0 }}> */}
-        <ReactMarkdown className="ql-editor" rehypePlugins={[rehypeRaw, rehypeHighlight]}>
-          {state.value}
-        </ReactMarkdown>
 
         <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={false} variant="contained">
           <span>Submit</span>
@@ -228,4 +204,4 @@ function FormAddEditService({ initialValues, onSubmit }) {
   );
 }
 
-export default FormAddEditService;
+export default FormAddEditCourse;

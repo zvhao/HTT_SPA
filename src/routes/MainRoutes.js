@@ -17,12 +17,24 @@ const Typography = Loadable(lazy(() => import('pages/components-overview/Typogra
 const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
 const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
 const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
+
+// Service
 const Service = Loadable(lazy(() => import('pages/service-packages/service/Service')));
 const ServiceDetail = Loadable(lazy(() => import('pages/service-packages/service/ServiceDetail')));
 const ServiceForm = Loadable(lazy(() => import('pages/service-packages/service/ServiceForm')));
+
+// Service Type
 const ServiceType = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceType')));
+const ServiceTypeForm = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceTypeForm')));
+
+
 const Course = Loadable(lazy(() => import('pages/service-packages/course/Course')));
+const CourseForm = Loadable(lazy(() => import('pages/service-packages/course/CourseForm')));
+
+// combo
 const Combo = Loadable(lazy(() => import('pages/service-packages/combo/Combo')));
+const ComboForm = Loadable(lazy(() => import('pages/service-packages/combo/ComboForm')));
+
 
 const Staff = Loadable(lazy(() => import('pages/hrm/manager/Staff')));
 const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
@@ -92,15 +104,57 @@ const MainRoutes = {
     },
     {
       path: 'service-type',
-      element: <ServiceType />
+      children: [
+        {
+          // path: '',
+          index: true,
+          element: <ServiceType />
+        },
+        {
+          path: 'add',
+          element: <ServiceTypeForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <ServiceTypeForm />
+        },
+      ]
     },
     {
       path: 'course',
-      element: <Course />
+      children: [
+        {
+          // path: '',
+          index: true,
+          element: <Course />
+        },
+        {
+          path: 'add',
+          element: <CourseForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <CourseForm />
+        },
+      ]
     },
     {
       path: 'combo',
-      element: <Combo />
+      children: [
+        {
+          // path: '',
+          index: true,
+          element: <Combo />
+        },
+        {
+          path: 'add',
+          element: <ComboForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <ComboForm />
+        },
+      ]
     },
     {
       path: Path.ServiceDetail + ':slug',
