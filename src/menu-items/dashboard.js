@@ -16,7 +16,7 @@ const dashboard = {
     {
       id: 'dashboard',
       title: 'Tổng quan',
-      url: '/dashboard/default',
+      url: '',
       icon: icons.AreaChartOutlined,
     }
   ]

@@ -113,7 +113,7 @@ function FormAddEditServiceType({ initialValues, onSubmit }) {
             </TableBody>
             <TableRow>
               <TableCell colSpan={3}>
-                <Button fullWidth size="large" variant="contained" color="primary" startIcon={<AddIcon />}></Button>
+                <Button fullWidth size="large" variant="outlined" color="primary" startIcon={<AddIcon />}></Button>
               </TableCell>
             </TableRow>
           </Table>
