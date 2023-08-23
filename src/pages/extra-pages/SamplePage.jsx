@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 
 import React, { useEffect, useState } from 'react';
-import { fetchData } from '../../api/permissions';
+import { permissionData } from '../../api';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -14,8 +14,8 @@ const SamplePage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await fetchData();
-      console.log(result.metadata);
+      const result = await permissionData();
+      // console.log(result.metadata);
       setData(result.metadata);
     };
 

@@ -1,7 +1,7 @@
 import api from "./axios";
 const apiOwners = '/api/v1/owners'
 
-export const fetchData = async () => {
+export const ownerData = async () => {
   try {
     const response = await api.get(apiOwners); // Thay đổi '/data' thành đường dẫn tương ứng với API của backend Node.js
     return response.data;

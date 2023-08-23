@@ -1,5 +1,6 @@
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { LoadingButton } from '@mui/lab';
-import { Checkbox, FormControlLabel, Grid, InputAdornment, TextField, styled } from '@mui/material';
+import { Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, TextField, styled } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -14,6 +15,8 @@ import * as yup from 'yup';
 
 export const validationSchema = yup.object({
   email: yup.string().email('Email hợp lệ: example@gmail.com').required('Email là bắt buộc'),
+  username: yup.string().required('Username là bắt buộc'),
+  password: yup.string().required('Password là bắt buộc'),
   fullname: yup.string().required('Họ tên là bắt buộc')
 });
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
@@ -100,12 +103,32 @@ function FormAddEditStaff({ initialValues, onSubmit }) {
       label: 'Chủ nhật'
     }
   ]);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
           <Grid item xs={6}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+              <Grid item xs={6}>
+                <CssTextField
+                  fullWidth
+                  margin="dense"
+                  id="username"
+                  name="username"
+                  label="Username"
+                  variant="outlined"
+                  {...getFieldProps('username')}
+                  error={touched.username && Boolean(errors.username)}
+                  helperText={touched.username && errors.username}
+                />
+              </Grid>
               <Grid item xs={6}>
                 <CssTextField
                   fullWidth
@@ -117,6 +140,25 @@ function FormAddEditStaff({ initialValues, onSubmit }) {
                   {...getFieldProps('fullname')}
                   error={touched.fullname && Boolean(errors.fullname)}
                   helperText={touched.fullname && errors.fullname}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <CssTextField
+                  fullWidth
+                  margin="dense"
+                  id="password"
+                  name="password"
+                  label="Password"
+                  variant="outlined"
+                  type={showPassword ? 'text' : 'password'}
+                  {...getFieldProps('password')}
+                  error={touched.password && Boolean(errors.password)}
+                  helperText={touched.password && errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleTogglePassword}>{showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}</IconButton>
+                    )
+                  }}
                 />
               </Grid>
               <Grid item xs={6}>
