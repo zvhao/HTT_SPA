@@ -1,0 +1,34 @@
+@url=http://localhost:8888/api/v1/branches
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+
+{
+	"name": "HTT SPA",
+	"code": "cn2",
+	"address": "3/2, Ninh Kiều, Cần Thơ",
+	"desc": "Chi nhánh 2",
+	"capacity": 5,
+	"manager": "64a6dc237004fb28bcd6f96c",
+	"startTime": "09:00",
+	"endTime": "20:00"
+}
+
+### GET
+GET {{url}}
+
+### GET ID
+GET {{url}}/64e5d24baea54b37f51fbeb8
+
+### Update
+PATCH {{url}}/64e5d24baea54b37f51fbeb8
+Content-Type: application/json
+
+{
+  "endTime": "20:00"
+}
+
+
+
+

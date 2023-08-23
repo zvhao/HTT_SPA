@@ -12,11 +12,7 @@ var BranchSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phone: {
-      type: String,
-      required: true,
-    },
-    email: {
+    code: {
       type: String,
       required: true,
     },
@@ -24,26 +20,37 @@ var BranchSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
-    owner: {
+    desc: {
+      type: String,
+      required: true,
+    },
+    capacity: {
+      type: Number,
+      required: true,
+    },
+    manager: {
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    employees: {
+    startTime: {
+      type: String,
+      required: true
+    },
+    endTime: {
+      type: String,
+      required: true
+    },
+    staffs: {
       type: [mongoose.Types.ObjectId],
-      required: true,
     },
     courses: {
       type: [mongoose.Types.ObjectId],
-      required: true,
     },
     combos: {
       type: [mongoose.Types.ObjectId],
-      required: true,
     },
     services: {
       type: [mongoose.Types.ObjectId],
-      required: true,
     },
 
   },
