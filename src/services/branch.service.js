@@ -41,10 +41,11 @@ const branchService = {
 	},
 
 	update: async (id, data) => {
+		// console.log(data.code);
 		if (data.code) {
-			let branch = await findBranchByCode(code);
+			let isBranch = await findBranchByCode(data.code);
 
-			if (branch && id !== user._id.toString()) {
+			if (isBranch && id !== isBranch._id.toString()) {
 				throw new ConflictRequestError("Code exists");
 			}
 		}

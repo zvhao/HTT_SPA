@@ -32,6 +32,7 @@ module.exports = {
 	async update(req, res) {
 		const id = req.params.id;
 		const body = req.body;
+		console.log(body);
 		return new OKResponse({
 			message: "Update owner id success",
 			metadata: await branchService.update(id, body),

@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
 	"name": "HTT SPA",
-	"code": "cn2",
+	"code": "cn3",
 	"address": "3/2, Ninh Kiều, Cần Thơ",
 	"desc": "Chi nhánh 2",
 	"capacity": 5,
@@ -22,11 +22,11 @@ GET {{url}}
 GET {{url}}/64e5d24baea54b37f51fbeb8
 
 ### Update
-PATCH {{url}}/64e5d24baea54b37f51fbeb8
+PATCH {{url}}/64e9706d1c8a7891e629d7f1
 Content-Type: application/json
 
 {
-  "endTime": "20:00"
+  "endTime": "10:00"
 }
 
 
