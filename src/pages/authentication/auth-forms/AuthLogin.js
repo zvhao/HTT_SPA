@@ -29,7 +29,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { Path } from 'constant/path';
-import { login } from 'api/owners';
+import { ownerApi } from 'api';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -50,13 +50,13 @@ const AuthLogin = () => {
     // alert(JSON.stringify(values, null, 4))
     // TODO: if check
     try {
-      const result = await login(values.username, values.password);
+      const result = await ownerApi.login(values.username, values.password);
       if (result.metadata.user && result.metadata.token) {
         const username = result.metadata.user
         const token = result.metadata.token
         localStorage.setItem('token', token)
       }
-      console.log(result.metadata.user); // Xử lý kết quả đăng nhập từ backend
+      // console.log(result.metadata.user); // Xử lý kết quả đăng nhập từ backend
       navigation(Path.Index, { replace: true });
     } catch (error) {
       console.error(error);
@@ -75,7 +75,6 @@ const AuthLogin = () => {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          // email: Yup.string().email('Phải là một email hợp lệ').max(255).required('Email là bất buộc'),
           username: Yup.string().max(255).required('username là bất buộc'),
           password: Yup.string().max(255).required('Mật khẩu là bắt buộc')
         })}

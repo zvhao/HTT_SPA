@@ -1,3 +1,3 @@
-export { permissionData } from './permissions'
-export { ownerData } from './owners'
-export { branchData } from './branches'
+export { default as permissionApi } from './permissions'
+export { default as ownerApi } from './owners'
+export { default as branchApi } from './branches'

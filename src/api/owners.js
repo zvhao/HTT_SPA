@@ -1,7 +1,7 @@
 import api from "./axios";
 const apiOwners = '/api/v1/owners'
 
-export const ownerData = async () => {
+const fetchData = async () => {
   try {
     const response = await api.get(apiOwners); // Thay đổi '/data' thành đường dẫn tương ứng với API của backend Node.js
     return response.data;
@@ -10,7 +10,7 @@ export const ownerData = async () => {
   }
 };
 
-export const login = async (username, password) => {
+const login = async (username, password) => {
   const data = {
     username: username,
     password: password
@@ -23,3 +23,6 @@ export const login = async (username, password) => {
     console.error(error);
   }
 };
+
+const ownerApi = {fetchData, login }
+export default ownerApi

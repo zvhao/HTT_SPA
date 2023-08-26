@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 
 import React, { useEffect, useState } from 'react';
-import { permissionData } from '../../api';
+import { permissionApi } from '../../api';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -14,9 +14,12 @@ const SamplePage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await permissionData();
-      // console.log(result.metadata);
-      setData(result.metadata);
+      try {
+        const result = await permissionApi.fetchData();
+        setData(result.metadata);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     getData();
@@ -24,11 +27,11 @@ const SamplePage = () => {
 
   return (
     <div>
-    {/* Hiển thị dữ liệu từ backend */}
-    {data.map((item) => (
-      <p key={item.id}>{item.name}</p>
-    ))}
-  </div>
+      {/* Hiển thị dữ liệu từ backend */}
+      {data.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
   );
 };
 
