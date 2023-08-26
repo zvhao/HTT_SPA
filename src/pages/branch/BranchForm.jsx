@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, CardActions, Grid, IconButton, InputAdornment, TextField, Typography, styled } from '@mui/material';
+import { Box, Grid, IconButton, InputAdornment, TextField, Typography, styled } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { branchApi } from 'api';
@@ -22,7 +22,7 @@ const validationSchema = yup.object({
   name: yup.string().required('Tên dịch vụ là bắt buộc'),
   code: yup.string().required('Tên dịch vụ là bắt buộc'),
   capacity: yup.string().required('Tên dịch vụ là bắt buộc'),
-  manager: yup.string().required('Tên dịch vụ là bắt buộc'),
+  // manager: yup.string().required('Tên dịch vụ là bắt buộc'),
   address: yup.string().required('Tên dịch vụ là bắt buộc'),
   desc: yup.string().required('Tên dịch vụ là bắt buộc')
 });
@@ -61,15 +61,15 @@ const BranchForm = () => {
   const isEditMode = Boolean(id);
   const navigation = useNavigate();
 
-  const [formData, setInitialValues] = useState({
-    name: 'hao',
+  const [initialValues, setInitialValues] = useState({
+    name: 'HTT SPA',
     code: '',
     capacity: '',
-    manager: '',
+    manager: '64a6dc237004fb28bcd6f96c',
     address: '',
-    desc: '',
-    startTime: dayjs.tz('2013-11-18 09:00:00', 'Asia/Ho_Chi_Minh'),
-    endTime: dayjs.tz('2013-11-18 20:00:00', 'Asia/Ho_Chi_Minh')
+    desc: 'Chi nhánh 1',
+    startTime: dayjs('2013-11-18 09:00:00'),
+    endTime: dayjs('2013-11-18 20:00:00')
   });
 
   useEffect(() => {
@@ -78,11 +78,9 @@ const BranchForm = () => {
         try {
           const oneBranchData = await branchApi.getById(id);
           const newOneBranchData = { ...oneBranchData.metadata };
-          newOneBranchData.startTime = dayjs(oneBranchData.metadata.startTime, 'HH:mm').toDate();
-          newOneBranchData.endTime = dayjs(oneBranchData.metadata.endTime, 'HH:mm').toDate();
+          newOneBranchData.startTime = dayjs(oneBranchData.metadata.startTime, 'HH:mm');
+          newOneBranchData.endTime = dayjs(oneBranchData.metadata.endTime, 'HH:mm');
           setInitialValues(newOneBranchData);
-
-          console.log('set', formData);
           return newOneBranchData;
         } catch (error) {
           console.log(error);
@@ -90,7 +88,7 @@ const BranchForm = () => {
       }
     };
     getOneBranch(id);
-  }, [id]);
+  }, []);
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
@@ -106,19 +104,33 @@ const BranchForm = () => {
     const newdata = { ...values };
     newdata.startTime = dayjs(values.startTime).format('HH:mm');
     newdata.endTime = dayjs(values.endTime).format('HH:mm');
-    // console.log(newdata);
+
     if (isEditMode) {
-      console.log(1);
+      try {
+        // console.log(newdata);
+        const rs = await branchApi.update(id, newdata);
+        navigation(Path.Branch, { replace: true });
+        return rs
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      const rs = await branchApi.create(newdata);
-      console.log(rs);
+      try {
+        const rs = await branchApi.create(newdata);
+        navigation(Path.Branch, { replace: true });
+        console.log(rs);
+        return rs
+
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
   return (
     <Box>
       <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
-      <Formik initialValues={formData} onSubmit={onSubmit} validationSchema={validationSchema}>
+      <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>

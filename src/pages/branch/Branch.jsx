@@ -25,14 +25,12 @@ const columns = [
     id: 'address',
     label: 'Địa chỉ',
     // minWidth: 100,
-    align: 'left'
     // format: (value) => value.toLocaleString('en-US')
   },
   {
     id: 'operation',
     label: 'Thao tác',
     // minWidth: 170,
-    align: 'left'
     // format: (value) => value.toLocaleString('en-US')
   }
 ];
@@ -88,7 +86,7 @@ const Branch = () => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                  <TableCell key={column.id}  align='center' style={{ minWidth: column.minWidth }}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -98,15 +96,15 @@ const Branch = () => {
               {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                    <TableCell>{row.code}</TableCell>
+                    <TableCell align='center' sx={{ fontWeight: 'bold' }}>{row.code}</TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.capacity}</TableCell>
+                    <TableCell align='center'>{row.capacity}</TableCell>
                     <TableCell>{row.manager}</TableCell>
-                    <TableCell>
+                    <TableCell  align='center'>
                       {row.startTime} - {row.endTime}
                     </TableCell>
                     <TableCell>{row.address}</TableCell>
-                    <TableCell>
+                    <TableCell  align='right'>
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Branch}/edit/${row._id}`}>
                         <EditIcon />
                       </Button>

@@ -21,6 +21,15 @@ const create = async (data) => {
   }
 }
 
+const update = async (id, data) => {
+  try {
+    const res = await api.patch(baseUrl + '/' + id, data)
+    return res.data
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const getById = async (id) => {
   try {
     const response = await api.get(baseUrl + '/' + id);
@@ -30,5 +39,5 @@ const getById = async (id) => {
   }
 }
 
-const branchApi = { fetchData, create, getById }
+const branchApi = { fetchData, create, getById, update }
 export default branchApi
