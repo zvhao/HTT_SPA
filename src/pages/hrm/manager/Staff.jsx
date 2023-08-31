@@ -84,11 +84,11 @@ const Staff = () => {
   return (
     <MainCard>
       <Typography sx={{ mb: 1 }} variant="h4">
-        Các nhân viên quản lý
+        Các nhân viên
       </Typography>
       <CardActions sx={{ mb: 1 }}>
         <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={ Path.Staff + `/add`}>
-          Thêm nhân viên quản lý
+          Thêm nhân viên
         </Button>
       </CardActions>
 
