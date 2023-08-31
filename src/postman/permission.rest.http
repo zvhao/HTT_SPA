@@ -4,11 +4,15 @@
 POST {{url}}
 Content-Type: application/json
 
+
 {
-  "name": "Servicetype Delete",
-  "desc": "Xoá loại dịch vụ",
-  "alias": "servicetype.delete"
+  "name": "Combo View",
+  "desc": "Xem combo",
+  "alias": "combo.view"
 }
+
+
+
 
 
 

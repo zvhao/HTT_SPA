@@ -1,0 +1,167 @@
+@url=http://localhost:8888/api/v1/staffs
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "fullname": "Huynh Thanh Thuong",
+  "username": "qlcn09",
+  "phone": "123456789",
+  "email": "john.doe@example.com",
+  "address": "123 Main St",
+  "numPaidLeave": 2,
+  "basicSalary": 5000000,
+  "position": "Manager",
+  "password": "password123",
+  "consultingCommission": 0.1,
+  "serviceCommission": 0.1,
+  "allowances": [
+    {
+      "name": "Allowance 1",
+      "allowance": 100000
+    },
+    {
+      "name": "Allowance 2",
+      "allowance": 200000
+    }
+  ],
+  "workTime": [
+    {
+      "startDate": "2023-08-29",
+      "weekSchedule": [
+        {
+          "day": "Monday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Tuesday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Wednesday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Thursday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Friday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Saturday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Sunday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        }
+      ]
+    }
+  ],
+  "roles": ["64a639e9070a377cbf828939", "64a6b717d2cb99cfbec2bf78"],
+  "branches": ["64e5d24baea54b37f51fbeb8"]
+}
+
+
+### GET
+GET {{url}}
+
+### GET ID
+GET {{url}}/64ed80658d9907fd5dedd129
+
+### Update
+PATCH {{url}}/64ed80658d9907fd5dedd129
+Content-Type: application/json
+
+{
+  "fullname": "Huynh Thanh Thuong",
+  "username": "qlcn04",
+  "phone": "0938744376",
+  "email": "thuong@gmail.com",
+  "address": "Nguyen De",
+  "numPaidLeave": 2,
+  "basicSalary": 4000000,
+  "position": "Manager",
+  "password": "password123",
+  "consultingCommission": 0.1,
+  "serviceCommission": 0.1,
+  "allowances": [
+    {
+      "nameAllowance1": "phụ cấp tiền xăng",
+      "moneyAllowance1": 500000,
+    },
+    {
+      "nameAllowance2": "phụ cấp tiền ăn",
+      "moneyAllowance2": 500000,
+    }
+  ],
+  "workTime": [
+    {
+      "startDate": "2023-08-30",
+      "weekSchedule": [
+        {
+          "day": "Monday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Tuesday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Wednesday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Thursday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Friday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Saturday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        },
+        {
+          "day": "Sunday",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        }
+      ]
+    }
+  ],
+  "roles": ["64a639e9070a377cbf828939", "64a6b717d2cb99cfbec2bf78"],
+  "branches": ["64e5d24baea54b37f51fbeb8"]
+}
+
+### Login
+POST {{ url }}/login
+Content-Type: application/json
+
+{
+	"username": "zvhao",
+	"password": "Thuong08102001"
+}
+
+### Logout
+GET {{ url }}/logout
+
+
+
