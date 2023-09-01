@@ -57,7 +57,7 @@ const StaffForm = () => {
   const navigation = useNavigate();
 
   const [initialValues, setInitialValues] = useState({
-    fullname: '',
+    fullname: 'Huynh Thanh Thuong',
     username: 'qlcn0101',
     phone: '',
     email: '',
