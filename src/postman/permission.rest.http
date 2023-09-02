@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
   "name": "Product add",
-  "desc": "Thêm sản phẩm",
+  "desc": "Thêm ",
   "alias": "product.add"
 }
 
