@@ -1,0 +1,32 @@
+{
+      "_id": "64f5c3282c268c9c00c1fdf5",
+      "name": "staff view",
+      "alias": "staff.view",
+      "desc": "Xem nhân viên",
+      "createdAt": "2023-09-04T11:44:40.358Z",
+      "updatedAt": "2023-09-04T11:44:40.358Z"
+    },
+    {
+      "_id": "64f5c32d2c268c9c00c1fdf9",
+      "name": "staff add",
+      "alias": "staff.add",
+      "desc": "Thêm nhân viên",
+      "createdAt": "2023-09-04T11:44:45.812Z",
+      "updatedAt": "2023-09-04T11:44:45.812Z"
+    },
+    {
+      "_id": "64f5c3322c268c9c00c1fdfd",
+      "name": "staff update",
+      "alias": "staff.update",
+      "desc": "Cập nhật nhân viên",
+      "createdAt": "2023-09-04T11:44:50.856Z",
+      "updatedAt": "2023-09-04T11:44:50.856Z"
+    },
+    {
+      "_id": "64f5c3372c268c9c00c1fe01",
+      "name": "staff delete",
+      "alias": "staff.delete",
+      "desc": "Xoá nhân viên",
+      "createdAt": "2023-09-04T11:44:55.606Z",
+      "updatedAt": "2023-09-04T11:44:55.606Z"
+    },

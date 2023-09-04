@@ -1,0 +1,144 @@
+[{
+  "_id": {
+    "$oid": "64f5c5d02c268c9c00c1fe27"
+  },
+  "name": "service management",
+  "desc": "Quản lý dịch vụ",
+  "permissions": [
+    {
+      "$oid": "64f5c2b22c268c9c00c1fdb5"
+    },
+    {
+      "$oid": "64f5c2bf2c268c9c00c1fdb9"
+    },
+    {
+      "$oid": "64f5c2d82c268c9c00c1fdbd"
+    },
+    {
+      "$oid": "64f5c2df2c268c9c00c1fdc1"
+    },
+    {
+      "$oid": "64f5c2e62c268c9c00c1fdc5"
+    },
+    {
+      "$oid": "64f5c2eb2c268c9c00c1fdc9"
+    },
+    {
+      "$oid": "64f5c2f12c268c9c00c1fdcd"
+    },
+    {
+      "$oid": "64f5c2f72c268c9c00c1fdd1"
+    },
+    {
+      "$oid": "64f5c2fe2c268c9c00c1fdd5"
+    },
+    {
+      "$oid": "64f5c3032c268c9c00c1fdd9"
+    },
+    {
+      "$oid": "64f5c3082c268c9c00c1fddd"
+    },
+    {
+      "$oid": "64f5c30d2c268c9c00c1fde1"
+    },
+    {
+      "$oid": "64f5c3142c268c9c00c1fde5"
+    },
+    {
+      "$oid": "64f5c3182c268c9c00c1fde9"
+    },
+    {
+      "$oid": "64f5c31d2c268c9c00c1fded"
+    },
+    {
+      "$oid": "64f5c3222c268c9c00c1fdf1"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-04T11:56:00.377Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-04T11:56:00.377Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "64f5c8432c268c9c00c1fe2b"
+  },
+  "name": "HRM owner",
+  "desc": "Quản lý nhân sự của chủ SPA",
+  "permissions": [
+    {
+      "$oid": "64f5c33c2c268c9c00c1fe05"
+    },
+    {
+      "$oid": "64f5c3402c268c9c00c1fe09"
+    },
+    {
+      "$oid": "64f5c3442c268c9c00c1fe0d"
+    },
+    {
+      "$oid": "64f5c3492c268c9c00c1fe11"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-04T12:06:27.284Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-04T12:06:27.284Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "64f5c8f62c268c9c00c1fe2f"
+  },
+  "name": "branch management",
+  "desc": "Quản lý chi nhánh",
+  "permissions": [
+    {
+      "$oid": "64f5c3502c268c9c00c1fe15"
+    },
+    {
+      "$oid": "64f5c3562c268c9c00c1fe19"
+    },
+    {
+      "$oid": "64f5c35a2c268c9c00c1fe1d"
+    },
+    {
+      "$oid": "64f5c35f2c268c9c00c1fe21"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-04T12:09:26.253Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-04T12:09:26.253Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "64f5c9952c268c9c00c1fe33"
+  },
+  "name": "HRM manager",
+  "desc": "Quản lý nhân sự của nhân viên quản lý",
+  "permissions": [
+    {
+      "$oid": "64f5c3282c268c9c00c1fdf5"
+    },
+    {
+      "$oid": "64f5c32d2c268c9c00c1fdf9"
+    },
+    {
+      "$oid": "64f5c3322c268c9c00c1fdfd"
+    },
+    {
+      "$oid": "64f5c3372c268c9c00c1fe01"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-04T12:12:05.441Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-04T12:12:05.441Z"
+  }
+}]

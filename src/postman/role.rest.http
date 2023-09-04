@@ -5,21 +5,21 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "HRM",
-  "desc": "Quản lý nhân sự",
-  "permissions": ["64a63672070a377cbf828904", "64a63696070a377cbf828908", "64a636a8070a377cbf82890c", "64a636be070a377cbf828910"]
+  "name": "HRM manager",
+  "desc": "Quản lý nhân sự của nhân viên quản lý",
+  "permissions": ["64f5c3282c268c9c00c1fdf5","64f5c32d2c268c9c00c1fdf9","64f5c3322c268c9c00c1fdfd","64f5c3372c268c9c00c1fe01"]
 }
 
 ### Update
-PATCH {{url}}/64a639e9070a377cbf828939
+PATCH {{url}}/
 Content-Type: application/json
 
 {
-  "permissions": ["64a62f34b09180f5d7d90e6a", "64a62eeab09180f5d7d90e66", "64a62f48b09180f5d7d90e6e", "64a62f5cb09180f5d7d90e72"]
+  "permissions": ["", "", "", ""]
 }
 
 ### GET
 GET {{url}}
 
 ### GET ID
-GET {{url}}/649e6de185e023c10002a054
+GET {{url}}/

@@ -4,13 +4,11 @@
 POST {{url}}
 Content-Type: application/json
 
-
 {
-  "name": "Combo View",
-  "desc": "Xem combo",
-  "alias": "combo.view"
+  "name": "branch delete",
+  "desc": "Xoá chi nhánh",
+  "alias": "branch.delete"
 }
-
 
 
 
