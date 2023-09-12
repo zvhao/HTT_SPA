@@ -35,7 +35,7 @@ import { ownerApi } from 'api';
 
 const AuthLogin = () => {
   const [checked, setChecked] = React.useState(false);
-
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -47,17 +47,18 @@ const AuthLogin = () => {
   const navigation = useNavigate();
 
   const handleSubmit = async (values) => {
-    // alert(JSON.stringify(values, null, 4))
-    // TODO: if check
+
     try {
       const result = await ownerApi.login(values.username, values.password);
       if (result.metadata.user && result.metadata.token) {
-        const username = result.metadata.user
+        // const username = result.metadata.user
         const token = result.metadata.token
         localStorage.setItem('token', token)
+        navigation(Path.Index, { replace: true });
+      } else if (result.metadata.error) {
+        setError('Thông tin nhập vào không đúng!');
       }
-      // console.log(result.metadata.user); // Xử lý kết quả đăng nhập từ backend
-      navigation(Path.Index, { replace: true });
+      console.log(result); // Xử lý kết quả đăng nhập từ backend
     } catch (error) {
       console.error(error);
     }
@@ -170,10 +171,13 @@ const AuthLogin = () => {
                 </Stack>
               </Grid>
               {errors.submit && (
-                <Grid item xs={12}>
+                <Grid item xs={12} >
                   <FormHelperText error>{errors.submit}</FormHelperText>
                 </Grid>
               )}
+              {error && 
+                <FormHelperText sx={{ paddingLeft: "20px", fontSize: "14px"}} error>{error}</FormHelperText> }
+
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">

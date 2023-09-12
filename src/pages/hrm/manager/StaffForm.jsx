@@ -1,7 +1,7 @@
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
-import { Box, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, TextField, Typography, styled, MenuItem } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, TextField, Typography, styled, MenuItem, Button } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -10,12 +10,13 @@ import { Path } from 'constant/path';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import NumericFormat from 'react-number-format';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
+import { useFormikContext, useField } from 'formik';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -59,20 +60,34 @@ const StaffForm = () => {
   const [initialValues, setInitialValues] = useState({
     fullname: 'Huynh Thanh Thuong',
     username: 'qlcn0101',
-    phone: '',
-    email: '',
-    address: '',
+    phone: '0939410692',
+    email: 'huynhthanhthuong0910@gmail.com',
+    address: 'Can Tho',
     numPaidLeave: 2,
     basicSalary: 4000000,
-    position: '',
-    password: '',
+    position: 'Manager',
+    password: 'Hao291001',
     consultingCommission: 10,
     serviceCommission: 10,
-    allowances: '',
-    workTime: '',
-    roles: '',
-    branches: ''
+    allowances: [{ name: '', allowance: '' }],
+    workTime: [
+      {
+        startDate: '2023-08-30',
+        weekSchedule: [
+          { day: 'Monday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Tuesday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Wednesday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Thursday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Friday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Saturday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+          { day: 'Sunday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
+        ],
+      },
+    ],
+    roles: '64f5c9952c268c9c00c1fe33',
+    branches: '650007e9c31b396b0f6ef13d'
   });
+
 
   useEffect(() => {
     const getOneStaff = async (id) => {
@@ -88,6 +103,7 @@ const StaffForm = () => {
           // console.log(error);
         }
       }
+
     };
     getOneStaff(id);
   }, []);
@@ -106,8 +122,8 @@ const StaffForm = () => {
     // const newdata = { ...values };
     // newdata.startTime = dayjs(values.startTime).format('HH:mm');
     // newdata.endTime = dayjs(values.endTime).format('HH:mm');
-    alert(JSON.stringify(values, null, 4));
-
+    // alert(JSON.stringify(values, null, 4));
+    console.log(JSON.stringify(values, null, 4));
     if (isEditMode) {
       try {
         // console.log(newdata);
@@ -135,51 +151,11 @@ const StaffForm = () => {
     setShowPassword(!showPassword);
   };
 
-  const [childChecked, setChildChecked] = useState([true, true, true, true, true, true, true]);
-  const [parentChecked, setParentChecked] = useState(true);
-
-  const handleParentChange = (event) => {
-    setParentChecked(event.target.checked);
-    setChildChecked(childChecked.map(() => event.target.checked));
-  };
-
-  const handleChangeChild = (index) => (event) => {
-    const newChildChecked = [...childChecked];
-    newChildChecked[index] = event.target.checked;
-    setChildChecked(newChildChecked);
-    setParentChecked(newChildChecked.every((checked) => checked));
-  };
-
-  // const [value, setValue] = React.useState(dayjs('2023-08-07T20:00'));
-  const [cards, _setCards] = useState([
-    {
-      label: 'Thứ 2'
-    },
-    {
-      label: 'Thứ 3'
-    },
-    {
-      label: 'Thứ 4'
-    },
-    {
-      label: 'Thứ 5'
-    },
-    {
-      label: 'Thứ 6'
-    },
-    {
-      label: 'Thứ 7'
-    },
-    {
-      label: 'Chủ nhật'
-    }
-  ]);
-
   return (
     <Box>
       <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} nhân viên</Typography>
       <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} sx={{ padding: 1 }}>
               <Grid item xs={6}>
@@ -380,7 +356,7 @@ const StaffForm = () => {
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                    {/* <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
                       <Grid item xs={6}>
                         <CssTextField
                           fullWidth
@@ -412,54 +388,135 @@ const StaffForm = () => {
                           }}
                         />
                       </Grid>
-                    </Grid>
+                    </Grid> */}
+                    <FieldArray name="allowances">
+                      {({ push, remove }) => (
+                        <div>
+                          {values.allowances.map((allowance, index) => (
+                            <Grid container key={index} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                              <Grid item xs={6}>
+                                <Field
+                                  as={CssTextField}
+                                  fullWidth
+                                  margin="dense"
+                                  id={`allowances[${index}].name`}
+                                  name={`allowances[${index}].name`}
+                                  label={`Phụ cấp ${index + 1}`}
+                                  variant="outlined"
+                                  value={allowance.name}
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  sx={{ '& > label': { lineHeight: 'normal' } }}
+                                />
+                                <ErrorMessage name={`allowances[${index}].name`} component="div" />
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Field
+                                  as={CssTextField}
+                                  fullWidth
+                                  margin="dense"
+                                  id={`allowances[${index}].allowance`}
+                                  name={`allowances[${index}].allowance`}
+                                  label="Khoản tiền"
+                                  variant="outlined"
+                                  value={allowance.allowance}
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  sx={{ '& > label': { lineHeight: 'normal' } }}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <Button type="button" onClick={() => remove(index)}>
+                                        Xóa
+                                      </Button>
+                                    ),
+                                    inputComponent: NumericFormatCustom
+                                  }}
+                                />
+                                <ErrorMessage name={`allowances[${index}].allowance`} component="div" />
+                              </Grid>
+
+                            </Grid>
+                          ))}
+                          <Button type="button" onClick={() => push({ name: '', allowance: '' })}>
+                            Thêm khoản phụ cấp
+                          </Button>
+                        </div>
+                      )}
+                    </FieldArray>
                   </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={6} mt={2}>
                 <Grid container>
-                  <Grid item xs={12} sx={{ display: 'inline-flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Grid container>
-                      <Grid item xs={3}>
-                        <FormControlLabel
-                          label="Tất cả các ngày"
-                          control={<Checkbox checked={parentChecked} onChange={handleParentChange} />}
-                        />
+                  <Grid item sx={{ display: 'inline-flex', justifyContent: 'space-between', mb: 2 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                        {/* <Grid item xs={12}>
+                          <Field type="checkbox" name="workTime[0].selectAllDays" as={Checkbox} />
+                          Tất cả các ngày
+                        </Grid> */}
+                        <FieldArray name="workTime[0].weekSchedule">
+
+
+                          <>
+                            {values.workTime[0].weekSchedule.map((schedule, index) => (
+                              <Grid container key={index} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                                <Grid item xs={3} sx={{ mb: 2 }}>
+                                  <FormControlLabel
+                                    sx={{ pl: 3 }}
+                                    label={schedule.day}
+                                    control={
+                                      <Checkbox
+                                        checked={values.workTime[0].weekSchedule[index].checked}
+                                        onChange={() => {
+                                          const checked = values.workTime[0].weekSchedule[index].checked;
+                                          setFieldValue(`workTime[0].weekSchedule[${index}].checked`, !checked);
+                                          if (!checked) {
+                                            setFieldValue(`workTime[0].weekSchedule[${index}].startTime`, dayjs('2023-08-07T09:00'));
+                                            setFieldValue(`workTime[0].weekSchedule[${index}].endTime`, dayjs('2023-08-07T20:00'));
+                                          } else {
+                                            setFieldValue(`workTime[0].weekSchedule[${index}].startTime`, null);
+                                            setFieldValue(`workTime[0].weekSchedule[${index}].endTime`, null);
+                                          }
+                                        }}
+                                      />
+                                    }
+                                  />
+                                </Grid>
+                                <Grid item xs={9} sx={{ mb: 2 }}>
+                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                                      <Grid item xs={6}>
+                                        <TimePicker
+                                          label="Thời gian bắt đầu"
+                                          name={`workTime[0].weekSchedule[${index}].startTime`}
+                                          value={values.workTime[0].weekSchedule[index].startTime}
+                                          onChange={(value) => setFieldValue(`workTime[0].weekSchedule[${index}].startTime`, value)}
+                                          disabled={!values.workTime[0].weekSchedule[index].checked}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={6}>
+                                        <TimePicker
+                                          label="Thời gian kết thúc"
+                                          name={`workTime[0].weekSchedule[${index}].endTime`}
+                                          value={values.workTime[0].weekSchedule[index].endTime}
+                                          onChange={(value) => setFieldValue(`workTime[0].weekSchedule[${index}].endTime`, value)}
+                                          disabled={!values.workTime[0].weekSchedule[index].checked}
+                                        />
+                                      </Grid>
+                                    </Grid>
+                                  </LocalizationProvider>
+                                </Grid>
+                              </Grid>
+                            ))}
+                          </>
+
+
+                        </FieldArray>
                       </Grid>
-                      <Grid item xs={9}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['TimePicker', 'TimePicker']}>
-                            <TimePicker label="Thời gian bắt đầu" value={values.startTime} defaultValue={dayjs('2022-04-17T09:00')} />
-                            <TimePicker label="Thời gian kết thúc" value={values.startTime} defaultValue={dayjs('2022-04-17T20:00')} />
-                          </DemoContainer>
-                        </LocalizationProvider>
-                      </Grid>
-                    </Grid>
+                    </LocalizationProvider>
                   </Grid>
-                  {/* {children} */}
-                  {cards.map((card, index) => (
-                    <Grid key={index} item xs={12} sx={{ justifyContent: 'space-between', mb: 2 }}>
-                      <Grid container>
-                        <Grid item xs={3}>
-                          <FormControlLabel sx={{ pl: 3 }}
-                            label={card.label}
-                            control={<Checkbox checked={childChecked[index]} onChange={handleChangeChild(index)} />}
-                          />{' '}
-                        </Grid>
-                        <Grid item xs={9}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            {' '}
-                            <DemoContainer components={['TimePicker', 'TimePicker']}>
-                              <TimePicker label="Thời gian bắt đầu" value={values.startTime} defaultValue={dayjs('2022-04-17T09:00')} />
-                              <TimePicker label="Thời gian kết thúc" value={values.startTime} defaultValue={dayjs('2022-04-17T20:00')} />{' '}
-                            </DemoContainer>{' '}
-                          </LocalizationProvider>{' '}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                  <Grid item></Grid>
                 </Grid>
               </Grid>
             </Grid>
