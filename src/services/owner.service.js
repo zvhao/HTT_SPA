@@ -70,19 +70,26 @@ const ownerService = {
 		let user = await findOwnerByUsername(data.username);
 
 		if (!user) {
-			throw new NotFoundRequestError("Username does not exist");
+			return {
+				error: "Username does not exist"
+			}
 		}
 
 		const passwordMatch = await comparePasswords(data.password, user.password);
 
 		if (!passwordMatch) {
-			throw new NotFoundRequestError("Incorrect password");
+			return {
+				error: "Incorrect password"
+			}
 		}
 
 		const token = jwt.sign({ _id: user._id }, 'httspa', { expiresIn: '10d' });
-		console.log(token);
 
-		return handleLogin(data, token);
+		return await {
+			message: 'Login successful',
+			user: data.username,
+			token: token,
+		};
 	}
 }
 

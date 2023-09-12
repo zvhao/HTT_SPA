@@ -14,21 +14,21 @@ module.exports = {
   async getAll(req, res) {
     const filters = req.query;
     return new OKResponse({
-      message: "Get permission success",
+      message: "Get permissions success",
       metadata: await permissionService.getAll(filters),
     }).send(res);
   },
   async getById(req, res) {
     const id = req.params.id;
     return new OKResponse({
-      message: "Get permission id success",
+      message: "Get permission success",
       metadata: await permissionService.getById(id),
     }).send(res);
   },
   async delete(req, res) {
     const id = req.params.id;
     return new OKResponse({
-      message: "Delete permission id success",
+      message: "Delete permission success",
       metadata: await permissionService.delete(id),
     }).send(res);
   },
@@ -36,7 +36,7 @@ module.exports = {
     const id = req.params.id;
     const body = req.body;
     return new OKResponse({
-      message: "Update permission id success",
+      message: "Update permission success",
       metadata: await permissionService.update(id, body),
     }).send(res);
   },

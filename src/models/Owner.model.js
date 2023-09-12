@@ -2,7 +2,6 @@
 
 const mongoose = require("mongoose")
 const { hashPassword } = require("../utils/hash.util")
-const mongooseDelete = require('mongoose-delete');
 const MongooseDelete = require("mongoose-delete");
 
 const DOCUMENT_NAME = "Owner";

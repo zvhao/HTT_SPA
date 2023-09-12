@@ -5,13 +5,13 @@ POST {{ url }}
 Content-Type: application/json
 
 {
-	"fullname": "NVHao",
+	"fullname": "Nguyễn Văn Hào",
 "username": "zvhao",
-"phone": "0939410692",
-"email": "Hao@gmail.com",
+"phone": "0938744376",
+"email": "hao@gmail.com",
 "shop_name": "ZVHAO SPA",
-"password": "Thuong08102001",
-"roles": ["64a639e9070a377cbf828939"]
+"password": "Hao291001",
+"roles": ["64f5c5d02c268c9c00c1fe27", "64f5c8432c268c9c00c1fe2b", "64f5c8f62c268c9c00c1fe2f"]
 }
 
 ### GET
