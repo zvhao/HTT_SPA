@@ -36,7 +36,7 @@ const branchService = {
 
 	getById: async (id) => {
 		let branch = await findBranchById(id);
-
+		console.log(branch);
 		return branch;
 	},
 

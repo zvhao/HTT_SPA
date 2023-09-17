@@ -36,7 +36,7 @@ const roleService = {
   },
   getById: async (id) => {
     let role = await RoleModel.findById(id).lean();
-
+    // console.log(role);
     let permissions = role.permissions.map(
       (p) =>
         new Promise(async (resolve, reject) => {
@@ -52,6 +52,8 @@ const roleService = {
 
     return { ...role, permissions };
   },
+
+  
   delete: async (id) => {
     // return await RoleModel.find().lean();
     return true;

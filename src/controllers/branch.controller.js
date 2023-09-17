@@ -24,7 +24,7 @@ module.exports = {
 	async getById(req, res) {
 		const id = req.params.id;
 		return new OKResponse({
-			message: "Get branch id success",
+			message: "Get branch success",
 			metadata: await branchService.getById(id),
 		}).send(res);
 	},
@@ -34,7 +34,7 @@ module.exports = {
 		const body = req.body;
 		console.log(body);
 		return new OKResponse({
-			message: "Update owner id success",
+			message: "Update branch success",
 			metadata: await branchService.update(id, body),
 		}).send(res);
 	},

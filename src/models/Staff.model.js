@@ -61,12 +61,12 @@ var StaffSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.Mixed],
       required: true
     },
-    roles: {
-      type: [mongoose.Types.ObjectId],
+    role: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
-    branches: {
-      type: [mongoose.Types.ObjectId],
+    branch: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
   },

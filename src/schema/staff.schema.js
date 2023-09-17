@@ -17,8 +17,8 @@ const StaffSchemaInput = object({
     serviceCommission: number().refine(value => value > 0, 'Số phải là số dương'),
     allowances: array(unknown()),
     workTime: array(unknown()),
-    roles: array(string().nonempty()),
-    branches: array(string().nonempty()),
+    role: string().nonempty(),
+    branch: string().nonempty(),
   })
 });
 

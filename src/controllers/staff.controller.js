@@ -25,7 +25,7 @@ module.exports = {
 	async getById(req, res) {
 		const id = req.params.id;
 		return new OKResponse({
-			message: "Get staff id success",
+			message: "Get staff success",
 			metadata: await staffService.getById(id),
 		}).send(res);
 	},
@@ -34,7 +34,7 @@ module.exports = {
 		const id = req.params.id;
 		const body = req.body;
 		return new OKResponse({
-			message: "Update staff id success",
+			message: "Update staff success",
 			metadata: await staffService.update(id, body),
 		}).send(res);
 	},

@@ -5,8 +5,8 @@ POST {{ url }}
 Content-Type: application/json
 
 {
-  "fullname": "Huynh Thanh Thuong",
-  "username": "qlcn09",
+  "fullname": "Huynh Thanh Thuong 1",
+  "username": "qlcn0102",
   "phone": "123456789",
   "email": "john.doe@example.com",
   "address": "123 Main St",
@@ -28,48 +28,48 @@ Content-Type: application/json
   ],
   "workTime": [
     {
-      "startDate": "2023-08-29",
+      "startDate": "2023-09-16T13:03:00.000Z",
       "weekSchedule": [
         {
           "day": "Monday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Tuesday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Wednesday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Thursday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Friday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Saturday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Sunday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         }
       ]
     }
   ],
-  "roles": ["64a639e9070a377cbf828939", "64a6b717d2cb99cfbec2bf78"],
-  "branches": ["64e5d24baea54b37f51fbeb8"]
+  "role": "65066da369700b9f042aa256",
+  "branch": "650007e9c31b396b0f6ef13d"
 }
 
 
@@ -111,38 +111,38 @@ Content-Type: application/json
       "weekSchedule": [
         {
           "day": "Monday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Tuesday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Wednesday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Thursday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Friday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Saturday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         },
         {
           "day": "Sunday",
-          "startTime": "09:00",
-          "endTime": "17:00"
+          "startTime": "2023-09-16T13:03:00.000Z",
+          "endTime": "2023-09-16T13:03:00.000Z"
         }
       ]
     }

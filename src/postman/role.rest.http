@@ -5,8 +5,8 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "HRM manager",
-  "desc": "Quản lý nhân sự của nhân viên quản lý",
+  "name": "Manager",
+  "desc": "Nhân viên quản lý",
   "permissions": ["64f5c3282c268c9c00c1fdf5","64f5c32d2c268c9c00c1fdf9","64f5c3322c268c9c00c1fdfd","64f5c3372c268c9c00c1fe01"]
 }
 
