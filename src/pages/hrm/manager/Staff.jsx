@@ -1,85 +1,75 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material';
-import { Button, Card, CardActions, CardContent, CardMedia } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import {
+  Button,
+  CardActions,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { branchApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-
-const CardComponent = ({ title, image, description, slug, click }) => (
-  <Card component={MainCard} border={false} sx={{ boxShadow: 4 }}>
-    <CardMedia component="img" alt={title} height="140" image={image} />
-    <CardContent>
-      <Typography gutterBottom variant="h5" component="div">
-        {title}
-      </Typography>
-      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} variant="body2" color="text.secondary">
-        {description}
-      </Typography>
-    </CardContent>
-    <CardActions sx={{ justifyContent: 'space-between' }}>
-      <Button onClick={click} size="small">
-        Xem thêm
-      </Button>
-      {/* <Button component={Link} to={Path.ServiceDetail + `${slug}`} size="small">
-        Xem thêm
-      </Button> */}
-      <Button size="medium" variant="contained" component={Link} to={`/service/edit/${title}`}>
-        Update
-      </Button>
-    </CardActions>
-  </Card>
-);
+const columns = [
+  { id: 'username', label: 'Username', minWidth: 100 },
+  { id: 'position', label: 'Vị trí', minWidth: 100 },
+  { id: 'name', label: 'Tên chi nhánh', minWidth: 100 },
+  { id: 'infomation', label: 'Thông tin', minWidth: 100 },
+  {
+    id: 'operation',
+    label: 'Thao tác'
+    // minWidth: 170,
+    // format: (value) => value.toLocaleString('en-US')
+  }
+];
 
 const Staff = () => {
-  const [cards, _setCards] = useState([
-    {
-      title: 'Massage body, cột sống',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu đau nhức cột sống, điều trị trong 1 tháng',
-      slug: 'co-vai-gay'
-    },
-    {
-      title: 'Massage chân',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu đau nhức chân, điều trị trong 1 tháng Trị liệu đau nhức chân, điều trị trong 1 tháng',
-      slug: 'be-co'
-    },
-    {
-      title: 'Massage mặt',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu da mặt, điều trị trong 1 tháng',
-      slug: 'day-lung'
-    },
-    {
-      title: 'Massage mặt',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu da mặt, điều trị trong 1 tháng',
-      slug: 'dut-tay'
-    }
-  ]);
-  const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState('paper');
+  const [data, setData] = React.useState([]);
 
-  const handleClickOpen = (scrollType) => () => {
-    setOpen(true);
-    setScroll(scrollType);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const descriptionElementRef = React.useRef(null);
   React.useEffect(() => {
-    if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
+    const getData = async () => {
+      try {
+        const result = await staffApi.fetchData();
+        const allStaff =result.metadata
+        const newData = await Promise.all(allStaff.map(async (item)=> {
+          const detail = await branchApi.getById(item.branch)
+          return { ...item, branch: detail.metadata}
+        }))
+
+
+        console.log(newData);
+
+        setData(newData);
+      } catch (error) {
+        console.error(error);
       }
-    }
-  }, [open]);
+    };
+    getData();
+  }, []);
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
     <MainCard>
@@ -87,12 +77,74 @@ const Staff = () => {
         Các nhân viên
       </Typography>
       <CardActions sx={{ mb: 1 }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={ Path.Staff + `/add`}>
+        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Staff + `/add`}>
           Thêm nhân viên
         </Button>
       </CardActions>
-
-      
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell key={column.id} align="center" style={{ minWidth: column.minWidth }}>
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                      {row.username}
+                    </TableCell>
+                    <TableCell align="center">{row.position}</TableCell>
+                    <TableCell align="center">{row.branch.name}</TableCell>
+                    <TableCell sx={{ p: 0 }} >
+                      <List>
+                        <ListItem sx={{ p: 0 }}>
+                          <ListItemText>{row.email}</ListItemText>
+                        </ListItem>
+                        <ListItem sx={{ p: 0 }}>
+                          <ListItemText>{row.phone}</ListItemText>
+                        </ListItem>
+                        <ListItem sx={{ p: 0 }}>
+                          <ListItemText>{row.address}</ListItemText>
+                        </ListItem>
+                      </List>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button size="medium" variant="contained" component={Link} to={`${Path.Staff}/edit/${row._id}`}>
+                        <EditIcon />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </MainCard>
   );
 };

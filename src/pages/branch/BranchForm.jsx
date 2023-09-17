@@ -88,6 +88,7 @@ const BranchForm = () => {
       }
     };
     getOneBranch(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {

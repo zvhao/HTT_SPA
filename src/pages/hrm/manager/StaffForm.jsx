@@ -1,11 +1,21 @@
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
-import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
-import { Box, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, TextField, Typography, styled, MenuItem, Button } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  TextField,
+  Typography,
+  styled
+} from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { branchApi } from 'api';
+import { staffApi } from 'api';
 import { Path } from 'constant/path';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -14,9 +24,8 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import NumericFormat from 'react-number-format';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
-import { useFormikContext, useField } from 'formik';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -38,7 +47,7 @@ const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props,
         });
       }}
       thousandSeparator
-      valueIsNumericString
+      valueisnumericstring="true"
       suffix=" VND"
     />
   );
@@ -65,14 +74,14 @@ const StaffForm = () => {
     address: 'Can Tho',
     numPaidLeave: 2,
     basicSalary: 4000000,
-    position: 'Manager',
+    position: 'manager',
     password: 'Hao291001',
     consultingCommission: 10,
     serviceCommission: 10,
     allowances: [{ name: '', allowance: '' }],
     workTime: [
       {
-        startDate: '2023-08-30',
+        startDate: dayjs(),
         weekSchedule: [
           { day: 'Monday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
           { day: 'Tuesday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
@@ -80,32 +89,47 @@ const StaffForm = () => {
           { day: 'Thursday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
           { day: 'Friday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
           { day: 'Saturday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
-          { day: 'Sunday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
-        ],
-      },
+          { day: 'Sunday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00', 'HH:mm'), checked: true }
+        ]
+      }
     ],
-    roles: '64f5c9952c268c9c00c1fe33',
-    branches: '650007e9c31b396b0f6ef13d'
+    role: '64f5c9952c268c9c00c1fe33',
+    branch: '650007e9c31b396b0f6ef13d'
   });
-
 
   useEffect(() => {
     const getOneStaff = async (id) => {
       if (isEditMode) {
         try {
-          // const oneBranchData = await branchApi.getById(id);
-          // const newOneBranchData = { ...oneBranchData.metadata };
-          // newOneBranchData.startTime = dayjs(oneBranchData.metadata.startTime, 'HH:mm');
-          // newOneBranchData.endTime = dayjs(oneBranchData.metadata.endTime, 'HH:mm');
-          // setInitialValues(newOneBranchData);
-          // return newOneBranchData;
+          const oneStaffData = await staffApi.getById(id);
+          if(oneStaffData.metadata) {
+            const newOneStaffData = { ...oneStaffData.metadata };
+            const dataWorkTime = newOneStaffData.workTime.pop();
+  
+            const formattedData = {
+              ...dataWorkTime,
+              startDate: dayjs(),
+              weekSchedule: dataWorkTime.weekSchedule.map(schedule => ({
+                ...schedule,
+                startTime: dayjs(schedule.startTime),
+                endTime: dayjs(schedule.endTime)
+              }))
+            };
+            newOneStaffData.workTime = [formattedData]
+            // console.log(JSON.stringify(formattedData, null, 4));
+            
+            setInitialValues(newOneStaffData);
+            // console.log(initialValues)
+          }else {
+            console.log('loi');
+          }
         } catch (error) {
-          // console.log(error);
+          console.log(error);
         }
       }
-
     };
     getOneStaff(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
@@ -119,26 +143,32 @@ const StaffForm = () => {
   };
 
   const handleSubmit = async (values) => {
-    // const newdata = { ...values };
-    // newdata.startTime = dayjs(values.startTime).format('HH:mm');
-    // newdata.endTime = dayjs(values.endTime).format('HH:mm');
-    // alert(JSON.stringify(values, null, 4));
-    console.log(JSON.stringify(values, null, 4));
+    const newdata = { ...values };
+    // console.log(JSON.stringify(newdata, null, 4));
     if (isEditMode) {
       try {
-        // console.log(newdata);
-        // const rs = await branchApi.update(id, newdata);
-        // navigation(Path.Branch, { replace: true });
+        const rs = await staffApi.update(id, newdata);
+        if(rs && rs.status === 200) {
+          alert(rs.message)
+        } else {
+          console.log("Error");
+        }
+        // console.log(JSON.stringify(rs, null, 4));
+
+        navigation(Path.Staff, { replace: true });
         // return rs
       } catch (error) {
         console.error(error);
       }
     } else {
       try {
-        // const rs = await branchApi.create(newdata);
-        // navigation(Path.Branch, { replace: true });
+
+        const rs = await staffApi.create(newdata);
+        console.log(JSON.stringify(rs, null, 4));
+
+        navigation(Path.Staff, { replace: true });
         // console.log(rs);
-        // return rs
+        // return rs;
       } catch (error) {
         console.error(error);
       }
@@ -356,39 +386,6 @@ const StaffForm = () => {
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
-                    {/* <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-                      <Grid item xs={6}>
-                        <CssTextField
-                          fullWidth
-                          margin="dense"
-                          id="namAllowance"
-                          name="namAllowance"
-                          label="Phụ cấp 1"
-                          variant="outlined"
-                          value={values.namAllowance}
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          sx={{ '& > label': { lineHeight: 'normal' } }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <CssTextField
-                          fullWidth
-                          margin="dense"
-                          id="moneyAllowance"
-                          name="moneyAllowance"
-                          label="Khoản tiền"
-                          variant="outlined"
-                          value={values.moneyAllowance}
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          sx={{ '& > label': { lineHeight: 'normal' } }}
-                          InputProps={{
-                            inputComponent: NumericFormatCustom
-                          }}
-                        />
-                      </Grid>
-                    </Grid> */}
                     <FieldArray name="allowances">
                       {({ push, remove }) => (
                         <div>
@@ -434,7 +431,6 @@ const StaffForm = () => {
                                 />
                                 <ErrorMessage name={`allowances[${index}].allowance`} component="div" />
                               </Grid>
-
                             </Grid>
                           ))}
                           <Button type="button" onClick={() => push({ name: '', allowance: '' })}>
@@ -457,8 +453,6 @@ const StaffForm = () => {
                           Tất cả các ngày
                         </Grid> */}
                         <FieldArray name="workTime[0].weekSchedule">
-
-
                           <>
                             {values.workTime[0].weekSchedule.map((schedule, index) => (
                               <Grid container key={index} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
@@ -511,8 +505,6 @@ const StaffForm = () => {
                               </Grid>
                             ))}
                           </>
-
-
                         </FieldArray>
                       </Grid>
                     </LocalizationProvider>

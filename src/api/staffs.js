@@ -3,7 +3,7 @@ const baseUrl = '/api/v1/staffs'
 
 const fetchData = async () => {
   try {
-    const response = await api.get(baseUrl); // Thay đổi '/data' thành đường dẫn tương ứng với API của backend Node.js
+    const response = await api.get(baseUrl);
     return response.data;
   } catch (error) {
     console.error(error);

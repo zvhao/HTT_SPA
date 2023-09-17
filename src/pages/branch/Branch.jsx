@@ -72,7 +72,7 @@ const Branch = () => {
         </Button>
       </CardActions>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TablePagination
+        <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
           count={data.length}
@@ -86,7 +86,7 @@ const Branch = () => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id}  align='center' style={{ minWidth: column.minWidth }}>
+                  <TableCell key={column.id} align='center' style={{ minWidth: column.minWidth }}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -99,12 +99,13 @@ const Branch = () => {
                     <TableCell align='center' sx={{ fontWeight: 'bold' }}>{row.code}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell align='center'>{row.capacity}</TableCell>
-                    <TableCell>{row.manager}</TableCell>
-                    <TableCell  align='center'>
+                    <TableCell>{row.manager}
+                    </TableCell>
+                    <TableCell align='center'>
                       {row.startTime} - {row.endTime}
                     </TableCell>
                     <TableCell>{row.address}</TableCell>
-                    <TableCell  align='right'>
+                    <TableCell align='right'>
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Branch}/edit/${row._id}`}>
                         <EditIcon />
                       </Button>
@@ -113,7 +114,7 @@ const Branch = () => {
                 );
               })}
             </TableBody>
-            
+
           </Table>
         </TableContainer>
         <TablePagination
