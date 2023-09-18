@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLocation, useNavigate, useSearchParams  } from 'react-router-dom';
 
 // material-ui
 import {
@@ -9,31 +9,33 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
-  Link,
   IconButton,
   InputAdornment,
   InputLabel,
+  Link,
   OutlinedInput,
   Stack,
   Typography
 } from '@mui/material';
 
 // third party
-import * as Yup from 'yup';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
+import FirebaseSocial from './FirebaseSocial';
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import { ownerApi, staffApi } from 'api';
 import { Path } from 'constant/path';
-import { ownerApi } from 'api';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
+  const [searchParams] = useSearchParams();
+  const role = searchParams.get('role');
   const [checked, setChecked] = React.useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = React.useState(false);
@@ -47,32 +49,37 @@ const AuthLogin = () => {
   const navigation = useNavigate();
 
   const handleSubmit = async (values) => {
-
     try {
-      const result = await ownerApi.login(values.username, values.password);
-      if (result.metadata.user && result.metadata.token) {
-        // const username = result.metadata.user
-        const token = result.metadata.token
-        localStorage.setItem('token', token)
-        navigation(Path.Index, { replace: true });
-      } else if (result.metadata.error) {
-        setError('Thông tin nhập vào không đúng!');
+      let result
+      if(role === 'owner') {
+        result = await ownerApi.login(values.username, values.password);
+        console.log(role);
+      } else {
+        result = await staffApi.login(values.username, values.password);
+        console.log('staff');
       }
-      console.log(result); // Xử lý kết quả đăng nhập từ backend
+      if (result && result.error) {
+        setError(result.error);
+      }
+      if (result && result.status === 200 && result.metadata) {
+        console.log(result.metadata.user);
+        const token = result.metadata.token;
+        localStorage.setItem('token', token);
+        navigation(Path.Index, { replace: true });
+      }
+      // console.log(result); // Xử lý kết quả đăng nhập từ backend
     } catch (error) {
+      // setError(error.response.data.message)
       console.error(error);
     }
-
-
-  }
-
+  };
 
   return (
     <>
       <Formik
         initialValues={{
-          username: 'zvhao',
-          password: 'Thuong08102001',
+          username: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -83,8 +90,7 @@ const AuthLogin = () => {
           try {
             setStatus({ success: false });
             setSubmitting(false);
-            handleSubmit(values)
-
+            handleSubmit(values);
           } catch (err) {
             setStatus({ success: false });
             setErrors({ submit: err.message });
@@ -97,7 +103,7 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="username-login">username</InputLabel>
+                  <InputLabel htmlFor="username-login">Username</InputLabel>
                   <OutlinedInput
                     id="username-login"
                     // type="username"
@@ -171,12 +177,15 @@ const AuthLogin = () => {
                 </Stack>
               </Grid>
               {errors.submit && (
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                   <FormHelperText error>{errors.submit}</FormHelperText>
                 </Grid>
               )}
-              {error && 
-                <FormHelperText sx={{ paddingLeft: "20px", fontSize: "14px"}} error>{error}</FormHelperText> }
+              {error && (
+                <FormHelperText sx={{ paddingLeft: '20px', fontSize: '14px' }} error>
+                  {error}
+                </FormHelperText>
+              )}
 
               <Grid item xs={12}>
                 <AnimateButton>
@@ -187,12 +196,15 @@ const AuthLogin = () => {
               </Grid>
               <Grid item xs={12}>
                 <Divider>
-                  <Typography variant="caption"> Đăng nhập với</Typography>
+                  <Typography variant="caption"> Đăng nhập với quyền </Typography>
+                  <Typography component={Link} to="/login?role=owner" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
+            Chủ SPA
+          </Typography>
                 </Divider>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <FirebaseSocial />
-              </Grid>
+              </Grid> */}
             </Grid>
           </form>
         )}

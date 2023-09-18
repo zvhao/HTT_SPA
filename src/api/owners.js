@@ -20,7 +20,8 @@ const login = async (username, password) => {
     // console.log(response);
     return response.data;
   } catch (error) {
-    console.error(error);
+    return {error: error.response.data.message}
+    // console.error(error);
   }
 };
 
