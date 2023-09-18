@@ -42,6 +42,7 @@ module.exports = {
 	async login(req, res) {
 		const body = req.body
 		return new OKResponse({
+			message: 'login owner success',
 			metadata: await ownerService.login(body),
 		}).send(res);
 	},

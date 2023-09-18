@@ -15,13 +15,13 @@ router
 	.post(validateResource(StaffSchemaInput), asyncHandler(staffController.create))
 	.get(asyncHandler(staffController.getAll));
 
-// router
-// 	.route("/login")
-// 	.post(asyncHandler(staffController.login))
+router
+	.route("/login")
+	.post(asyncHandler(staffController.login))
 
-// router
-// 	.route("/logout")
-// 	.get(asyncHandler(staffController.logout))
+router
+	.route("/logout")
+	.get(asyncHandler(staffController.logout))
 	
 router
 	.route("/:id")

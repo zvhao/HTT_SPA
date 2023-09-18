@@ -156,8 +156,8 @@ POST {{ url }}/login
 Content-Type: application/json
 
 {
-	"username": "zvhao",
-	"password": "Thuong08102001"
+	"username": "qlcn0101",
+	"password": "Hao291001"
 }
 
 ### Logout

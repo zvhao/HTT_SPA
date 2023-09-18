@@ -44,7 +44,6 @@ exports.comparePasswords = (password, hashedPassword) => {
 
 exports.handleLogin = async (data, token) => {
   return await {
-    message: 'Login successful',
     user: data.username,
     token: token
   };

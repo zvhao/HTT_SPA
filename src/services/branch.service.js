@@ -18,7 +18,7 @@ const branchService = {
 	},
 
 	getAll: async (filters = {}) => {
-		const branches = await findAllBranch();
+		const branches = await findAllBranch(filters);
 
 		return await Promise.all(
 			branches.map(
