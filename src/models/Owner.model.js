@@ -34,8 +34,8 @@ var OwnerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    roles: {
-      type: [mongoose.Types.ObjectId],
+    role: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
     branches: {

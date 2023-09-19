@@ -17,6 +17,7 @@ Content-Type: application/json
 
 ### GET
 GET {{url}}
+x-client-id:64f942297da443213fa65008
 
 ### GET ID
 GET {{url}}/64e5d24baea54b37f51fbeb8

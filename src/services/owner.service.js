@@ -64,21 +64,8 @@ const ownerService = {
 
   getById: async (id) => {
     let owner = await findOwnerById(id);
-
-    let roles = owner.roles.map(
-      (r) =>
-        new Promise(async (resolve, reject) => {
-          try {
-            resolve(await roleService.getById(r));
-          } catch (error) {
-            reject(error);
-          }
-        })
-    );
-
-    roles = await Promise.all(roles);
-
-    return { ...owner, roles };
+    const role = await roleService.getById(owner.role);
+    return { ...owner, role };
   },
 
   update: async (id, data) => {

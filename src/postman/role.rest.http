@@ -5,9 +5,10 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "Manager",
-  "desc": "Nhân viên quản lý",
-  "permissions": ["64f5c3282c268c9c00c1fdf5","64f5c32d2c268c9c00c1fdf9","64f5c3322c268c9c00c1fdfd","64f5c3372c268c9c00c1fe01"]
+  "name": "owner",
+  "desc": "Chủ SPA",
+  "permissions": ["64f5c2b22c268c9c00c1fdb5",
+"64f5c2bf2c268c9c00c1fdb9","64f5c2d82c268c9c00c1fdbd","64f5c2df2c268c9c00c1fdc1","64f5c2e62c268c9c00c1fdc5","64f5c2eb2c268c9c00c1fdc9","64f5c2f12c268c9c00c1fdcd","64f5c2f72c268c9c00c1fdd1","64f5c2fe2c268c9c00c1fdd5","64f5c3032c268c9c00c1fdd9","64f5c3082c268c9c00c1fddd","64f5c30d2c268c9c00c1fde1","64f5c3142c268c9c00c1fde5","64f5c3182c268c9c00c1fde9","64f5c31d2c268c9c00c1fded","64f5c3222c268c9c00c1fdf1","64f5c3282c268c9c00c1fdf5","64f5c32d2c268c9c00c1fdf9","64f5c3322c268c9c00c1fdfd","64f5c3372c268c9c00c1fe01","64f5c33c2c268c9c00c1fe05","64f5c3402c268c9c00c1fe09","64f5c3442c268c9c00c1fe0d","64f5c3492c268c9c00c1fe11","64f5c3502c268c9c00c1fe15","64f5c3562c268c9c00c1fe19","64f5c35a2c268c9c00c1fe1d","64f5c35f2c268c9c00c1fe21"]
 }
 
 ### Update

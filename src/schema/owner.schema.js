@@ -23,12 +23,8 @@ const OwnerSchemaInput = object({
       required_error: "Mật khẩu là trường bắt buộc",
     }),
     roles: string({
-      required_error: "Vai trò là 1 array bắt buộc",
+      required_error: "Vai trò là 1 trường bắt buộc",
     })
-      .array()
-      .nonempty({
-        message: "Vai trò là 1 array không rỗng.",
-      }),
   }),
 });
 
