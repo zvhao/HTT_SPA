@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -28,6 +28,11 @@ import SettingTab from './SettingTab';
 // assets
 import avatar1 from 'assets/images/users/owner.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { Path } from 'constant/path';
+import { dispatch } from 'store';
+import { clearUser } from 'store/reducers/user';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -54,10 +59,24 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
+  const navigation = useNavigate();
+
+  const user = useSelector((state) => state.user);
+  useEffect(()=> {
+    console.log(user);
+  })
   const theme = useTheme();
 
-  const handleLogout = async () => {
-    // logout
+  const handleLogout = () => {
+    if(localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      dispatch(clearUser())
+      navigation(Path.Login, { replace: true });
+    } else {
+      alert('chua dang nhap')
+    }
+    
+    // Thực hiện bất kỳ xử lý đăng xuất khác ở đây
   };
 
   const anchorRef = useRef(null);
@@ -98,7 +117,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">Chủ SPA</Typography>
+          <Typography variant="subtitle1">{user && user.username}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -141,7 +160,7 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">Chủ SPA</Typography>
+                              <Typography variant="h6">{user && user.username}</Typography>
                               {/* <Typography variant="body2" color="textSecondary">
                                 UI/UX Designer
                               </Typography> */}

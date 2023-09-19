@@ -7,24 +7,12 @@ import { useTheme } from '@mui/material/styles';
 
 // assets
 import { EditOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router';
-import { Path } from 'constant/path';
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
-const ProfileTab = () => {
-  const navigation = useNavigate();
+const ProfileTab = ({handleLogout}) => {
 
-  const handleLogout = () => {
-    if(localStorage.getItem('token')) {
-      localStorage.removeItem('token');
-      navigation(Path.Login, { replace: true });
-    } else {
-      alert('chua dang nhap')
-    }
-    
-    // Thực hiện bất kỳ xử lý đăng xuất khác ở đây
-  };
+  
   const theme = useTheme();
 
   const [selectedIndex, setSelectedIndex] = useState(0);

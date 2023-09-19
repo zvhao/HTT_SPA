@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation, useNavigate, useSearchParams  } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 // material-ui
 import {
@@ -30,12 +30,15 @@ import FirebaseSocial from './FirebaseSocial';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { ownerApi, staffApi } from 'api';
 import { Path } from 'constant/path';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from 'store/reducers/user';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
-const AuthLogin = () => {
-  const [searchParams] = useSearchParams();
-  const role = searchParams.get('role');
+const AuthLogin = ({ role }) => {
+  const user = useSelector((state) => state.user);
+  const toPath = role === 'owner' ? '/login' : '/login?role=owner';
+  const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = React.useState(false);
@@ -50,21 +53,29 @@ const AuthLogin = () => {
 
   const handleSubmit = async (values) => {
     try {
-      let result
-      if(role === 'owner') {
+      let result;
+      if (role === 'owner') {
         result = await ownerApi.login(values.username, values.password);
-        console.log(role);
+        // console.log(role);
       } else {
+        role = 'staff'
         result = await staffApi.login(values.username, values.password);
-        console.log('staff');
+        // console.log('staff');
       }
       if (result && result.error) {
         setError(result.error);
       }
       if (result && result.status === 200 && result.metadata) {
-        console.log(result.metadata.user);
+        // console.log(result.metadata.user);
         const token = result.metadata.token;
+        const user = result.metadata.user;
         localStorage.setItem('token', token);
+        dispatch(setUser({
+          username: user,
+          token: token,
+          role: role
+        }));
+        // console.log(user);
         navigation(Path.Index, { replace: true });
       }
       // console.log(result); // Xử lý kết quả đăng nhập từ backend
@@ -113,6 +124,7 @@ const AuthLogin = () => {
                     onChange={handleChange}
                     placeholder="Nhập username"
                     fullWidth
+                    autoComplete="off"
                     error={Boolean(touched.username && errors.username)}
                   />
                   {touched.username && errors.username && (
@@ -131,6 +143,7 @@ const AuthLogin = () => {
                     id="-password-login"
                     type={showPassword ? 'text' : 'password'}
                     value={values.password}
+                    autoComplete="off"
                     name="password"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -197,9 +210,9 @@ const AuthLogin = () => {
               <Grid item xs={12}>
                 <Divider>
                   <Typography variant="caption"> Đăng nhập với quyền </Typography>
-                  <Typography component={Link} to="/login?role=owner" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-            Chủ SPA
-          </Typography>
+                  <Link variant="h6" component={RouterLink} to={toPath} sx={{ textDecoration: 'none' }}>
+                    {role === 'owner' ? 'Nhân viên' : 'Chủ SPA'}
+                  </Link>
                 </Divider>
               </Grid>
               {/* <Grid item xs={12}>

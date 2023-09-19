@@ -2,6 +2,7 @@
   "name": "frontent-admin",
   "version": "1.0",
   "private": true,
+  "homepage": "https://mantisdashboard.io/login",
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
