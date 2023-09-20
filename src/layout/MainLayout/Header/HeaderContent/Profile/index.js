@@ -63,13 +63,14 @@ const Profile = () => {
 
   const user = useSelector((state) => state.user);
   useEffect(()=> {
-    console.log(user);
+    // console.log('state:', user);
+    // console.log('storage:',JSON.parse(localStorage.getItem('data')));
   })
   const theme = useTheme();
 
   const handleLogout = () => {
-    if(localStorage.getItem('token')) {
-      localStorage.removeItem('token');
+    if(localStorage.getItem('data')) {
+      localStorage.removeItem('data');
       dispatch(clearUser())
       navigation(Path.Login, { replace: true });
     } else {

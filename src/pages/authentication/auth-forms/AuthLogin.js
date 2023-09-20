@@ -58,7 +58,7 @@ const AuthLogin = ({ role }) => {
         result = await ownerApi.login(values.username, values.password);
         // console.log(role);
       } else {
-        role = 'staff'
+        role = 'staff';
         result = await staffApi.login(values.username, values.password);
         // console.log('staff');
       }
@@ -69,12 +69,13 @@ const AuthLogin = ({ role }) => {
         // console.log(result.metadata.user);
         const token = result.metadata.token;
         const user = result.metadata.user;
-        localStorage.setItem('token', token);
-        dispatch(setUser({
+        const data = {
           username: user,
           token: token,
           role: role
-        }));
+        };
+        localStorage.setItem('data', JSON.stringify(data));
+        dispatch(setUser(data));
         // console.log(user);
         navigation(Path.Index, { replace: true });
       }

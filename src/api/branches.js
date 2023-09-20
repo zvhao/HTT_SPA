@@ -1,16 +1,22 @@
-import api from "./axios";
-const baseUrl = '/api/v1/branches'
-
+import api from './axios';
+const baseUrl = '/api/v1/branches';
 
 const fetchData = async () => {
   try {
-    const response = await api.get(baseUrl);
-
-    return response.data;
+    if (localStorage.getItem('data') !== null) {
+      const data = JSON.parse(localStorage.getItem('data'));
+      const response = await api.get(baseUrl, {
+        headers: {
+          'x-client-id': data.token
+        }
+      });
+      return response.data;
+    }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
+    return error
   }
-}
+};
 
 const create = async (data) => {
   try {
@@ -19,16 +25,16 @@ const create = async (data) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 const update = async (id, data) => {
   try {
-    const res = await api.patch(baseUrl + '/' + id, data)
-    return res.data
+    const res = await api.patch(baseUrl + '/' + id, data);
+    return res.data;
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 const getById = async (id) => {
   try {
@@ -37,7 +43,7 @@ const getById = async (id) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
-const branchApi = { fetchData, create, getById, update }
-export default branchApi
+const branchApi = { fetchData, create, getById, update };
+export default branchApi;

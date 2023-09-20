@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Button, CardActions, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -23,26 +23,36 @@ const columns = [
   { id: 'operatingTime', label: 'Thời gian hoạt động', minWidth: 100 },
   {
     id: 'address',
-    label: 'Địa chỉ',
+    label: 'Địa chỉ'
     // minWidth: 100,
     // format: (value) => value.toLocaleString('en-US')
   },
   {
     id: 'operation',
-    label: 'Thao tác',
+    label: 'Thao tác'
     // minWidth: 170,
     // format: (value) => value.toLocaleString('en-US')
   }
 ];
 const Branch = () => {
+  const navigation = useNavigate();
+
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
     const getData = async () => {
       try {
         const result = await branchApi.fetchData();
-        // console.log('result: ', result.metadata);
-        setData(result.metadata);
+        if (result && 'metadata' in result) {
+          setData(result.metadata);
+          // console.log('result: ', result.metadata);
+        }
+        if(result.response.data.code !== null && result.response.data.code === 403) {
+          // console.log('result: ', result.response.data.code);
+          alert('cut')
+          navigation(Path.Index, { replace: true });
+
+        }
       } catch (error) {
         console.error(error);
       }
@@ -86,7 +96,7 @@ const Branch = () => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align='center' style={{ minWidth: column.minWidth }}>
+                  <TableCell key={column.id} align="center" style={{ minWidth: column.minWidth }}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -96,16 +106,17 @@ const Branch = () => {
               {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                    <TableCell align='center' sx={{ fontWeight: 'bold' }}>{row.code}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell align='center'>{row.capacity}</TableCell>
-                    <TableCell>{row.manager}
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                      {row.code}
                     </TableCell>
-                    <TableCell align='center'>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell align="center">{row.capacity}</TableCell>
+                    <TableCell>{row.manager}</TableCell>
+                    <TableCell align="center">
                       {row.startTime} - {row.endTime}
                     </TableCell>
                     <TableCell>{row.address}</TableCell>
-                    <TableCell align='right'>
+                    <TableCell align="right">
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Branch}/edit/${row._id}`}>
                         <EditIcon />
                       </Button>
@@ -114,7 +125,6 @@ const Branch = () => {
                 );
               })}
             </TableBody>
-
           </Table>
         </TableContainer>
         <TablePagination
