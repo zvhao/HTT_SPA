@@ -22,7 +22,7 @@ router
     validateResource(BranchSchemaInput),
     asyncHandler(branchController.create)
   )
-  .get(checkPermission('branch.view'),asyncHandler(branchController.getAll));
+  .get(asyncHandler(checkPermission('branch.view')),asyncHandler(branchController.getAll));
 
 router
   .route("/:id")

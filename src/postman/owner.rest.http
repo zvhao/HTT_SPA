@@ -35,7 +35,7 @@ POST {{ url }}/login
 Content-Type: application/json
 
 {
-	"username": "zvhao1",
+	"username": "zvhao",
 	"password": "Hao291001"
 }
 

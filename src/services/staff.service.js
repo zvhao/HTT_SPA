@@ -116,7 +116,7 @@ const staffService = {
       throw new NotFoundRequestError("Incorrect password");
     }
 
-    const token = jwt.sign({ _id: user._id }, "httspa", { expiresIn: "10d" });
+    const token = jwt.sign({ id: user._id, role: 'staff' }, "httspa", { expiresIn: "10d" });
     console.log(token);
 
     return handleLogin(data, token);

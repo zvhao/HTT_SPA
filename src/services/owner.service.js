@@ -64,6 +64,10 @@ const ownerService = {
 
   getById: async (id) => {
     let owner = await findOwnerById(id);
+    if (!owner) {
+      return null;
+    }
+    console.log(owner);
     const role = await roleService.getById(owner.role);
     return { ...owner, role };
   },
@@ -93,7 +97,7 @@ const ownerService = {
       throw new NotFoundRequestError("Incorrect password");
     }
 
-    const token = jwt.sign({ _id: user._id }, "httspa", { expiresIn: "10d" });
+    const token = jwt.sign({ id: user._id, role: 'owner' }, "httspa", { expiresIn: "10d" });
     console.log(token);
 
     return {
