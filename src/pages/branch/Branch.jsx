@@ -49,8 +49,7 @@ const Branch = () => {
         }
         if(result.response.data.code !== null && result.response.data.code === 403) {
           // console.log('result: ', result.response.data.code);
-          alert('cut')
-          navigation(Path.Index, { replace: true });
+          navigation(Path.FORBIDDEN, { replace: true });
 
         }
       } catch (error) {
