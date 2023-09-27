@@ -1,0 +1,22 @@
+[{
+  "_id": {
+    "$oid": "64f942297da443213fa65008"
+  },
+  "fullname": "Nguyễn Văn Hào",
+  "username": "zvhao",
+  "phone": "0938744376",
+  "email": "hao@gmail.com",
+  "shop_name": "ZVHAO SPA",
+  "password": "$2b$10$kDP695S7mau3v1hQCpEkGu2Rl09za52WGjGea6Uj5F6/x3vghWWN.",
+  "branches": [],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-09-07T03:23:21.553Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-07T03:23:21.553Z"
+  },
+  "role": {
+    "$oid": "650989db1490e53b03ec4afb"
+  }
+}]

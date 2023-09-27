@@ -1,0 +1,50 @@
+[{
+  "_id": {
+    "$oid": "650007e9c31b396b0f6ef13d"
+  },
+  "name": "HTT SPA",
+  "code": "cn01",
+  "address": "đường NVC, Ninh Kiều, CT",
+  "desc": "Chi nhánh 1",
+  "capacity": 10,
+  "manager": {
+    "$oid": "6506d038cc31547056777718"
+  },
+  "startTime": "09:00",
+  "endTime": "20:00",
+  "staffs": [],
+  "courses": [],
+  "combos": [],
+  "services": [],
+  "createdAt": {
+    "$date": "2023-09-12T06:40:41.693Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-12T06:40:41.693Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6507127aa484aabc954a2e7c"
+  },
+  "name": "HTT SPA",
+  "code": "cd02",
+  "address": "139, Can Tho",
+  "desc": "Chi nhánh 2",
+  "capacity": 15,
+  "manager": {
+    "$oid": "6506d038cc31547056777718"
+  },
+  "startTime": "09:00",
+  "endTime": "20:00",
+  "staffs": [],
+  "courses": [],
+  "combos": [],
+  "services": [],
+  "createdAt": {
+    "$date": "2023-09-17T14:51:38.120Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-17T14:51:38.120Z"
+  }
+}]

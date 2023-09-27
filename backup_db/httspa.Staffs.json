@@ -1,0 +1,172 @@
+[{
+  "_id": {
+    "$oid": "6506d038cc31547056777718"
+  },
+  "fullname": "Huynh Thanh Thuong",
+  "username": "qlcn0101",
+  "phone": "0939410692",
+  "email": "huynhthanhthuong0910@gmail.com",
+  "address": "139, Can Tho",
+  "numPaidLeave": 2,
+  "basicSalary": 4000000,
+  "position": "manager",
+  "password": "$2b$10$A1PnaOxvXuwHBvgoEARRKu6RQuBAeZYXRVoSYSUPOtrQwDX/aEuY6",
+  "consultingCommission": 10,
+  "serviceCommission": 10,
+  "allowances": [
+    {
+      "name": "cơm trưa",
+      "allowance": "750000"
+    },
+    {
+      "name": "ăn cơm tối ",
+      "allowance": "750000"
+    }
+  ],
+  "workTime": [
+    {
+      "startDate": "2023-09-17T10:08:48.569Z",
+      "weekSchedule": [
+        {
+          "day": "Monday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Tuesday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Wednesday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Thursday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Friday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Saturday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Sunday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-09-17T13:03:00.000Z",
+          "checked": true
+        }
+      ]
+    }
+  ],
+  "role": {
+    "$oid": "64f5c9952c268c9c00c1fe33"
+  },
+  "branch": {
+    "$oid": "650007e9c31b396b0f6ef13d"
+  },
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-09-17T10:08:56.303Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-17T11:13:28.048Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6506dff5a484aabc954a2df1"
+  },
+  "fullname": "Huynh Thanh Thuong",
+  "username": "qlcn0102",
+  "phone": "0939410692",
+  "email": "huynhthanhthuong0910@gmail.com",
+  "address": "Can Tho",
+  "numPaidLeave": 2,
+  "basicSalary": 4000000,
+  "position": "manager",
+  "password": "$2b$10$ImA5ByDlRbgyk8BQ27NLpOM6BlGmlg8RWMFugR2RP07Dz1vm2b/zO",
+  "consultingCommission": 10,
+  "serviceCommission": 10,
+  "allowances": [
+    {
+      "name": "",
+      "allowance": ""
+    }
+  ],
+  "workTime": [
+    {
+      "startDate": "2023-09-17T11:16:01.935Z",
+      "weekSchedule": [
+        {
+          "day": "Monday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Tuesday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Wednesday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Thursday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Friday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Saturday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-08-07T13:00:00.000Z",
+          "checked": true
+        },
+        {
+          "day": "Sunday",
+          "startTime": "2023-08-07T02:00:00.000Z",
+          "endTime": "2023-09-17T13:03:00.000Z",
+          "checked": true
+        }
+      ]
+    }
+  ],
+  "role": {
+    "$oid": "64f5c9952c268c9c00c1fe33"
+  },
+  "branch": {
+    "$oid": "650007e9c31b396b0f6ef13d"
+  },
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-09-17T11:16:05.921Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-17T11:16:05.921Z"
+  }
+}]
