@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -24,19 +24,18 @@ import * as Yup from 'yup';
 
 // project import
 import AnimateButton from 'components/@extended/AnimateButton';
-import FirebaseSocial from './FirebaseSocial';
 
 // assets
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { ownerApi, staffApi } from 'api';
 import { Path } from 'constant/path';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from 'store/reducers/user';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = ({ role }) => {
-  const user = useSelector((state) => state.user);
+  // const user = useSelector((state) => state.user);
   const toPath = role === 'owner' ? '/login' : '/login?role=owner';
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(false);

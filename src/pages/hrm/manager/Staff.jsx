@@ -42,16 +42,19 @@ const Staff = () => {
     const getData = async () => {
       try {
         const result = await staffApi.fetchData();
-        const allStaff =result.metadata
-        const newData = await Promise.all(allStaff.map(async (item)=> {
-          const detail = await branchApi.getById(item.branch)
-          return { ...item, branch: detail.metadata}
-        }))
+        const allStaff = result.metadata;
+        // console.log(allStaff);
+        const newData = await Promise.all(
+          allStaff.map(async (item) => {
+            console.log(item.branch);
+            // const detail = await branchApi.getById(item.branch);
+            // return { ...item, branch: detail.metadata };
+          })
+        );
 
+        // console.log(newData);
 
-        console.log(newData);
-
-        setData(newData);
+        // setData(newData);
       } catch (error) {
         console.error(error);
       }
@@ -111,7 +114,7 @@ const Staff = () => {
                     </TableCell>
                     <TableCell align="center">{row.position}</TableCell>
                     <TableCell align="center">{row.branch.name}</TableCell>
-                    <TableCell sx={{ p: 0 }} >
+                    <TableCell sx={{ p: 0 }}>
                       <List>
                         <ListItem sx={{ p: 0 }}>
                           <ListItemText>{row.email}</ListItemText>

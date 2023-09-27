@@ -15,7 +15,6 @@ const Error403Page = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh'
       }}
     >
       <Container maxWidth="md">

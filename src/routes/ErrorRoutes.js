@@ -2,7 +2,7 @@ import { lazy } from 'react';
 
 // project import
 import Loadable from 'components/Loadable';
-import MinimalLayout from 'layout/MinimalLayout';
+import MainLayout from 'layout/MainLayout';
 
 // render - login
 const Error403Page = Loadable(lazy(() => import('pages/error-pages/Error403Page')));
@@ -12,7 +12,7 @@ const Error404Page = Loadable(lazy(() => import('pages/error-pages/Error404Page'
 
 const ErrorRoutes = {
   path: '/',
-  element: <MinimalLayout />,
+  element: <MainLayout />,
   children: [
     {
       path: '403',

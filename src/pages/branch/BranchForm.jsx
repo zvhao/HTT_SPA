@@ -191,7 +191,7 @@ const BranchForm = () => {
                   margin="dense"
                   id="manager"
                   name="manager"
-                  label="Nhân viên quản lý"
+                  label="Nhân viên"
                   variant="outlined"
                   value={values.manager}
                   onBlur={handleBlur}

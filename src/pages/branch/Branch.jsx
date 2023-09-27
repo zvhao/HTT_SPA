@@ -47,7 +47,7 @@ const Branch = () => {
           setData(result.metadata);
           // console.log('result: ', result.metadata);
         }
-        if(result.response.data.code !== null && result.response.data.code === 403) {
+        if(result?.response?.data?.code && result.response.data.code === 403) {
           // console.log('result: ', result.response.data.code);
           navigation(Path.FORBIDDEN, { replace: true });
 

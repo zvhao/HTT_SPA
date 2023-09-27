@@ -33,7 +33,7 @@ const staff = {
 
 		{
 			id: 'staff-list',
-			title: 'Nhân viên quản lý',
+			title: 'Nhân viên',
 			url: 'staff',
 			icon: icons.MenuOutlined,
 		},

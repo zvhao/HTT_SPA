@@ -250,7 +250,7 @@ const StaffForm = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     >
-                      <MenuItem value="manager">Nhân viên quản lý</MenuItem>
+                      <MenuItem value="manager">Nhân viên</MenuItem>
                       <MenuItem value="technicians">Kĩ thuật viên</MenuItem>
                       <MenuItem value="receptionists">Lễ tân</MenuItem>
                       <MenuItem value="counselors">Tư vấn viên</MenuItem>
