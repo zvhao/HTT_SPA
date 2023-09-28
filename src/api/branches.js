@@ -13,7 +13,6 @@ const fetchData = async () => {
       return response.data;
     }
   } catch (error) {
-    // console.error(error);
     return error
   }
 };
@@ -29,8 +28,16 @@ const create = async (data) => {
 
 const update = async (id, data) => {
   try {
-    const res = await api.patch(baseUrl + '/' + id, data);
-    return res.data;
+    if (localStorage.getItem('data') !== null) {
+      const data = JSON.parse(localStorage.getItem('data'));
+      const res = await api.patch(baseUrl + '/' + id, {
+        data,
+        headers: {
+          'x-client-id': data.token
+        }
+      });
+      return res.data;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -38,8 +45,16 @@ const update = async (id, data) => {
 
 const getById = async (id) => {
   try {
-    const response = await api.get(baseUrl + '/' + id);
-    return response.data;
+    if (localStorage.getItem('data') !== null) {
+      const data = JSON.parse(localStorage.getItem('data'));
+      const res = await api.get(baseUrl + '/' + id, {
+        data,
+        headers: {
+          'x-client-id': data.token
+        }
+      });
+      return res.data;
+    }
   } catch (error) {
     console.error(error);
   }

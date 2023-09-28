@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button, CardActions, Typography } from '@mui/material';
+import { Button, CardActions, Grid, TextField, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { branchApi } from '../../api';
+import { branchApi, staffApi } from '../../api';
 import EditIcon from '@mui/icons-material/Edit';
 
 const columns = [
@@ -38,26 +38,50 @@ const Branch = () => {
   const navigation = useNavigate();
 
   const [data, setData] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState([]);
+
+  const handleSearch = (event) => {
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    // console.log(searchTerm);
+  };
 
   React.useEffect(() => {
     const getData = async () => {
       try {
         const result = await branchApi.fetchData();
-        if (result && 'metadata' in result) {
-          setData(result.metadata);
-          // console.log('result: ', result.metadata);
+        if (result && result?.metadata) {
+          const allBranchs = result.metadata;
+          const newData = await Promise.all(
+            allBranchs.map(async (item) => {
+              const detail = await staffApi.getById(item.manager);
+              return { ...item, manager: detail.metadata };
+            })
+          );
+          setData(newData);
+          // console.log('result: ', newData);
         }
-        if(result?.response?.data?.code && result.response.data.code === 403) {
+        if (result?.response?.data?.code && result.response.data.code === 403) {
           // console.log('result: ', result.response.data.code);
           navigation(Path.FORBIDDEN, { replace: true });
-
         }
       } catch (error) {
         console.error(error);
       }
     };
     getData();
-  }, []);
+    const results = data.filter(
+      (item) =>
+        item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.manager.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.manager.phone.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [searchTerm, data, navigation]);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -72,19 +96,30 @@ const Branch = () => {
   };
   return (
     <MainCard>
-      <Typography sx={{ mb: 1 }} variant="h4">
-        Các chi nhánh
-      </Typography>
-      <CardActions sx={{ mb: 1 }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Branch + `/add`}>
-          Thêm chi nhánh mới
-        </Button>
-      </CardActions>
+      <Grid container sx={{ alignItems: 'center', width: '100%' }}>
+        <Grid item xs={3}>
+          <Typography sx={{ mb: 1 }} variant="h4">
+            Các chi nhánh
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <TextField sx={{ width: '100%' }} label="Tìm kiếm" value={searchTerm} onChange={handleSearch} />
+        </Grid>
+        <Grid item xs={3}>
+          <CardActions sx={{ justifyContent: 'flex-end' }}>
+            <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Branch + `/add`}>
+              Thêm chi nhánh mới
+            </Button>
+          </CardActions>
+        </Grid>
+      </Grid>
+
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={data.length}
+          count={searchResults.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -102,7 +137,7 @@ const Branch = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+              {searchResults.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                     <TableCell align="center" sx={{ fontWeight: 'bold' }}>
@@ -110,7 +145,10 @@ const Branch = () => {
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell align="center">{row.capacity}</TableCell>
-                    <TableCell>{row.manager}</TableCell>
+                    <TableCell>
+                      {row.manager.username} <br />
+                      {row.manager.phone}
+                    </TableCell>
                     <TableCell align="center">
                       {row.startTime} - {row.endTime}
                     </TableCell>
@@ -129,7 +167,7 @@ const Branch = () => {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={data.length}
+          count={searchResults.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

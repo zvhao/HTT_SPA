@@ -93,7 +93,7 @@ const StaffForm = () => {
         ]
       }
     ],
-    role: '64f5c9952c268c9c00c1fe33',
+    role: '651582fb9dce25997d637c13',
     branch: '650007e9c31b396b0f6ef13d'
   });
 
@@ -250,7 +250,7 @@ const StaffForm = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     >
-                      <MenuItem value="manager">Nhân viên</MenuItem>
+                      <MenuItem value="manager">Nhân viên quản lý</MenuItem>
                       <MenuItem value="technicians">Kĩ thuật viên</MenuItem>
                       <MenuItem value="receptionists">Lễ tân</MenuItem>
                       <MenuItem value="counselors">Tư vấn viên</MenuItem>
@@ -264,7 +264,7 @@ const StaffForm = () => {
                       margin="dense"
                       id="fullname"
                       name="fullname"
-                      label="Họ tên quản lý"
+                      label="Họ tên nhân viên"
                       variant="outlined"
                       value={values.fullname}
                       onBlur={handleBlur}
