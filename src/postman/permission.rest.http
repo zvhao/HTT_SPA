@@ -5,10 +5,11 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "branch delete",
-  "desc": "Xoá chi nhánh",
-  "alias": "branch.delete"
+  "name": "staff view",
+  "desc": "Xem nhân viên",
+  "alias": "staff.view"
 }
+
 
 
 

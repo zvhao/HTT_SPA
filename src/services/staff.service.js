@@ -62,8 +62,13 @@ const staffService = {
     return staff;
   },
 
-  getAll: async (filters = {}) => {
-    const staffs = await findAllStaff();
+  getAll: async (dataAccount, filters = {}) => {
+    if (dataAccount !== null && dataAccount.role === "staff") {
+      const manager = await findStaffById(dataAccount.id);
+      filters.branch = manager.branch;
+      filters.position = { $ne: "manager" };
+    }
+    const staffs = await findAllStaff(filters);
 
     return await Promise.all(
       staffs.map(
@@ -80,7 +85,8 @@ const staffService = {
   },
 
   getById: async (id) => {
-    let staff = await findStaffById(id);
+    const staff = await findStaffById(id);
+    // console.log(staff);
     const role = await roleService.getById(staff.role);
     return { ...staff, role };
   },
@@ -89,15 +95,15 @@ const staffService = {
     if (data.username) {
       // console.log(data.username);
       let user = await findStaffByUsername(data.username);
-	  var workTime = user.workTime.pop()
+      var workTime = user.workTime.pop();
       // console.log(user);
 
       if (user && id !== user._id.toString()) {
         throw new ConflictRequestError("Username exists");
       }
-	  delete data.workTime
-	//   console.log(data);
-	//   console.log(workTime);
+      delete data.workTime;
+      //   console.log(data);
+      //   console.log(workTime);
     }
 
     return await findOneAndUpdateStaff(id, data, workTime);
@@ -116,7 +122,9 @@ const staffService = {
       throw new NotFoundRequestError("Incorrect password");
     }
 
-    const token = jwt.sign({ id: user._id, role: 'staff' }, "httspa", { expiresIn: "10d" });
+    const token = jwt.sign({ id: user._id, role: "staff" }, "httspa", {
+      expiresIn: "10d",
+    });
     console.log(token);
 
     return handleLogin(data, token);

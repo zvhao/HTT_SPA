@@ -8,8 +8,8 @@ const jwt = require("jsonwebtoken");
 exports.findStaffByUsername = async (username) => {
   return await StaffModel.findOne({ username }).lean();
 };
-exports.findAllStaff = async () => {
-  return await StaffModel.find().lean();
+exports.findAllStaff = async (filters) => {
+  return await StaffModel.find(filters).lean();
 };
 
 exports.findStaffById = async (id) => {

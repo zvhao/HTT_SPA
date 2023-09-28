@@ -22,8 +22,8 @@ const Headers = {
  */
 
 const authentication = async (req, res, next) => {
-  const data = req.headers[Headers.CLIENT_ID];
-
+  const data = req.headers[Headers.CLIENT_ID]
+  
   if (!data) {
     throw new UnauthorizedRequestError(
       `Missing headers \`${Headers.CLIENT_ID}\``
@@ -33,7 +33,7 @@ const authentication = async (req, res, next) => {
   try {
     var decoded = decodeToken(data);
     if (decoded.message) {
-      console.log(decoded.message);
+      // console.log(decoded.message);
       throw new UnauthorizedRequestError(decoded.message);
     }
   } catch (error) {
@@ -57,6 +57,7 @@ const authentication = async (req, res, next) => {
   if (!user) {
     throw new UnauthorizedRequestError(`Plz register`);
   }
+  req.dataAccount = decoded;
 
   req.userRole = user.role;
 
@@ -65,6 +66,7 @@ const authentication = async (req, res, next) => {
 
 const checkPermission = (permission) => async (req, res, next) => {
   const role = req.userRole;
+  const dataAccount = req.dataAccount;
 
   if (typeof role !== "object" || Object.keys(role).length === 0) {
     throw new ForbiddenRequestError("Not allowed!");
@@ -76,6 +78,8 @@ const checkPermission = (permission) => async (req, res, next) => {
     }
   });
   if (hasPermission) {
+    req.dataAccount = dataAccount;
+    // console.log(dataAccount);
     return next();
   } else {
     throw new ForbiddenRequestError("Not allowed!");

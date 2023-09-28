@@ -67,7 +67,7 @@ const ownerService = {
     if (!owner) {
       return null;
     }
-    console.log(owner);
+    // console.log(owner);
     const role = await roleService.getById(owner.role);
     return { ...owner, role };
   },
