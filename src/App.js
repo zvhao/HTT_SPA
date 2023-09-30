@@ -5,7 +5,14 @@ import { useEffect } from 'react';
 import { clearUser, setUser } from 'store/reducers/user';
 import ThemeRoutes from 'routes';
 import { dispatch } from 'store';
+import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
+import 'dayjs/locale/en';
+import 'dayjs/plugin/timezone';
 
+dayjs.locale('vi');
+dayjs.extend(require('dayjs/plugin/timezone'));
+dayjs.tz.setDefault('Asia/Ho_Chi_Minh');
 
 // import { useNavigate } from 'react-router-dom';
 // import { Path } from 'constant/path';

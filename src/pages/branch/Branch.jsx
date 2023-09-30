@@ -56,8 +56,12 @@ const Branch = () => {
           const allBranchs = result.metadata;
           const newData = await Promise.all(
             allBranchs.map(async (item) => {
-              const detail = await staffApi.getById(item.manager);
-              return { ...item, manager: detail.metadata };
+              if (item.manager) {
+                const detail = await staffApi.getById(item.manager);
+                return { ...item, manager: detail.metadata };
+              } else {
+                return item;
+              }
             })
           );
           setData(newData);
@@ -68,7 +72,10 @@ const Branch = () => {
           navigation(Path.FORBIDDEN, { replace: true });
         }
       } catch (error) {
-        console.error(error);
+        if (error?.response?.data?.code && error.response.data.code === 403) {
+          // console.log('error: ', error.response.data.code);
+          navigation(Path.FORBIDDEN, { replace: true });
+        }
       }
     };
     getData();
@@ -145,10 +152,11 @@ const Branch = () => {
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell align="center">{row.capacity}</TableCell>
-                    <TableCell>
+                    {row.manager?<TableCell>
                       {row.manager.username} <br />
                       {row.manager.phone}
-                    </TableCell>
+                    </TableCell>:<TableCell align="center">Không có quản lý</TableCell>}
+                    
                     <TableCell align="center">
                       {row.startTime} - {row.endTime}
                     </TableCell>

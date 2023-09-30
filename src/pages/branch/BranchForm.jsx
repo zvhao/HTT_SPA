@@ -1,9 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
-import { Box, Grid, IconButton, InputAdornment, TextField, Typography, styled } from '@mui/material';
+import { Autocomplete, Box, Button, CardActions, Grid, IconButton, InputAdornment, TextField, Typography, styled } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { branchApi } from 'api';
+import { branchApi, staffApi } from 'api';
 import { Path } from 'constant/path';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -65,12 +65,15 @@ const BranchForm = () => {
     name: 'HTT SPA',
     code: '',
     capacity: '',
-    manager: '64a6dc237004fb28bcd6f96c',
+    manager: '',
     address: '',
     desc: 'Chi nhánh 1',
     startTime: dayjs('2013-11-18 09:00:00'),
     endTime: dayjs('2013-11-18 20:00:00')
   });
+
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
     const getOneBranch = async (id) => {
@@ -80,16 +83,34 @@ const BranchForm = () => {
           const newOneBranchData = { ...oneBranchData.metadata };
           newOneBranchData.startTime = dayjs(oneBranchData.metadata.startTime, 'HH:mm');
           newOneBranchData.endTime = dayjs(oneBranchData.metadata.endTime, 'HH:mm');
+          if (selectedEmployee) {
+            const managerData = await staffApi.getById(newOneBranchData.manager);
+            setSelectedEmployee(managerData.metadata);
+          }
           setInitialValues(newOneBranchData);
+          // console.log(oneBranchData);
           return newOneBranchData;
         } catch (error) {
           console.log(error);
         }
       }
     };
+    const fetchEmployees = async () => {
+      try {
+        const employeeData = await staffApi.fetchData();
+        setEmployees(employeeData.metadata);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEmployees();
     getOneBranch(id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleEmployeeChange = (event, value) => {
+    setSelectedEmployee(value);
+  };
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
@@ -109,19 +130,24 @@ const BranchForm = () => {
     if (isEditMode) {
       try {
         // console.log(newdata);
-        const rs = await branchApi.update(id, newdata);
-        navigation(Path.Branch, { replace: true });
-        return rs
+        if (selectedEmployee) {
+          newdata.manager = selectedEmployee._id;
+          const rs = await branchApi.update(id, newdata);
+          navigation(Path.Branch, { replace: true });
+          return rs;
+        }
       } catch (error) {
         console.error(error);
       }
     } else {
       try {
-        const rs = await branchApi.create(newdata);
-        navigation(Path.Branch, { replace: true });
-        console.log(rs);
-        return rs
-
+        if (selectedEmployee) {
+          newdata.manager = selectedEmployee._id;
+          console.log(newdata);
+          const rs = await branchApi.create(newdata);
+          navigation(Path.Branch, { replace: true });
+          return rs;
+        }
       } catch (error) {
         console.error(error);
       }
@@ -130,10 +156,28 @@ const BranchForm = () => {
 
   return (
     <Box>
-      <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
       <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
+              </Grid>
+              <Grid item>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon></AddIcon>}
+                    component={Link}
+                    to={Path.Staff + `/add`}
+                    target="_blank"
+                  >
+                    Thêm nhân viên
+                  </Button>
+                </CardActions>
+              </Grid>
+            </Grid>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={3}>
                 <CssTextField
@@ -185,7 +229,7 @@ const BranchForm = () => {
                 />
               </Grid>
               <Grid item xs={3}>
-                <CssTextField
+                {/* <CssTextField
                   sx={{ '& > div': { padding: 0 } }}
                   fullWidth
                   margin="dense"
@@ -207,6 +251,51 @@ const BranchForm = () => {
                       </InputAdornment>
                     )
                   }}
+                /> */}
+                {/* <Autocomplete
+                  sx={{
+                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                    '&': { mt: 1, p: 0 },
+                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                  }}
+                  options={Array.isArray(employees) ? employees : []}
+                  getOptionLabel={(employee) => employee.username}
+                  onChange={(event, value) => {
+                    handleChange(event);
+                    handleEmployeeChange(value);
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Nhân viên quản lý" />}
+                  name="manager"
+                  value={values.manager}
+                /> */}
+                <Autocomplete
+                  sx={{
+                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                    '&': { mt: 1, p: 0 },
+                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                  }}
+                  fullWidth
+                  margin="dense"
+                  id="manager"
+                  name="manager"
+                  label="Nhân viên"
+                  options={employees}
+                  getOptionLabel={(option) => option.username}
+                  value={selectedEmployee}
+                  onChange={handleEmployeeChange}
+                  renderInput={(params) => (
+                    <CssTextField
+                      {...params}
+                      variant="outlined"
+                      label="Nhân viên quản lý"
+                      error={touched.manager && Boolean(errors.manager)}
+                      helperText={touched.manager && errors.manager}
+                    />
+                  )}
                 />
               </Grid>
 

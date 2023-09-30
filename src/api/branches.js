@@ -1,26 +1,17 @@
-import api from './axios';
+import TokenAuth from 'utils/TokenAuth';
 const baseUrl = '/api/v1/branches';
 
 const fetchData = async () => {
   try {
-    if (localStorage.getItem('data') !== null) {
-      const data = JSON.parse(localStorage.getItem('data'));
-      const response = await api.get(baseUrl, {
-        headers: {
-          'x-client-id': data.token
-        }
-      });
-      return response.data;
-    }
+    return TokenAuth.getAll(baseUrl);
   } catch (error) {
-    return error
+    return error;
   }
 };
 
 const create = async (data) => {
   try {
-    const response = await api.post(baseUrl, data);
-    return response.data;
+    return TokenAuth.create(baseUrl, data);
   } catch (error) {
     console.error(error);
   }
@@ -28,16 +19,7 @@ const create = async (data) => {
 
 const update = async (id, data) => {
   try {
-    if (localStorage.getItem('data') !== null) {
-      const data = JSON.parse(localStorage.getItem('data'));
-      const res = await api.patch(baseUrl + '/' + id, {
-        data,
-        headers: {
-          'x-client-id': data.token
-        }
-      });
-      return res.data;
-    }
+    return TokenAuth.update(baseUrl, id, data);
   } catch (error) {
     console.error(error);
   }
@@ -45,16 +27,7 @@ const update = async (id, data) => {
 
 const getById = async (id) => {
   try {
-    if (localStorage.getItem('data') !== null) {
-      const data = JSON.parse(localStorage.getItem('data'));
-      const res = await api.get(baseUrl + '/' + id, {
-        data,
-        headers: {
-          'x-client-id': data.token
-        }
-      });
-      return res.data;
-    }
+    return TokenAuth.getById(baseUrl, id);
   } catch (error) {
     console.error(error);
   }
