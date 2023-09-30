@@ -9,17 +9,7 @@ exports.findBranchByCode = async (code) => {
   return await BranchModel.findOne({ code }).lean();
 };
 exports.findAllBranch = async (filters) => {
-//   if (typeof filters !== 'string') {
-//     throw new Error('Invalid filters. Expected a string.');
-// }
-//   return await BranchModel.find({
-//     $or: [
-//         { name: { $regex: filters, $options: 'i' } },
-//         { code: { $regex: filters, $options: 'i' } },
-//         { address: { $regex: filters, $options: 'i' } }
-//     ]
-// }).lean();
-return await BranchModel.find().lean()
+  return await BranchModel.find().lean();
 };
 
 exports.findBranchById = async (id) => {
@@ -37,6 +27,18 @@ exports.saveBranch = async ({
   startTime,
   endTime,
 }) => {
+  if (manager === "") {
+    return await BranchModel({
+      name,
+      code,
+      address,
+      desc,
+      capacity,
+      owners,
+      startTime,
+      endTime,
+    }).save();
+  }
   return await BranchModel({
     name,
     code,

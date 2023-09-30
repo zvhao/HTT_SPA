@@ -11,7 +11,7 @@ const {
 } = require("../utils/error.util");
 
 const Headers = {
-  CLIENT_ID: "x-client-id",
+  CLIENT_TOKEN: "x-client-id",
 };
 
 /**
@@ -22,11 +22,11 @@ const Headers = {
  */
 
 const authentication = async (req, res, next) => {
-  const data = req.headers[Headers.CLIENT_ID]
+  const data = req.headers[Headers.CLIENT_TOKEN]
   
   if (!data) {
     throw new UnauthorizedRequestError(
-      `Missing headers \`${Headers.CLIENT_ID}\``
+      `Missing headers \`${Headers.CLIENT_TOKEN}\``
     );
   }
 

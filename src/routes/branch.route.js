@@ -20,7 +20,7 @@ router.use(asyncHandler(authentication));
 router
   .route("/")
   .post(
-    checkPermission("branch.add"),
+    asyncHandler(checkPermission("branch.add")),
     validateResource(BranchSchemaInput),
     asyncHandler(branchController.create)
   )
@@ -35,6 +35,10 @@ router
     asyncHandler(checkPermission("branch.view")),
     asyncHandler(branchController.getById)
   )
-  .patch(asyncHandler(branchController.update));
+  .patch(
+    asyncHandler(checkPermission("branch.update")),
+    validateResource(BranchSchemaInput),
+    asyncHandler(branchController.update)
+  );
 
 module.exports = router;
