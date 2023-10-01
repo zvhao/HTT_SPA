@@ -30,7 +30,7 @@ var BranchSchema = new mongoose.Schema(
     },
     manager: {
       type: mongoose.Types.ObjectId,
-      required: true,
+      // required: true,
     },
     startTime: {
       type: String,

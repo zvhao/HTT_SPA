@@ -8,7 +8,6 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   async create(req, res) {
     const body = req.body;
-
     return new CreatedResponse({
       message: "Create staff success",
       metadata: await staffService.add(body),

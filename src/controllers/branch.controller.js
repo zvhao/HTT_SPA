@@ -10,7 +10,7 @@ module.exports = {
     const body = req.body;
 	console.log(body);
     return new CreatedResponse({
-      message: "Create owner success",
+      message: "Create branch success",
       metadata: await branchService.add(body),
     }).send(res);
   },

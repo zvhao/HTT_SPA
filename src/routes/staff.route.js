@@ -24,6 +24,7 @@ router
   .route("/")
   // .post(validateResource(StaffSchemaInput), asyncHandler(staffController.create))
   .post(
+    asyncHandler(checkPermission("staff.update")),
     validateResource(StaffSchemaInput),
     asyncHandler(staffController.create)
   )
