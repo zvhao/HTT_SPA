@@ -154,6 +154,7 @@ const Branch = () => {
                     <TableCell align="center">{row.capacity}</TableCell>
                     {row.manager?<TableCell>
                       {row.manager.username} <br />
+                      {row.manager.fullname} <br />
                       {row.manager.phone}
                     </TableCell>:<TableCell align="center">Không có quản lý</TableCell>}
                     

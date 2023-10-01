@@ -1,6 +1,7 @@
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { LoadingButton } from '@mui/lab';
 import {
+  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -15,7 +16,7 @@ import {
 } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { staffApi } from 'api';
+import { branchApi, staffApi } from 'api';
 import { Path } from 'constant/path';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -74,7 +75,7 @@ const StaffForm = () => {
     address: 'Can Tho',
     numPaidLeave: 2,
     basicSalary: 4000000,
-    position: 'manager',
+    position: '',
     password: 'Hao291001',
     consultingCommission: 10,
     serviceCommission: 10,
@@ -94,43 +95,64 @@ const StaffForm = () => {
       }
     ],
     role: '651582fb9dce25997d637c13',
-    branch: '650007e9c31b396b0f6ef13d'
+    branch: ''
   });
+
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [role, setRole] = useState([]);
 
   useEffect(() => {
     const getOneStaff = async (id) => {
-      if (isEditMode) {
-        try {
-          const oneStaffData = await staffApi.getById(id);
-          if(oneStaffData.metadata) {
-            const newOneStaffData = { ...oneStaffData.metadata };
-            const dataWorkTime = newOneStaffData.workTime.pop();
-  
-            const formattedData = {
-              ...dataWorkTime,
-              startDate: dayjs(),
-              weekSchedule: dataWorkTime.weekSchedule.map(schedule => ({
-                ...schedule,
-                startTime: dayjs(schedule.startTime),
-                endTime: dayjs(schedule.endTime)
-              }))
-            };
-            newOneStaffData.workTime = [formattedData]
-            // console.log(JSON.stringify(formattedData, null, 4));
-            
-            setInitialValues(newOneStaffData);
-            // console.log(initialValues)
-          }else {
-            console.log('loi');
+      try {
+        const role = JSON.parse(localStorage.getItem('data')).role;
+        setRole(role);
+        if (isEditMode) {
+          try {
+            const oneStaffData = await staffApi.getById(id);
+            if (oneStaffData.metadata) {
+              const newOneStaffData = { ...oneStaffData.metadata };
+              const dataWorkTime = newOneStaffData.workTime.pop();
+
+              const formattedData = {
+                ...dataWorkTime,
+                startDate: dayjs(),
+                weekSchedule: dataWorkTime.weekSchedule.map((schedule) => ({
+                  ...schedule,
+                  startTime: dayjs(schedule.startTime),
+                  endTime: dayjs(schedule.endTime)
+                }))
+              };
+              newOneStaffData.workTime = [formattedData];
+              // console.log(JSON.stringify(formattedData, null, 4));
+              const branchData = await branchApi.getById(newOneStaffData.branch);
+              setSelectedBranch(branchData.metadata);
+
+              setInitialValues(newOneStaffData);
+              // console.log(initialValues)
+            } else {
+              console.log('loi');
+            }
+          } catch (error) {
+            console.log(error);
           }
-        } catch (error) {
-          console.log(error);
         }
-      }
+      } catch (error) {}
     };
+    const fetchBranches = async () => {
+      try {
+        const branchesData = await branchApi.fetchData();
+        setBranches(branchesData.metadata);
+      } catch (error) {}
+    };
+    fetchBranches();
     getOneStaff(id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleBranchChange = (event, value) => {
+    setSelectedBranch(value);
+  };
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
@@ -144,34 +166,41 @@ const StaffForm = () => {
 
   const handleSubmit = async (values) => {
     const newdata = { ...values };
-    // console.log(JSON.stringify(newdata, null, 4));
-    if (isEditMode) {
-      try {
-        const rs = await staffApi.update(id, newdata);
-        if(rs && rs.status === 200) {
-          alert(rs.message)
-        } else {
-          console.log("Error");
-        }
-        // console.log(JSON.stringify(rs, null, 4));
+    console.log(JSON.stringify(newdata, null, 4));
+    if (selectedBranch && selectedBranch !== null) {
+      newdata.branch = selectedBranch._id;
+      if (isEditMode) {
+        try {
+          const rs = await staffApi.update(id, newdata);
+          if (rs && rs.status === 200) {
+            alert(rs.message);
+            navigation(Path.Staff, { replace: true });
+          } else {
+            console.log('Error');
+          }
 
-        navigation(Path.Staff, { replace: true });
-        // return rs
-      } catch (error) {
-        console.error(error);
+          // console.log(JSON.stringify(rs, null, 4));
+
+          // return rs
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          const rs = await staffApi.create(newdata);
+          // console.log(JSON.stringify(rs, null, 4));
+          if (rs.metadata) {
+            navigation(Path.Staff, { replace: true });
+          }
+
+          // console.log(rs);
+          // return rs;
+        } catch (error) {
+          alert(error.response.data.message);
+        }
       }
     } else {
-      try {
-
-        const rs = await staffApi.create(newdata);
-        console.log(JSON.stringify(rs, null, 4));
-
-        navigation(Path.Staff, { replace: true });
-        // console.log(rs);
-        // return rs;
-      } catch (error) {
-        console.error(error);
-      }
+      alert('khong co branch');
     }
   };
 
@@ -186,7 +215,7 @@ const StaffForm = () => {
       <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} nhân viên</Typography>
       <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
-          <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} sx={{ padding: 1 }}>
               <Grid item xs={6}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
@@ -204,7 +233,7 @@ const StaffForm = () => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <CssTextField
+                    {/* <CssTextField
                       fullWidth
                       margin="dense"
                       id="branch"
@@ -214,6 +243,32 @@ const StaffForm = () => {
                       value={values.branch}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                    /> */}
+                    <Autocomplete
+                      sx={{
+                        '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                        '&': { mt: 1, p: 0 },
+                        '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                        '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                        '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                      }}
+                      fullWidth
+                      margin="dense"
+                      id="branch"
+                      name="branch"
+                      options={branches}
+                      getOptionLabel={(option) => option.code}
+                      value={selectedBranch}
+                      onChange={handleBranchChange}
+                      renderInput={(params) => (
+                        <CssTextField
+                          {...params}
+                          variant="outlined"
+                          label="Chi nhánh"
+                          error={touched.manager && Boolean(errors.manager)}
+                          helperText={touched.manager && errors.manager}
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -250,7 +305,7 @@ const StaffForm = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     >
-                      <MenuItem value="manager">Nhân viên quản lý</MenuItem>
+                      {role === 'owner' ? <MenuItem value="manager">Nhân viên quản lý</MenuItem> : ''}
                       <MenuItem value="technicians">Kĩ thuật viên</MenuItem>
                       <MenuItem value="receptionists">Lễ tân</MenuItem>
                       <MenuItem value="counselors">Tư vấn viên</MenuItem>

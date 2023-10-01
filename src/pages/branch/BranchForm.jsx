@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Box, Button, CardActions, Grid, IconButton, InputAdornment, TextField, Typography, styled } from '@mui/material';
+import { Autocomplete, Box, Button, CardActions, FormHelperText, Grid, InputAdornment, TextField, Typography, styled } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { branchApi, staffApi } from 'api';
@@ -74,6 +74,7 @@ const BranchForm = () => {
 
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [errorApi, setErrorApi] = useState(null);
 
   useEffect(() => {
     const getOneBranch = async (id) => {
@@ -83,10 +84,12 @@ const BranchForm = () => {
           const newOneBranchData = { ...oneBranchData.metadata };
           newOneBranchData.startTime = dayjs(oneBranchData.metadata.startTime, 'HH:mm');
           newOneBranchData.endTime = dayjs(oneBranchData.metadata.endTime, 'HH:mm');
-          if (selectedEmployee) {
+          if (newOneBranchData.manager) {
             const managerData = await staffApi.getById(newOneBranchData.manager);
             setSelectedEmployee(managerData.metadata);
+            console.log(managerData.metadata);
           }
+
           setInitialValues(newOneBranchData);
           // console.log(oneBranchData);
           return newOneBranchData;
@@ -103,6 +106,13 @@ const BranchForm = () => {
         console.error(error);
       }
     };
+    if (errorApi) {
+      const timer = setTimeout(() => {
+        setErrorApi(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
     fetchEmployees();
     getOneBranch(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,30 +136,32 @@ const BranchForm = () => {
     const newdata = { ...values };
     newdata.startTime = dayjs(values.startTime).format('HH:mm');
     newdata.endTime = dayjs(values.endTime).format('HH:mm');
+    if (selectedEmployee) {
+      newdata.manager = selectedEmployee._id;
+    }
+    setErrorApi(null);
 
     if (isEditMode) {
       try {
         // console.log(newdata);
-        if (selectedEmployee) {
-          newdata.manager = selectedEmployee._id;
-          const rs = await branchApi.update(id, newdata);
-          navigation(Path.Branch, { replace: true });
-          return rs;
-        }
+        const rs = await branchApi.update(id, newdata);
+        navigation(Path.Branch, { replace: true });
+        return rs;
       } catch (error) {
         console.error(error);
       }
     } else {
       try {
-        if (selectedEmployee) {
-          newdata.manager = selectedEmployee._id;
-          console.log(newdata);
-          const rs = await branchApi.create(newdata);
-          navigation(Path.Branch, { replace: true });
-          return rs;
-        }
+        const rs = await branchApi.create(newdata);
+        navigation(Path.Branch, { replace: true });
+        return rs;
       } catch (error) {
-        console.error(error);
+        if (error?.response?.data?.message && error?.response?.data?.message === 'Code exists') {
+          setErrorApi(error?.response?.data?.message);
+          setTimeout(() => {
+            setErrorApi(null);
+          }, 3000);
+        }
       }
     }
   };
@@ -208,6 +220,11 @@ const BranchForm = () => {
                   error={touched.code && Boolean(errors.code)}
                   helperText={touched.code && errors.code}
                 />
+                {errorApi && (
+                  <FormHelperText sx={{ paddingLeft: '20px', fontSize: '14px' }} error>
+                    {errorApi}
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid item xs={3}>
                 <CssTextField

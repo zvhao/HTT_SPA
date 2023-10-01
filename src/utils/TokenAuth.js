@@ -37,7 +37,6 @@ const update = async (baseUrl, id, data) => {
 const create = async (baseUrl, data) => {
   if (localStorage.getItem('data') !== null) {
     const localStore = JSON.parse(localStorage.getItem('data'));
-    console.log(localStore, baseUrl, data);
     const res = await api.post(baseUrl, data, {
       headers: {
         'x-client-id': localStore.token
