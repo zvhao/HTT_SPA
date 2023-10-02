@@ -23,7 +23,7 @@ const Headers = {
 
 const authentication = async (req, res, next) => {
   const data = req.headers[Headers.CLIENT_TOKEN]
-  console.log(req.headers);
+  // console.log(req.headers);
   
   if (!data) {
     throw new UnauthorizedRequestError(

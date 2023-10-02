@@ -17,12 +17,13 @@ const router = Router();
 router.route("/login").post(asyncHandler(staffController.login));
 
 router.route("/logout").get(asyncHandler(staffController.logout));
+
 // auth
 router.use(asyncHandler(authentication));
+router.route("/getaccount").get(asyncHandler(staffController.getByToken));
 
 router
   .route("/")
-  // .post(validateResource(StaffSchemaInput), asyncHandler(staffController.create))
   .post(
     asyncHandler(checkPermission("staff.update")),
     validateResource(StaffSchemaInput),

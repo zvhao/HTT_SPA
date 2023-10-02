@@ -1,5 +1,6 @@
 "use strict";
 
+const { decodeToken } = require("../core/fuction.code");
 const staffService = require("../services/staff.service");
 const { CreatedResponse, OKResponse } = require("../utils/success.util");
 const bcrypt = require("bcrypt");
@@ -24,6 +25,15 @@ module.exports = {
 
   async getById(req, res) {
     const id = req.params.id;
+    return new OKResponse({
+      message: "Get staff success",
+      metadata: await staffService.getById(id),
+    }).send(res);
+  },
+
+  async getByToken(req, res) {
+    const id = req.dataAccount.id
+    // console.log(dataAccount);
     return new OKResponse({
       message: "Get staff success",
       metadata: await staffService.getById(id),

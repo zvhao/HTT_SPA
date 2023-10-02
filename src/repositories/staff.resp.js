@@ -93,10 +93,11 @@ exports.comparePasswords = (password, hashedPassword) => {
   });
 };
 
-exports.handleLogin = async (data, token) => {
+exports.handleLogin = async (data, token, accInfo) => {
   return await {
     message: "Login successful",
     user: data.username,
     token: token,
+    accInfo: accInfo
   };
 };

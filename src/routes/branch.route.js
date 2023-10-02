@@ -28,7 +28,7 @@ router
     asyncHandler(checkPermission("branch.view")),
     asyncHandler(branchController.getAll)
   );
-
+// router.route("/get/:token").get(asyncHandler(branchController.))
 router
   .route("/:id")
   .get(

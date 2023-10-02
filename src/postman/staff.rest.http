@@ -77,7 +77,9 @@ Content-Type: application/json
 GET {{url}}
 
 ### GET ID
-GET {{url}}/64ed80658d9907fd5dedd129
+GET {{url}}/651588404eb4c2adc3f3b529
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTY5NjIyNzc5OCwiZXhwIjoxNjk3MDkxNzk4fQ.Sy1qvSsRtqdXfSyPzUwp8rjvMkaqmhXErgWGKv9chx0
+
 
 ### Update
 PATCH {{url}}/64ed80658d9907fd5dedd129

@@ -97,12 +97,18 @@ const ownerService = {
       throw new NotFoundRequestError("Incorrect password");
     }
 
-    const token = jwt.sign({ id: user._id, role: 'owner' }, "httspa", { expiresIn: "10d" });
-    console.log(token);
+    const token = jwt.sign({ id: user._id, role: "owner" }, "httspa", {
+      expiresIn: "10d",
+    });
+    const role = await roleService.getById(user.role);
+    const newData = {...user, role}
+    // console.log(newData);
 
     return {
+      message: "Login successful",
       user: data.username,
       token: token,
+      accInfo: newData,
     };
   },
 };
