@@ -141,8 +141,15 @@ const StaffForm = () => {
     };
     const fetchBranches = async () => {
       try {
-        const branchesData = await branchApi.fetchData();
-        setBranches(branchesData.metadata);
+        const role = JSON.parse(localStorage.getItem('data')).role;
+        setRole(role);
+        if (role === 'owner') {
+          const branchesData = await branchApi.fetchData();
+          setBranches(branchesData.metadata);
+        }
+        if (role === 'staff') {
+          setBranches();
+        }
       } catch (error) {}
     };
     fetchBranches();
@@ -166,41 +173,45 @@ const StaffForm = () => {
 
   const handleSubmit = async (values) => {
     const newdata = { ...values };
-    console.log(JSON.stringify(newdata, null, 4));
+    // console.log(JSON.stringify(newdata, null, 4));
     if (selectedBranch && selectedBranch !== null) {
       newdata.branch = selectedBranch._id;
-      if (isEditMode) {
-        try {
-          const rs = await staffApi.update(id, newdata);
-          if (rs && rs.status === 200) {
-            alert(rs.message);
-            navigation(Path.Staff, { replace: true });
-          } else {
-            console.log('Error');
-          }
-
-          // console.log(JSON.stringify(rs, null, 4));
-
-          // return rs
-        } catch (error) {
-          console.error(error);
+      // console.log(newdata.branch);
+    } else if (role === 'staff') {
+      try {
+        const AccountData = await staffApi.getByToken();
+        newdata.branch = AccountData.metadata.branch;
+        // console.log(newdata);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (isEditMode) {
+      try {
+        // console.log(newdata);
+        const rs = await staffApi.update(id, newdata);
+        if (rs && rs.status === 200) {
+          alert(rs.message);
+          navigation(Path.Staff, { replace: true });
+        } else {
+          console.log('Error');
         }
-      } else {
-        try {
-          const rs = await staffApi.create(newdata);
-          // console.log(JSON.stringify(rs, null, 4));
-          if (rs.metadata) {
-            navigation(Path.Staff, { replace: true });
-          }
 
-          // console.log(rs);
-          // return rs;
-        } catch (error) {
-          alert(error.response.data.message);
-        }
+        return rs;
+      } catch (error) {
+        console.error(error);
       }
     } else {
-      alert('khong co branch');
+      try {
+        const rs = await staffApi.create(newdata);
+        if (rs.metadata) {
+          navigation(Path.Staff, { replace: true });
+        }
+        console.log(rs);
+        return rs;
+      } catch (error) {
+        alert(error.response.data.message);
+      }
     }
   };
 
@@ -233,43 +244,45 @@ const StaffForm = () => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {/* <CssTextField
-                      fullWidth
-                      margin="dense"
-                      id="branch"
-                      name="branch"
-                      label="Chi nhánh"
-                      variant="outlined"
-                      value={values.branch}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                    /> */}
-                    <Autocomplete
-                      sx={{
-                        '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                        '&': { mt: 1, p: 0 },
-                        '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                        '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                        '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-                      }}
-                      fullWidth
-                      margin="dense"
-                      id="branch"
-                      name="branch"
-                      options={branches}
-                      getOptionLabel={(option) => option.code}
-                      value={selectedBranch}
-                      onChange={handleBranchChange}
-                      renderInput={(params) => (
-                        <CssTextField
-                          {...params}
-                          variant="outlined"
-                          label="Chi nhánh"
-                          error={touched.manager && Boolean(errors.manager)}
-                          helperText={touched.manager && errors.manager}
-                        />
-                      )}
-                    />
+                    {role === 'owner' ? (
+                      <Autocomplete
+                        sx={{
+                          '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                          '&': { mt: 1, p: 0 },
+                          '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                          '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                          '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                        }}
+                        fullWidth
+                        margin="dense"
+                        id="branch"
+                        name="branch"
+                        options={branches}
+                        getOptionLabel={(option) => option.code}
+                        value={selectedBranch}
+                        onChange={handleBranchChange}
+                        renderInput={(params) => (
+                          <CssTextField
+                            {...params}
+                            variant="outlined"
+                            label="Chi nhánh"
+                            error={touched.manager && Boolean(errors.manager)}
+                            helperText={touched.manager && errors.manager}
+                          />
+                        )}
+                      />
+                    ) : (
+                      <CssTextField
+                        fullWidth
+                        margin="dense"
+                        id="branch"
+                        name="branch"
+                        label="Chi nhánh"
+                        variant="outlined"
+                        value="Chi nhánh hiện tại"
+                        disabled
+                      />
+                    )}
                   </Grid>
                   <Grid item xs={6}>
                     <CssTextField

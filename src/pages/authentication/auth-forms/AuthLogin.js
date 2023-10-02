@@ -67,15 +67,17 @@ const AuthLogin = ({ role }) => {
       if (result && result.status === 200 && result.metadata) {
         // console.log(result.metadata.user);
         const token = result.metadata.token;
-        const user = result.metadata.user;
+        const accountName = result.metadata.user;
+        const permissions = result.metadata.accInfo.role.permissions;
         const data = {
-          username: user,
+          username: accountName,
           token: token,
-          role: role
+          role: role,
+          permissions: permissions
         };
         localStorage.setItem('data', JSON.stringify(data));
         dispatch(setUser(data));
-        // console.log(user);
+        console.log(permissions);
         navigation(Path.Index, { replace: true });
       }
       // console.log(result); // Xử lý kết quả đăng nhập từ backend

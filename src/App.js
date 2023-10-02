@@ -21,8 +21,7 @@ dayjs.tz.setDefault('Asia/Ho_Chi_Minh');
 
 const App = () => {
   // const navigation = useNavigate();
-  
-  
+
   useEffect(() => {
     // console.log(reduxData);
     if (localStorage.getItem('data') !== null) {

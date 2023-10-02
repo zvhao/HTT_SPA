@@ -34,6 +34,13 @@ const getById = async (id) => {
     console.error(error);
   }
 };
+const getByToken = async () => {
+  try {
+    return TokenAuth.getByToken(baseUrl);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const login = async (username, password) => {
   const data = {
@@ -54,6 +61,7 @@ const staffApi = {
   create,
   update,
   getById,
-  login
+  login,
+  getByToken
 };
 export default staffApi;
