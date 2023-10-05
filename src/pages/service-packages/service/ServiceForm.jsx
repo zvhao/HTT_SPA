@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Path } from 'constant/path';
-import { Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import NumericFormat from 'react-number-format';
 import ReactQuill from 'react-quill';
@@ -18,14 +18,15 @@ import 'react-quill/dist/quill.snow.css';
 import { LoadingButton } from '@mui/lab';
 
 const validationSchema = yup.object({
+  // code: yup.string().required('Mã dịch vụ là bắt buộc'),
   name: yup.string().required('Tên dịch vụ là bắt buộc'),
-  price: yup.number().required('Tên dịch vụ là bắt buộc'),
-  duration: yup.string().required('Tên dịch vụ là bắt buộc'),
-  servicetype: yup.string().required('Tên dịch vụ là bắt buộc'),
-  combo: yup.string().required('Tên dịch vụ là bắt buộc'),
-  course: yup.string().required('Tên dịch vụ là bắt buộc'),
-  technicianCommission: yup.string().required('Tên dịch vụ là bắt buộc'),
-  consultingCommission: yup.string().required('Tên dịch vụ là bắt buộc')
+  price: yup.number().required('Giá dịch vụ là bắt buộc'),
+  duration: yup.string().required('Thời gian dịch vụ là bắt buộc'),
+  // servicetype: yup.string().required('Tên dịch vụ là bắt buộc'),
+  // combo: yup.string().required('Tên dịch vụ là bắt buộc'),
+  // course: yup.string().required('Tên dịch vụ là bắt buộc'),
+  technicianCommission: yup.string().required('Hoa hồng là bắt buộc'),
+  consultingCommission: yup.string().required('Hoa hồng là bắt buộc')
 });
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
   const { onChange, ...other } = props;
@@ -56,6 +57,10 @@ NumericFormatCustom.propTypes = {
 const ServiceForm = () => {
   const currencies = [
     {
+      value: '',
+      label: 'Chưa có loại'
+    },
+    {
       value: 'USD',
       label: '$'
     },
@@ -84,6 +89,17 @@ const ServiceForm = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const navigation = useNavigate();
+  const [serviceCount, setServiceCount] = useState(0);
+  const [serviceCode, setServiceCode] = useState('');
+
+  useEffect(() => {
+    const generateServiceCode = () => {
+      const code = `DV${String(serviceCount + 1).padStart(3, '0')}`;
+      setServiceCode(code);
+    };
+
+    generateServiceCode();
+  }, [serviceCount]);
 
   const initialValues = {
     name: '',
@@ -93,7 +109,8 @@ const ServiceForm = () => {
     combo: '',
     course: '',
     technicianCommission: '',
-    consultingCommission: ''
+    consultingCommission: '',
+    desc: ''
   };
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
@@ -107,8 +124,10 @@ const ServiceForm = () => {
   };
 
   const handleSubmit = (values) => {
-    alert(JSON.stringify(values, null, 4));
-    navigation(Path.Service, { replace: true });
+    // alert(JSON.stringify(values, null, 4));
+    values.code = serviceCode
+    console.log(values);
+    // navigation(Path.Service, { replace: true });
     if (isEditMode) {
       // TODO: Update
     } else {
@@ -120,9 +139,25 @@ const ServiceForm = () => {
     <Box>
       <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
       <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+              <Grid item xs={6}>
+                <CssTextField
+                  fullWidth
+                  margin="normal"
+                  id="code"
+                  name="code"
+                  label="Mã dịch vụ"
+                  variant="outlined"
+                  value={serviceCode}
+                  disabled
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={touched.code && Boolean(errors.code)}
+                  helperText={touched.code && errors.code}
+                />
+              </Grid>
               <Grid item xs={6}>
                 <CssTextField
                   fullWidth

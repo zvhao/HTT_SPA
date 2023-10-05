@@ -84,8 +84,8 @@ const Branch = () => {
         item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.manager.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.manager.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        item.manager?.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.manager?.phone.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSearchResults(results);
   }, [searchTerm, data, navigation]);
@@ -152,12 +152,16 @@ const Branch = () => {
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell align="center">{row.capacity}</TableCell>
-                    {row.manager?<TableCell>
-                      {row.manager.username} <br />
-                      {row.manager.fullname} <br />
-                      {row.manager.phone}
-                    </TableCell>:<TableCell align="center">Không có quản lý</TableCell>}
-                    
+                    {row.manager ? (
+                      <TableCell>
+                        {row.manager.username} <br />
+                        {row.manager.fullname} <br />
+                        {row.manager.phone}
+                      </TableCell>
+                    ) : (
+                      <TableCell align="center">Không có quản lý</TableCell>
+                    )}
+
                     <TableCell align="center">
                       {row.startTime} - {row.endTime}
                     </TableCell>

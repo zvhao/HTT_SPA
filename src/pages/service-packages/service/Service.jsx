@@ -1,83 +1,60 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { Button, Card, CardActions, CardContent, CardMedia } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-const CardComponent = ({ title, image, description, slug, click }) => (
-  <Card component={MainCard} border={false} sx={{ boxShadow: 4 }}>
-    <CardMedia component="img" alt={title} height="140" image={image} />
-    <CardContent>
-      <Typography gutterBottom variant="h5" component="div">
-        {title}
-      </Typography>
-      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} variant="body2" color="text.secondary">
-        {description}
-      </Typography>
-    </CardContent>
-    <CardActions sx={{ justifyContent: 'space-between' }}>
-      <Button onClick={click} size="small">
-        Xem thêm
-      </Button>
-      {/* <Button component={Link} to={Path.ServiceDetail + `${slug}`} size="small">
-        Xem thêm
-      </Button> */}
-      <Button size="medium" variant="contained" component={Link} to={`/service/edit/${title}`}>
-        Update
-      </Button>
-    </CardActions>
-  </Card>
-);
+
+const columns = [
+  { id: 'code', label: 'Code', minWidth: 50 },
+  { id: 'name', label: 'Tên dịch vụ', minWidth: 100 },
+  { id: 'price', label: 'Giá dịch vụ', minWidth: 100 },
+  { id: 'duration', label: 'Thời gian', minWidth: 100 },
+  // { id: 'group', label: 'Nhóm', minWidth: 100 },
+  { id: 'commission', label: 'Hoa hồng', minWidth: 100 },
+  {
+    id: 'operation',
+    label: 'Thao tác'
+    // minWidth: 170,
+    // format: (value) => value.toLocaleString('en-US')
+  }
+];
 
 const Service = () => {
-  const [cards, _setCards] = useState([
-    {
-      title: 'Massage body, cột sống',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu đau nhức cột sống, điều trị trong 1 tháng',
-      slug: 'co-vai-gay'
-    },
-    {
-      title: 'Massage chân',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu đau nhức chân, điều trị trong 1 tháng Trị liệu đau nhức chân, điều trị trong 1 tháng',
-      slug: 'be-co'
-    },
-    {
-      title: 'Massage mặt',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu da mặt, điều trị trong 1 tháng',
-      slug: 'day-lung'
-    },
-    {
-      title: 'Massage mặt',
-      image: 'https://cdn.diemnhangroup.com/seoulacademy/2022/08/spa-la-gi-1.jpg',
-      description: 'Trị liệu da mặt, điều trị trong 1 tháng',
-      slug: 'dut-tay'
-    }
-  ]);
-  const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState('paper');
+  const [data, setData] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState([]);
 
-  const handleClickOpen = (scrollType) => () => {
-    setOpen(true);
-    setScroll(scrollType);
+  React.useEffect(() => {});
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
-
-  const descriptionElementRef = React.useRef(null);
-  React.useEffect(() => {
-    if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
-      }
-    }
-  }, [open]);
 
   return (
     <MainCard>
@@ -90,49 +67,62 @@ const Service = () => {
         </Button>
       </CardActions>
 
-      <Grid container spacing={3}>
-        {cards.map((card, index) => (
-          <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-            <CardComponent
-              title={card.title}
-              image={card.image}
-              description={card.description}
-              slug={card.slug}
-              click={handleClickOpen('body')}
-            />
-          </Grid>
-        ))}
-      </Grid>
-      <Dialog
-        maxWidth
-        open={open}
-        onClose={handleClose}
-        scroll={scroll}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >
-        <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-        <DialogContent dividers={scroll === 'paper'}>
-          {/* <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            {[...new Array(50)]
-              .map(
-                () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
-              )
-              .join('\n')}
-          </DialogContentText> */}
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates occasionally. To subscribe to this
-            website, please enter your email address here. We will send updates occasionally. To subscribe to this website, please enter
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={searchResults.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell key={column.id} align="center" style={{ minWidth: column.minWidth }}>
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {searchResults.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                      {row.code}
+                    </TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell align="center">{row.price}</TableCell>
+                    <TableCell align="center">{row.duration}</TableCell>
+                    <TableCell>
+                      Dịch vụ: {row.technicianCommission} <br />
+                      Tư vấn: {row.consultingCommission}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button size="medium" variant="contained" component={Link} to={`${Path.Branch}/edit/${row._id}`}>
+                        {/* <EditIcon /> */}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={searchResults.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </MainCard>
   );
 };
