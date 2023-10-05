@@ -2,6 +2,7 @@
 
 //-!dmbg
 const mongoose = require("mongoose");
+const MongooseDelete = require("mongoose-delete");
 
 const DOCUMENT_NAME = "Branch";
 const COLLECTION_NAME = "Branches";
@@ -34,11 +35,11 @@ var BranchSchema = new mongoose.Schema(
     },
     startTime: {
       type: String,
-      required: true
+      required: true,
     },
     endTime: {
       type: String,
-      required: true
+      required: true,
     },
     staffs: {
       type: [mongoose.Types.ObjectId],
@@ -52,14 +53,15 @@ var BranchSchema = new mongoose.Schema(
     services: {
       type: [mongoose.Types.ObjectId],
     },
-
   },
   {
     timestamps: true,
     collection: COLLECTION_NAME,
-    versionKey: false
+    versionKey: false,
   }
 );
+
+BranchSchema.plugin(MongooseDelete, { deletedAt: true });
 
 //Export the model
 module.exports = mongoose.model(DOCUMENT_NAME, BranchSchema);
