@@ -77,7 +77,7 @@ const BranchForm = () => {
   const [errorApi, setErrorApi] = useState(null);
 
   useEffect(() => {
-    const getOneBranch = async (id) => {
+    const getOneBranch = async (isEditMode) => {
       if (isEditMode) {
         try {
           const oneBranchData = await branchApi.getById(id);

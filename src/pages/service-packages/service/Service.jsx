@@ -1,10 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  Button,
+  CardActions,
   Grid,
   Paper,
   Table,
@@ -14,13 +12,15 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
   Typography
 } from '@mui/material';
-import { Button, Card, CardActions, CardContent, CardMedia } from '@mui/material';
+import { serviceApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import formatCurrency from 'utils/formatCurrency';
 
 const columns = [
   { id: 'code', label: 'Code', minWidth: 50 },
@@ -38,6 +38,8 @@ const columns = [
 ];
 
 const Service = () => {
+  const navigation = useNavigate();
+
   const [data, setData] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
@@ -46,6 +48,49 @@ const Service = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleSearch = (event) => {
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    // console.log(searchTerm);
+  };
+
+  React.useEffect(() => {
+    const getData = async () => {
+      try {
+        const result = await serviceApi.fetchData();
+        if (result && result?.metadata) {
+          const allServices = result.metadata;
+
+          setData(allServices);
+          // console.log('result: ', allServices);
+        }
+        if (result?.response?.data?.code && result.response.data.code === 403) {
+          // console.log('result: ', result.response.data.code);
+          navigation(Path.FORBIDDEN, { replace: true });
+        }
+      } catch (error) {
+        if (error?.response?.data?.code && error.response.data.code === 403) {
+          // console.log('error: ', error.response.data.code);
+          navigation(Path.FORBIDDEN, { replace: true });
+        }
+      }
+    };
+    getData();
+    const resultsFilter = data.filter((item) => {
+      const priceMatch = item.price === parseInt(searchTerm);
+      const durationMatch = item.duration === parseInt(searchTerm);
+      return (
+        item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        priceMatch ||
+        durationMatch
+      );
+    });
+    // console.log(resultsFilter);
+    setSearchResults(resultsFilter);
+  }, [searchTerm, data, navigation]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -58,14 +103,24 @@ const Service = () => {
 
   return (
     <MainCard>
-      <Typography sx={{ mb: 1 }} variant="h4">
-        Các dịch vụ
-      </Typography>
-      <CardActions sx={{ mb: 1 }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Service + `/add`}>
-          Thêm dịch vụ
-        </Button>
-      </CardActions>
+      <Grid container sx={{ alignItems: 'center', width: '100%' }}>
+        <Grid item xs={3}>
+          <Typography sx={{ mb: 1 }} variant="h4">
+            Các dịch vụ
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <TextField sx={{ width: '100%' }} label="Tìm kiếm" value={searchTerm} onChange={handleSearch} />
+        </Grid>
+        <Grid item xs={3}>
+          <CardActions sx={{ justifyContent: 'flex-end' }}>
+            <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.Service + `/add`}>
+              Thêm dịch vụ mới
+            </Button>
+          </CardActions>
+        </Grid>
+      </Grid>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TablePagination
@@ -96,15 +151,15 @@ const Service = () => {
                       {row.code}
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell align="center">{row.price}</TableCell>
-                    <TableCell align="center">{row.duration}</TableCell>
+                    <TableCell align="center">{formatCurrency(row.price)}</TableCell>
+                    <TableCell align="center">{row.duration} phút</TableCell>
                     <TableCell>
-                      Dịch vụ: {row.technicianCommission} <br />
-                      Tư vấn: {row.consultingCommission}
+                      Dịch vụ: {row.technicianCommission}% <br />
+                      Tư vấn: {row.consultingCommission}%
                     </TableCell>
                     <TableCell align="right">
-                      <Button size="medium" variant="contained" component={Link} to={`${Path.Branch}/edit/${row._id}`}>
-                        {/* <EditIcon /> */}
+                      <Button size="medium" variant="contained" component={Link} to={`${Path.Service}/edit/${row._id}`}>
+                        <EditIcon />
                       </Button>
                     </TableCell>
                   </TableRow>
