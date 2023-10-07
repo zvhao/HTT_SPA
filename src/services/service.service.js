@@ -41,48 +41,33 @@ const roleService = {
 
     return services;
   },
-  // getById: async (id) => {
-  //   let role = await ServiceModel.findById(id).lean();
-  //   // console.log(role);
-  //   let permissions = role.permissions.map(
-  //     (p) =>
-  //       new Promise(async (resolve, reject) => {
-  //         try {
-  //           resolve(await permissionService.getById(p));
-  //         } catch (error) {
-  //           reject(error);
-  //         }
-  //       })
-  //   );
-
-  //   permissions = await Promise.all(permissions);
-
-  //   return { ...role, permissions };
-  // },
+  getById: async (id) => {
+    return await ServiceModel.findById(id).lean();
+  },
 
   // delete: async (id) => {
   //   // return await ServiceModel.find().lean();
   //   return true;
   // },
-  // update: async (id, data) => {
-  //   if (data.name) {
-  //     let role = await ServiceModel.findOne({
-  //       name: toLowerCase(data.name),
-  //     });
+  update: async (id, data) => {
+    if (data.code) {
+      let role = await ServiceModel.findOne({
+        code: toLowerCase(data.code),
+      });
 
-  //     if (role && id !== role._id.toString()) {
-  //       throw new ConflictRequestError("Name exists");
-  //     }
-  //   }
+      if (role && id !== role._id.toString()) {
+        throw new ConflictRequestError("code exists");
+      }
+    }
 
-  //   return await ServiceModel.findOneAndUpdate(
-  //     {
-  //       _id: new mongoose.Types.ObjectId(id),
-  //     },
-  //     { $set: data },
-  //     { new: true }
-  //   ).lean();
-  // },
+    return await ServiceModel.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(id),
+      },
+      { $set: data },
+      { new: true }
+    ).lean();
+  },
 };
 
 module.exports = roleService;

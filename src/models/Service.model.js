@@ -19,7 +19,7 @@ var ServiceSchema = new mongoose.Schema(
       required: true,
     },
     price: {
-      type: BigInt,
+      type: Number,
       required: true,
     },
     duration: {
@@ -36,7 +36,7 @@ var ServiceSchema = new mongoose.Schema(
     },
     courses: {
       type: [mongoose.Types.ObjectId],
-      //   required: true,
+        // required: true,
     },
     consultingCommission: {
       type: Number,
@@ -48,7 +48,7 @@ var ServiceSchema = new mongoose.Schema(
     },
     desc: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   {

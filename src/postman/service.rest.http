@@ -3,19 +3,37 @@
 ### CREATE
 POST {{url}}
 Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
 
 {
-  "name": "manager",
-  "desc": "Nhân viên quản lý",
-  "permissions": ["64f5c3282c268c9c00c1fdf5", "64f5c32d2c268c9c00c1fdf9", "64f5c3322c268c9c00c1fdfd", "64f5c3372c268c9c00c1fe01"]
+  "code": "DV004",
+  "name": "Gội đầu thư giãn",
+  "price": 49000,
+  "duration": 30,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "technicianCommission": 10,
+  "consultingCommission": 0,
+  "desc": "Gội đầu thường thư giãn 30p"
 }
 
 ### Update
-PATCH {{url}}/
+PATCH {{url}}/65211c7f7c8965ddd44e01de
 Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
 
 {
-  "permissions": ["", "", "", ""]
+  "code": "DV004",
+  "name": "Gội đầu thư giãn dv004",
+  "price": 49000,
+  "duration": 31,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "technicianCommission": 10,
+  "consultingCommission": 0,
+  "desc": "Gội đầu thường thư giãn 30p"
 }
 
 ### GET
@@ -23,4 +41,5 @@ GET {{url}}
 x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
 
 ### GET ID
-GET {{url}}/
+GET {{url}}/652108c82032342d82bf06f9
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
