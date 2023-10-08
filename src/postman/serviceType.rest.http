@@ -1,0 +1,33 @@
+@url=http://localhost:8888/api/v1/servicetypes
+
+### CREATE
+POST {{url}}
+Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
+
+{
+  "code": "LDV002",
+  "name": "Massage body",
+  "services": [],
+  "desc": "Massage body thư giãn, dưỡng sinh và trị liệu"
+}
+
+### Update
+PATCH {{url}}/652290cdf3d24fb0c3e4e8ed
+Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
+
+{
+  "code": "LDV001",
+  "name": "Gội đầu",
+  "services": ["6521051807cd75734a63ee6a","652108c82032342d82bf06f9","6521190968b9f8dc06cf37f5","65211c7f7c8965ddd44e01de","65215c99ea891ffac9a48196"],
+  "desc": "Gội đầu thư giãn, dưỡng sinh"
+}
+
+### GET
+GET {{url}}
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
+
+### GET ID
+GET {{url}}/6522a653dbe8238ff9cbe478
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NjUwNjk3MiwiZXhwIjoxNjk3MzcwOTcyfQ.vPawbwawnOc0DNEXAYkTceNo-czbXNUW5ILoMDfo5Gk
