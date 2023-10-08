@@ -240,7 +240,7 @@ const ServiceForm = () => {
                   margin="normal"
                   id="technicianCommission"
                   name="technicianCommission"
-                  label="Hoa hồng Kỹ thuật viên"
+                  label="% Tour Kỹ thuật viên"
                   type="number"
                   variant="outlined"
                   value={values.technicianCommission}
@@ -259,7 +259,7 @@ const ServiceForm = () => {
                   margin="normal"
                   id="consultingCommission"
                   name="consultingCommission"
-                  label="Hoa hồng tư vấn"
+                  label="% tư vấn"
                   type="number"
                   variant="outlined"
                   value={values.consultingCommission}

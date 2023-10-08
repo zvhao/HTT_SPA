@@ -5,7 +5,6 @@ import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import { Path } from 'constant/path';
 
-
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 
@@ -20,13 +19,11 @@ const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons'
 
 // Service
 const Service = Loadable(lazy(() => import('pages/service-packages/service/Service')));
-const ServiceDetail = Loadable(lazy(() => import('pages/service-packages/service/ServiceDetail')));
 const ServiceForm = Loadable(lazy(() => import('pages/service-packages/service/ServiceForm')));
 
 // Service Type
 const ServiceType = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceType')));
 const ServiceTypeForm = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceTypeForm')));
-
 
 const Course = Loadable(lazy(() => import('pages/service-packages/course/Course')));
 const CourseForm = Loadable(lazy(() => import('pages/service-packages/course/CourseForm')));
@@ -35,15 +32,11 @@ const CourseForm = Loadable(lazy(() => import('pages/service-packages/course/Cou
 const Combo = Loadable(lazy(() => import('pages/service-packages/combo/Combo')));
 const ComboForm = Loadable(lazy(() => import('pages/service-packages/combo/ComboForm')));
 
-
 const Staff = Loadable(lazy(() => import('pages/hrm/manager/Staff')));
 const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
 
 const Branch = Loadable(lazy(() => import('pages/branch/Branch')));
 const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
-
-
-
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -99,7 +92,7 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <ServiceForm />
-        },
+        }
       ]
     },
     {
@@ -117,7 +110,7 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <ServiceTypeForm />
-        },
+        }
       ]
     },
     {
@@ -135,7 +128,7 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <CourseForm />
-        },
+        }
       ]
     },
     {
@@ -153,12 +146,8 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <ComboForm />
-        },
+        }
       ]
-    },
-    {
-      path: Path.ServiceDetail + ':slug',
-      element: <ServiceDetail />
     },
     {
       path: Path.Staff,
@@ -175,7 +164,7 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <StaffForm />
-        },
+        }
       ]
     },
     {
@@ -193,9 +182,9 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <BranchForm />
-        },
+        }
       ]
-    },
+    }
   ]
 };
 
