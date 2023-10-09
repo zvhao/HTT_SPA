@@ -6,7 +6,7 @@ const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const permissionService = require("./service.service");
 
-const roleService = {
+const serviceService = {
   add: async ({
     code,
     name,
@@ -70,4 +70,4 @@ const roleService = {
   },
 };
 
-module.exports = roleService;
+module.exports = serviceService;
