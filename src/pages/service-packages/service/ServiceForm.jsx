@@ -127,7 +127,6 @@ const ServiceForm = () => {
     data.price = parseInt(values.price);
     data.duration = parseInt(values.duration);
     console.log(data);
-    navigation(Path.Service, { replace: true });
     if (isEditMode) {
       try {
         data.desc = desc.value
