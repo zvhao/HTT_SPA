@@ -1,10 +1,10 @@
+import AddIcon from '@mui/icons-material/Add';
 import {
   Autocomplete,
   Box,
   Button,
   CardActions,
   Grid,
-  InputAdornment,
   Paper,
   Table,
   TableBody,
@@ -20,16 +20,9 @@ import { Path } from 'constant/path';
 import { Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import NumericFormat from 'react-number-format';
-import ReactQuill from 'react-quill';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
 import * as yup from 'yup';
-import EditorToolbar, { formats, modules } from '../../../components/quill-editor/Toolbar';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 // import "./App.css";
 import { LoadingButton } from '@mui/lab';
 import { serviceApi, serviceTypeApi } from 'api';
@@ -72,17 +65,11 @@ const ServiceTypeForm = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const navigation = useNavigate();
-  const [serviceCount, setServiceCount] = useState(0);
-  const [serviceCode, setServiceCode] = useState('');
-  const [errorApi, setErrorApi] = useState(null);
-  const [desc, setDesc] = useState({ value: '<h1>Hello</h1>' });
-  const handleChangeDesc = (content) => {
-    setDesc({ value: content });
-  };
-  const [services, setServices] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
+  const [serviceTypeCount, setServiceTypeCount] = useState(0);
+  const [serviceTypeCode, setServiceTypeCode] = useState('');
 
-  const [searchValue, setSearchValue] = useState('');
+  const [services, setServices] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
 
   const [initialValues, setInitialValues] = useState({
     name: '',
@@ -90,27 +77,29 @@ const ServiceTypeForm = () => {
   });
 
   useEffect(() => {
-    const generateServiceCode = async () => {
-      try {
-        const result = await serviceTypeApi.fetchData();
-        const keys = Object.keys(result.metadata);
-        const count = keys.length;
-        setServiceCount(count);
-        const code = `LDV${String(serviceCount + 1).padStart(3, '0')}`;
-        setServiceCode(code);
-        // console.log(result);
-      } catch (error) {}
+    const generateServiceTypeCode = async () => {
+      if (!isEditMode) {
+        try {
+          const result = await serviceTypeApi.fetchData();
+          const keys = Object.keys(result.metadata);
+          const count = keys.length;
+          setServiceTypeCount(count);
+          const code = `LDV${String(serviceTypeCount + 1).padStart(3, '0')}`;
+          setServiceTypeCode(code);
+          // console.log(result);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     };
 
-    const getOneService = async (id) => {
+    const getOneServiceType = async (id) => {
       if (isEditMode) {
-        const serviceApiGetById = await serviceApi.getById(id);
-        const oneServiceData = { ...serviceApiGetById.metadata };
-        // oneServiceData.desc = desc;
-        setDesc({ value: oneServiceData.desc });
-        setServiceCode(oneServiceData.code);
-        setInitialValues(oneServiceData);
-        console.log('data:', oneServiceData);
+        const serviceTypeApiGetById = await serviceTypeApi.getById(id);
+        const oneServiceTypeData = { ...serviceTypeApiGetById.metadata };
+        setSelectedServices(oneServiceTypeData.services);
+        setServiceTypeCode(oneServiceTypeData.code);
+        setInitialValues(oneServiceTypeData);
         try {
         } catch (error) {
           console.log(error);
@@ -120,38 +109,19 @@ const ServiceTypeForm = () => {
     const fetchServices = async () => {
       try {
         const serviceData = await serviceApi.fetchData();
-        // console.log(serviceData.metadata);
         setServices(serviceData.metadata);
       } catch (error) {
         console.log(error);
       }
     };
 
-    generateServiceCode();
-    getOneService(id);
+    generateServiceTypeCode();
+    getOneServiceType(id);
     fetchServices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serviceCount, isEditMode, id]);
+  }, [serviceTypeCount, isEditMode, id]);
 
-  const handleServiceChange = (event, value) => {
-    setSelectedService(value);
-  };
-
-  const handleSearch = async () => {
-    // Gửi mã code lên backend để tìm kiếm các dịch vụ phù hợp
-    // và cập nhật danh sách dịch vụ
-    // Ví dụ:
-    const serviceData = await serviceApi.getById(searchValue);
-    setServices(serviceData.metadata);
-  };
-
-  const handleAddRow = () => {
-    // Thêm một hàng mới vào bảng
-    setServices((prevServices) => [...prevServices, '']);
-  };
-  const handleDeleteRow = (index) => {
-    // Xoá một hàng khỏi bảng
-    setServices((prevServices) => prevServices.filter((_, i) => i !== index));
+  const handleServicesChange = (event, value) => {
+    setSelectedServices(value);
   };
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
@@ -167,26 +137,27 @@ const ServiceTypeForm = () => {
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 4));
     const data = { ...values };
-    data.code = serviceCode;
+    data.code = serviceTypeCode;
+    if (selectedServices.length > 0) {
+      const servicesArray = selectedServices.map((service) => service._id);
+      data.services = servicesArray;
+    }
     // console.log(data);
     if (isEditMode) {
-      // try {
-      //   data.desc = desc.value;
-      //   const rs = await serviceApi.update(id, data);
-      //   console.log(rs);
-      //   navigation(Path.Service, { replace: true });
-      //   return rs;
-      // } catch (error) {
-      //   console.error(error);
-      // }
+      try {
+        const rs = await serviceTypeApi.update(id, data);
+        // console.log(rs);
+        navigation(Path.ServiceType, { replace: true });
+        return rs;
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       try {
-        data.services = [];
-        console.log(data);
-
-        // const rs = await serviceApi.create(data);
-        // navigation(Path.Service, { replace: true });
-        // return rs;
+        // console.log(data);
+        const rs = await serviceTypeApi.create(data);
+        navigation(Path.ServiceType, { replace: true });
+        return rs;
       } catch (error) {
         console.error(error);
       }
@@ -195,7 +166,7 @@ const ServiceTypeForm = () => {
 
   return (
     <Box>
-      <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
+      <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} loại dịch vụ</Typography>
       <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
@@ -208,7 +179,7 @@ const ServiceTypeForm = () => {
                   name="code"
                   label="Mã dịch vụ"
                   variant="outlined"
-                  value={serviceCode}
+                  value={serviceTypeCode}
                   disabled
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -247,7 +218,7 @@ const ServiceTypeForm = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <CardActions sx={{ justifyContent: 'end' }}>
+                <CardActions sx={{ justifyContent: 'start' }}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -260,96 +231,57 @@ const ServiceTypeForm = () => {
                   </Button>
                 </CardActions>
               </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  fullWidth
+                  sx={{
+                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                    '&': { mt: 2, mb: 2, p: 0 },
+                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                  }}
+                  multiple
+                  id="tags-outlined"
+                  options={services}
+                  getOptionLabel={(option) => option?.name || ''}
+                  onChange={handleServicesChange}
+                  value={selectedServices.length > 0 ? selectedServices : []}
+                  filterSelectedOptions
+                  renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ" placeholder={values.name} />}
+                />
+              </Grid>
+              <Grid item xs={6}  mt={2}>
+                {selectedServices && selectedServices.length !== 0 && (
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell width="100px" align="center">
+                            STT
+                          </TableCell>
+                          <TableCell align="center">Mã dịch vụ</TableCell>
+                          <TableCell align="center">Tên dịch vụ</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedServices.map((service, index) => (
+                          <TableRow key={index}>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">
+                              {index + 1}
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">
+                              {service.code}
+                            </TableCell>
+                            <TableCell align="center">{service.name}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+              </Grid>
             </Grid>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>STT</TableCell>
-                    <TableCell align="center">Tên dịch vụ</TableCell>
-                    <TableCell align="center">Thao tác</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>1</TableCell>
-                    <TableCell>
-                      <Autocomplete
-                        sx={{
-                          '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                          '&': { mt: 1, p: 0 },
-                          '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                          '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                          '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-                        }}
-                        fullWidth
-                        margin="dense"
-                        id="service"
-                        name="service"
-                        label="Nhân viên"
-                        options={services}
-                        getOptionLabel={(option) => option.name || option.code}
-                        value={selectedService}
-                        onChange={handleServiceChange}
-                        renderInput={(params) => <CssTextField {...params} variant="outlined" label="Dịch vụ" />}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <CardActions sx={{ justifyContent: 'end' }}>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          startIcon={<DeleteIcon />}
-                          // onClick={handleDeleteRow}
-                        >
-                          Xoá
-                        </Button>
-                      </CardActions>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>1</TableCell>
-                    <TableCell>
-                      <Autocomplete
-                        sx={{
-                          '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                          '&': { mt: 1, p: 0 },
-                          '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                          '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                          '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-                        }}
-                        fullWidth
-                        margin="dense"
-                        id="service"
-                        name="service"
-                        options={services}
-                        getOptionLabel={(option) => option.name || option.code}
-                        value={selectedService}
-                        onChange={handleServiceChange}
-                        renderInput={(params) => <CssTextField {...params} variant="outlined" label="Dịch vụ" />}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <CardActions sx={{ justifyContent: 'end' }}>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          startIcon={<DeleteIcon />}
-                          // onClick={handleDeleteRow}
-                        >
-                          Xoá
-                        </Button>
-                      </CardActions>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-                <TableRow>
-                  <TableCell colSpan={3}>
-                    <Button fullWidth size="large" variant="outlined" color="primary" startIcon={<AddIcon />}></Button>
-                  </TableCell>
-                </TableRow>
-              </Table>
-            </TableContainer>
 
             <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={isSubmitting} variant="contained">
               <span>Gửi</span>
