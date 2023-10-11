@@ -31,6 +31,7 @@ router
   .route("/:id")
   .get(asyncHandler(serviceTypeController.getById))
   .patch(
+    asyncHandler(checkPermission("servicetype.update")),
     validateResource(ServiceTypeSchemaInput),
     asyncHandler(serviceTypeController.update)
   )

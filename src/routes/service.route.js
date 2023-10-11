@@ -30,7 +30,10 @@ router
 router
   .route("/:id")
   .get(asyncHandler(serviceController.getById))
-  .patch(asyncHandler(serviceController.update))
+  .patch(
+    asyncHandler(checkPermission("service.update")),
+    asyncHandler(serviceController.update)
+  )
   .delete(asyncHandler(serviceController.delete));
 
 module.exports = router;

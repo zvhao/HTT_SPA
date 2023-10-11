@@ -3,22 +3,32 @@
 const { default: mongoose } = require("mongoose");
 const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
-const permissionService = require("./service.service");
 const ServiceTypeModel = require("../models/ServiceType.model");
 const serviceService = require("./service.service");
+const ServiceModel = require("../models/Service.model");
 
 const ServiceTypeService = {
   add: async ({ code, name, services, desc }) => {
-    if (await ServiceTypeModel.findOne({ code: toLowerCase(code) })) {
+    if (await ServiceTypeModel.findOne({ code: code.toLowerCase() })) {
       throw new ConflictRequestError("Code exists");
     }
-
-    return await new ServiceTypeModel({
+    const serviceType = await new ServiceTypeModel({
       code,
       name,
       services,
       desc,
     }).save();
+
+    if (Array.isArray(services) && services.length > 0) {
+      const serviceIds = services.filter(
+        (service) => typeof service === "string"
+      );
+      await ServiceModel.updateMany(
+        { _id: { $in: serviceIds } },
+        { $push: { service_types: serviceType._id } }
+      );
+    }
+    return serviceType;
   },
   getAll: async (filters = {}) => {
     const serviceTypes = await ServiceTypeModel.find().lean();
@@ -35,7 +45,6 @@ const ServiceTypeService = {
       )
     );
 
-    // return serviceTypes;
   },
   getById: async (id) => {
     let serviceType = await ServiceTypeModel.findById(id).lean();
