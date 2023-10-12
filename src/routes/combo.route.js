@@ -31,6 +31,7 @@ router
   .route("/:id")
   .get(asyncHandler(comboController.getById))
   .patch(
+    validateResource(ComboSchemaInput),
     asyncHandler(checkPermission("combo.update")),
     asyncHandler(comboController.update)
   )
