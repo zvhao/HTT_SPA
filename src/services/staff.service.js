@@ -18,6 +18,7 @@ const branchService = require("./branch.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
+const { regexData } = require("../core/fuction.code");
 
 const staffService = {
   add: async ({

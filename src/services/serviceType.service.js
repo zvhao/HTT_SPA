@@ -6,10 +6,11 @@ const { ConflictRequestError } = require("../utils/error.util");
 const ServiceTypeModel = require("../models/ServiceType.model");
 const serviceService = require("./service.service");
 const ServiceModel = require("../models/Service.model");
+const { regexData } = require("../core/fuction.code");
 
 const ServiceTypeService = {
   add: async ({ code, name, services, desc }) => {
-    if (await ServiceTypeModel.findOne({ code: code.toLowerCase() })) {
+    if (await ServiceTypeModel.findOne({ code: regexData(code) })) {
       throw new ConflictRequestError("Code exists");
     }
     const serviceType = await new ServiceTypeModel({
@@ -18,16 +19,6 @@ const ServiceTypeService = {
       services,
       desc,
     }).save();
-
-    if (Array.isArray(services) && services.length > 0) {
-      const serviceIds = services.filter(
-        (service) => typeof service === "string"
-      );
-      await ServiceModel.updateMany(
-        { _id: { $in: serviceIds } },
-        { $push: { service_types: serviceType._id } }
-      );
-    }
     return serviceType;
   },
   getAll: async (filters = {}) => {
@@ -44,7 +35,6 @@ const ServiceTypeService = {
           })
       )
     );
-
   },
   getById: async (id) => {
     let serviceType = await ServiceTypeModel.findById(id).lean();

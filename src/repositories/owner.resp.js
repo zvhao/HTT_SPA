@@ -4,9 +4,10 @@ const { default: mongoose } = require("mongoose");
 const OwnerModel = require("../models/Owner.model")
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
+const { regexData } = require("../core/fuction.code");
 
 exports.findOwnerByUsername = async (username) => {
-  return await OwnerModel.findOne({ username }).lean()
+  return await OwnerModel.findOne({ username: regexData(username) }).lean()
 }
 exports.findAllOwner = async () => {
   return await OwnerModel.find().lean();

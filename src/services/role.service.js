@@ -5,10 +5,12 @@ const RoleModel = require("../models/Role.model");
 const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const permissionService = require("./permission.service");
+const { regexData } = require("../core/fuction.code");
+
 
 const roleService = {
   add: async ({ name, desc, permissions }) => {
-    if (await RoleModel.findOne({ name: toLowerCase(name) })) {
+    if (await RoleModel.findOne({ name: regexData(name) })) {
       throw new ConflictRequestError("Name exists");
     }
 

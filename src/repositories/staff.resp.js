@@ -4,9 +4,11 @@ const { default: mongoose } = require("mongoose");
 const StaffModel = require("../models/Staff.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { regexData } = require("../core/fuction.code");
+
 
 exports.findStaffByUsername = async (username) => {
-  return await StaffModel.findOne({ username }).lean();
+  return await StaffModel.findOne({ username: regexData(username) }).lean();
 };
 exports.findAllStaff = async (filters) => {
   return await StaffModel.find(filters).lean();
@@ -98,6 +100,6 @@ exports.handleLogin = async (data, token, accInfo) => {
     message: "Login successful",
     user: data.username,
     token: token,
-    accInfo: accInfo
+    accInfo: accInfo,
   };
 };

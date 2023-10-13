@@ -17,6 +17,8 @@ const roleService = require("./role.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
+const { regexData } = require("../core/fuction.code");
+
 
 const ownerService = {
   add: async ({

@@ -9,3 +9,7 @@ exports.decodeToken = (token) => {
     return error
   }
 };
+
+exports.regexData = (data) => {
+  return new RegExp('^' + data + '$', 'i');
+}

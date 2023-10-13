@@ -6,15 +6,29 @@ const { ConflictRequestError } = require("../utils/error.util");
 const ComboModel = require("../models/Combo.model");
 const ServiceModel = require("../models/Service.model");
 const serviceService = require("./service.service");
+const { regexData } = require("../core/fuction.code");
 
 const ComboService = {
-  add: async ({ code, name, services, desc }) => {
-    if (await ComboModel.findOne({ code: code.toLowerCase() })) {
+  add: async ({
+    code,
+    name,
+    price,
+    duration,
+    technicianCommission,
+    consultingCommission,
+    services,
+    desc,
+  }) => {
+    if (await ComboModel.findOne({ code: regexData(code) })) {
       throw new ConflictRequestError("Code exists");
     }
     const combo = await new ComboModel({
       code,
       name,
+      price,
+      duration,
+      technicianCommission,
+      consultingCommission,
       services,
       desc,
     }).save();
@@ -23,10 +37,17 @@ const ComboService = {
       const serviceIds = services.filter(
         (service) => typeof service === "string"
       );
-      await ServiceModel.updateMany(
-        { _id: { $in: serviceIds } },
-        { $push: { combos: combo._id } }
-      );
+
+      const existingServices = await ServiceModel.find({
+        _id: { $in: serviceIds },
+      });
+
+      if (existingServices.length > 0) {
+        await ServiceModel.updateMany(
+          { _id: { $in: serviceIds } },
+          { $push: { combos: combo._id } }
+        );
+      }
     }
     return combo;
   },
@@ -74,15 +95,17 @@ const ComboService = {
       if (rs && id !== rs._id.toString()) {
         throw new ConflictRequestError("code exists");
       }
-    }
 
-    return await ComboModel.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(id),
-      },
-      { $set: data },
-      { new: true }
-    ).lean();
+      const combo = await ComboModel.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+        { $set: data },
+        { new: true }
+      ).lean();
+
+      return combo;
+    }
   },
 };
 

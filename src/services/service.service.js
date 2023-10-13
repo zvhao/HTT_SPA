@@ -5,6 +5,7 @@ const ServiceModel = require("../models/Service.model");
 const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const permissionService = require("./service.service");
+const { regexData } = require("../core/fuction.code");
 
 const serviceService = {
   add: async ({
@@ -19,7 +20,7 @@ const serviceService = {
     consultingCommission,
     desc,
   }) => {
-    if (await ServiceModel.findOne({ code: toLowerCase(code) })) {
+    if (await ServiceModel.findOne({ code: regexData(code) })) {
       throw new ConflictRequestError("Code exists");
     }
 
@@ -52,7 +53,7 @@ const serviceService = {
   update: async (id, data) => {
     if (data.code) {
       let role = await ServiceModel.findOne({
-        code: toLowerCase(data.code),
+        code: regexData(code),
       });
 
       if (role && id !== role._id.toString()) {

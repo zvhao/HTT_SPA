@@ -17,13 +17,29 @@ var ComboSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
+    duration: {
+      type: Number,
+      required: true,
+    },
+    consultingCommission: {
+      type: Number,
+      required: true,
+    },
+    technicianCommission: {
+      type: Number,
+      required: true,
+    },
     desc: {
       type: String,
-    //   required: true,
+      // required: true,
     },
     services: {
       type: [mongoose.Types.ObjectId],
-    //   required: true,
+      required: true,
     },
   },
   {

@@ -8,6 +8,8 @@ const {
   findPermByAlias,
   savePermission,
 } = require("../repositories/permission.resp");
+const { regexData } = require("../core/fuction.code");
+
 
 module.exports = {
   add: async ({ name, alias, desc }) => {

@@ -4,9 +4,10 @@ const { default: mongoose } = require("mongoose");
 const BranchModel = require("../models/Branch.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { regexData } = require("../core/fuction.code");
 
 exports.findBranchByCode = async (code) => {
-  return await BranchModel.findOne({ code }).lean();
+  return await BranchModel.findOne({ code: regexData(code) }).lean();
 };
 exports.findAllBranch = async (filters) => {
   return await BranchModel.find().lean();
