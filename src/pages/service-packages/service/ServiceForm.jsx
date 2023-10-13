@@ -22,9 +22,8 @@ const validationSchema = yup.object({
   name: yup.string().required('Tên dịch vụ là bắt buộc'),
   price: yup.number().required('Giá dịch vụ là bắt buộc'),
   duration: yup.string().required('Thời gian dịch vụ là bắt buộc'),
-
-  technicianCommission: yup.string().required('Hoa hồng là bắt buộc'),
-  consultingCommission: yup.string().required('Hoa hồng là bắt buộc')
+  technicianCommission: yup.number().required('Hoa hồng là bắt buộc').min(0, 'Hoa hồng phải lớn hơn hoặc bằng 0'),
+  consultingCommission: yup.number().required('Hoa hồng là bắt buộc').min(0, 'Hoa hồng phải lớn hơn hoặc bằng 0')
 });
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
   const { onChange, ...other } = props;
@@ -62,7 +61,7 @@ const ServiceForm = () => {
   const [serviceCount, setServiceCount] = useState(0);
   const [serviceCode, setServiceCode] = useState('');
   const [errorApi, setErrorApi] = useState(null);
-  const [desc, setDesc] = useState({ value: '<h1>Hello</h1>' });
+  const [desc, setDesc] = useState({ value: '' });
   const handleChangeDesc = (content) => {
     setDesc({ value: content });
   };
@@ -129,7 +128,7 @@ const ServiceForm = () => {
     console.log(data);
     if (isEditMode) {
       try {
-        data.desc = desc.value
+        data.desc = desc.value;
         const rs = await serviceApi.update(id, data);
         console.log(rs);
         navigation(Path.Service, { replace: true });

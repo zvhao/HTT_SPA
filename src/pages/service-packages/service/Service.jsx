@@ -27,7 +27,6 @@ const columns = [
   { id: 'name', label: 'Tên dịch vụ', minWidth: 100 },
   { id: 'price', label: 'Giá dịch vụ', minWidth: 100 },
   { id: 'duration', label: 'Thời gian', minWidth: 100 },
-  // { id: 'group', label: 'Nhóm', minWidth: 100 },
   { id: 'commission', label: 'Hoa hồng', minWidth: 100 },
   {
     id: 'operation',
@@ -43,8 +42,6 @@ const Service = () => {
   const [data, setData] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
-
-  React.useEffect(() => {});
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -157,7 +154,8 @@ const Service = () => {
                       Dịch vụ: {row.technicianCommission}% <br />
                       Tư vấn: {row.consultingCommission}%
                     </TableCell>
-                    <TableCell align="right">
+
+                    <TableCell align="center">
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Service}/edit/${row._id}`}>
                         <EditIcon />
                       </Button>
