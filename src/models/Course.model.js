@@ -4,8 +4,8 @@
 const mongoose = require("mongoose");
 const MongooseDelete = require("mongoose-delete");
 
-const DOCUMENT_NAME = "Combo";
-const COLLECTION_NAME = "Combos";
+const DOCUMENT_NAME = "Course";
+const COLLECTION_NAME = "Courses";
 
 var CourseSchema = new mongoose.Schema(
   {
@@ -17,8 +17,12 @@ var CourseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    price: {
-      type: Number,
+    package_details: {
+      type: [mongoose.Schema.Types.Mixed],  
+      required: true,
+    },
+    imgs: {
+      type: Array,
       required: true,
     },
     duration: {

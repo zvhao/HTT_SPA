@@ -12,5 +12,6 @@ router.use("/api/v1/staffs", require("./staff.route"));
 router.use("/api/v1/services", require("./service.route"));
 router.use("/api/v1/serviceTypes", require("./servicetype.route"));
 router.use("/api/v1/combos", require("./combo.route"));
+router.use("/api/v1/courses", require("./course.route"));
 
 module.exports = router;

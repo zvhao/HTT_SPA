@@ -29,6 +29,15 @@ const env = cleanEnv(process.env, {
    * ==================================
    */
   FOLDER_ROOT_LOG: str({ default: "logs" }),
+
+  /**
+   * ==================================
+   * Cloudinary
+   * ==================================
+   */
+  CLOUDINARY_CLOUD_NAME: str({ default: "dilwu8gqe" }),
+  CLOUDINARY_API_KEY: str({ default: "248645875513972" }),
+  CLOUDINARY_API_SECRET: str({ default: "jB_KNM3f_W_-rKdXWc0vFynt6QU" }),
 });
 
 module.exports = env;
