@@ -4,11 +4,10 @@
 const mongoose = require("mongoose");
 const MongooseDelete = require("mongoose-delete");
 
+const DOCUMENT_NAME = "Combo";
+const COLLECTION_NAME = "Combos";
 
-const DOCUMENT_NAME = "Service";
-const COLLECTION_NAME = "Services";
-
-var ServiceSchema = new mongoose.Schema(
+var CourseSchema = new mongoose.Schema(
   {
     code: {
       type: String,
@@ -26,18 +25,6 @@ var ServiceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    service_types: {
-      type: [mongoose.Types.ObjectId],
-        required: true,
-    },
-    combos: {
-      type: [mongoose.Types.ObjectId],
-        required: true,
-    },
-    courses: {
-      type: [mongoose.Types.ObjectId],
-        required: true,
-    },
     consultingCommission: {
       type: Number,
       required: true,
@@ -50,6 +37,10 @@ var ServiceSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
+    services: {
+      type: [mongoose.Types.ObjectId],
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -58,7 +49,7 @@ var ServiceSchema = new mongoose.Schema(
   }
 );
 
-ServiceSchema.plugin(MongooseDelete, { deletedAt: true })
+CourseSchema.plugin(MongooseDelete, { deletedAt: true });
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, ServiceSchema);
+module.exports = mongoose.model(DOCUMENT_NAME, CourseSchema);

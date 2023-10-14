@@ -4,11 +4,11 @@ const { default: mongoose } = require("mongoose");
 const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const ServiceTypeModel = require("../models/ServiceType.model");
-const serviceService = require("./service.service");
+const ServiceService = require("./service.service");
 const ServiceModel = require("../models/Service.model");
 const { regexData } = require("../core/fuction.code");
 
-const ServiceTypeService = {
+const  ServiceTypeService = {
   add: async ({ code, name, services, desc }) => {
     if (await ServiceTypeModel.findOne({ code: regexData(code) })) {
       throw new ConflictRequestError("Code exists");
@@ -42,7 +42,7 @@ const ServiceTypeService = {
       (p) =>
         new Promise(async (resolve, reject) => {
           try {
-            resolve(await serviceService.getById(p));
+            resolve(await ServiceService.getById(p));
           } catch (error) {
             reject(error);
           }
@@ -59,7 +59,7 @@ const ServiceTypeService = {
   update: async (id, data) => {
     if (data.code) {
       let role = await ServiceTypeModel.findOne({
-        code: toLowerCase(data.code),
+        code: regexData(data.code),
       });
 
       if (role && id !== role._id.toString()) {

@@ -6,6 +6,7 @@ const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const permissionService = require("./service.service");
 const { regexData } = require("../core/fuction.code");
+const ServiceTypeModel = require("../models/ServiceType.model");
 
 const serviceService = {
   add: async ({
@@ -38,7 +39,38 @@ const serviceService = {
     }).save();
   },
   getAll: async (filters = {}) => {
-    const services = await ServiceModel.find().lean();
+    let services = await ServiceModel.find().lean();
+    // Lấy danh sách id của các services
+    const serviceIds = services.map((service) => service._id);
+    // Tìm các ServiceType có trường services chứa các id của services
+    const serviceTypes = await ServiceTypeModel.find({
+      services: { $in: serviceIds },
+    }).lean();
+    // Tạo một đối tượng map để lưu trữ các id của ServiceType cho mỗi service
+    const serviceTypeMap = {};
+    // Duyệt qua danh sách serviceTypes và gán các id vào serviceTypeMap
+    serviceTypes.forEach((serviceType) => {
+      serviceType.services.forEach((serviceId) => {
+        if (!serviceTypeMap[serviceId]) {
+          serviceTypeMap[serviceId] = [];
+        }
+        serviceTypeMap[serviceId].push(serviceType._id);
+      });
+    });
+
+    services.forEach((service) => {
+      const serviceId = service._id;
+      if (serviceTypeMap[serviceId]) {
+        service.service_types = serviceTypeMap[serviceId].map(
+          (serviceTypeId) => {
+            const serviceType = serviceTypes.find(
+              (type) => type._id.toString() === serviceTypeId.toString()
+            );
+            return serviceType
+          }
+        );
+      }
+    });
 
     return services;
   },
@@ -53,7 +85,7 @@ const serviceService = {
   update: async (id, data) => {
     if (data.code) {
       let role = await ServiceModel.findOne({
-        code: regexData(code),
+        code: regexData(data.code),
       });
 
       if (role && id !== role._id.toString()) {
