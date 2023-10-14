@@ -1,5 +1,5 @@
 import TokenAuth from 'utils/TokenAuth';
-const baseUrl = '/api/v1/combos';
+const baseUrl = '/api/v1/courses';
 
 const fetchData = async () => {
   try {
