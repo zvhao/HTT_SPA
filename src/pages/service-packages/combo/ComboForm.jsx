@@ -323,7 +323,14 @@ const ComboForm = () => {
                   multiple
                   id="tags-outlined"
                   options={services}
-                  getOptionLabel={(option) => option?.name || ''}
+                  getOptionLabel={(option) => `${option.code} - ${option.name}`}
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter(
+                      (option) =>
+                        option.code.toLowerCase().includes(inputValue.toLowerCase()) ||
+                        option.name.toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                  }
                   onChange={handleServiceChange}
                   value={selectedServices.length > 0 ? selectedServices : []}
                   filterSelectedOptions

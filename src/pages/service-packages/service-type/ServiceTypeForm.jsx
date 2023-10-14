@@ -141,12 +141,14 @@ const ServiceTypeForm = () => {
     if (selectedServices.length > 0) {
       const servicesArray = selectedServices.map((service) => service._id);
       data.services = servicesArray;
+    } else {
+      data.services = [];
     }
     // console.log(data);
     if (isEditMode) {
       try {
+        // console.log(data);
         const rs = await serviceTypeApi.update(id, data);
-        // console.log(rs);
         navigation(Path.ServiceType, { replace: true });
         return rs;
       } catch (error) {
@@ -244,14 +246,21 @@ const ServiceTypeForm = () => {
                   multiple
                   id="tags-outlined"
                   options={services}
-                  getOptionLabel={(option) => option?.name || ''}
+                  getOptionLabel={(option) => `${option.code} - ${option.name}`}
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter(
+                      (option) =>
+                        option.code.toLowerCase().includes(inputValue.toLowerCase()) ||
+                        option.name.toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                  }
                   onChange={handleServicesChange}
                   value={selectedServices.length > 0 ? selectedServices : []}
                   filterSelectedOptions
                   renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ" placeholder={values.name} />}
                 />
               </Grid>
-              <Grid item xs={6}  mt={2}>
+              <Grid item xs={6} mt={2}>
                 {selectedServices && selectedServices.length !== 0 && (
                   <TableContainer component={Paper}>
                     <Table>
