@@ -33,7 +33,7 @@
   "desc": "Chi nhánh 2",
   "capacity": 15,
   "manager": {
-    "$oid": "6506d038cc31547056777718"
+    "$oid": "6506dff5a484aabc954a2df1"
   },
   "startTime": "09:00",
   "endTime": "20:00",
@@ -46,5 +46,27 @@
   },
   "updatedAt": {
     "$date": "2023-09-17T14:51:38.120Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65195eabff462900bc604f19"
+  },
+  "name": "HTT SPA",
+  "code": "cd03",
+  "address": "1",
+  "desc": "Chi nhánh 1",
+  "capacity": 12,
+  "startTime": "09:00",
+  "endTime": "20:00",
+  "staffs": [],
+  "courses": [],
+  "combos": [],
+  "services": [],
+  "createdAt": {
+    "$date": "2023-10-01T11:57:31.422Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-01T11:57:31.422Z"
   }
 }]

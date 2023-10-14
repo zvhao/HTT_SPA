@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "6526a2c11d41757f515f0681"
+  },
+  "code": "LDV001",
+  "name": "Gội đầu",
+  "desc": "Gội đầu thư giãn, dưỡng sinh",
+  "services": [
+    {
+      "$oid": "6521051807cd75734a63ee6a"
+    },
+    {
+      "$oid": "652108c82032342d82bf06f9"
+    },
+    {
+      "$oid": "6521190968b9f8dc06cf37f5"
+    },
+    {
+      "$oid": "65211c7f7c8965ddd44e01de"
+    },
+    {
+      "$oid": "65215c99ea891ffac9a48196"
+    },
+    {
+      "$oid": "6529487ff8db0affc9fa28de"
+    }
+  ],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-11T13:27:29.997Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:39:32.643Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65290c0c82e12cdc00aa5a84"
+  },
+  "code": "LDV002",
+  "name": "Massage body",
+  "desc": "Massage body thư giãn, trị liệu",
+  "services": [
+    {
+      "$oid": "6527f925f2dfbd5d58baac09"
+    },
+    {
+      "$oid": "6527f94df2dfbd5d58bac823"
+    },
+    {
+      "$oid": "6527f965f2dfbd5d58bacfe5"
+    }
+  ],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-13T09:21:16.360Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T09:21:16.360Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "652a14e6fad40cfa2a4f802d"
+  },
+  "code": "LDV003",
+  "name": "Gội đầu M",
+  "desc": "",
+  "services": [],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-14T04:11:18.827Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-14T07:40:42.251Z"
+  }
+}]

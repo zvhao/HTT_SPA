@@ -1,0 +1,54 @@
+[{
+  "_id": {
+    "$oid": "652944bc90a19111a4a2a556"
+  },
+  "code": "CB001",
+  "name": "Massage Body - Gội VIP 1",
+  "price": 249000,
+  "duration": 90,
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "services": [
+    {
+      "$oid": "65215c99ea891ffac9a48196"
+    },
+    {
+      "$oid": "6527f925f2dfbd5d58baac09"
+    }
+  ],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-13T13:23:08.692Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:23:08.692Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "652948bcf8db0affc9fa6685"
+  },
+  "code": "CB002",
+  "name": "Massage Body - Gội VIP 2",
+  "price": 349000,
+  "duration": 120,
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "services": [
+    {
+      "$oid": "6529487ff8db0affc9fa28de"
+    },
+    {
+      "$oid": "6527f94df2dfbd5d58bac823"
+    }
+  ],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-13T13:40:12.213Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:40:12.213Z"
+  }
+}]

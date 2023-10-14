@@ -1,0 +1,30 @@
+[{
+  "_id": {
+    "$oid": "652a9c3c0282e4377377d6d0"
+  },
+  "code": "LT001",
+  "name": "Gội đầu thư giãn gói 1",
+  "package_details": [
+    {
+      "times": 5,
+      "price": 529000
+    },
+    {
+      "times": 5,
+      "price": 529000
+    }
+  ],
+  "imgs": [],
+  "duration": 30,
+  "consultingCommission": 0,
+  "technicianCommission": 0,
+  "desc": "",
+  "services": [],
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-14T13:48:44.677Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-14T13:56:53.943Z"
+  }
+}]

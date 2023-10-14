@@ -1,0 +1,220 @@
+[{
+  "_id": {
+    "$oid": "6521051807cd75734a63ee6a"
+  },
+  "code": "DV011",
+  "name": "Gội đầu thư giãn",
+  "price": 49000,
+  "duration": 30,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "<p>Gội đầu thường thư giãn 30p</p><p class=\"ql-align-center ql-indent-1\"><img src=\"https://i.ibb.co/Ln7XH5z/goi-dau.jpg\" width=\"416\" style=\"\"></p>",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-07T07:13:28.958Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-14T10:42:44.989Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "652108c82032342d82bf06f9"
+  },
+  "code": "DV002",
+  "name": "Gội đầu dưỡng sinh 199k",
+  "price": 199000,
+  "duration": 120,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "<p>Gội đầu thường thư giãn 30p</p>",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-07T07:29:12.534Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:08:52.340Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6521190968b9f8dc06cf37f5"
+  },
+  "code": "DV003",
+  "name": "Gội đầu dưỡng sinh 189k",
+  "price": 189000,
+  "duration": 90,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "<ol><li>Massage đầu khô</li><li>Tẩy trang</li><li>Rửa mặt</li><li>Tẩy tế bào chết</li><li>Massa kén tơ tầm</li><li>Massage mặt</li><li>Cạo gió mặt</li><li>Đắp Mask</li><li>Gội nước 1</li><li>Gội nước 2</li><li>Gội canh thảo dược</li><li>Ủ xả</li><li>Massage cổ vai gáy</li><li>Massage tay</li><li>Sấy tóc</li><li>Xịt dưỡng tóc</li></ol>",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-07T08:38:33.302Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-11T13:27:30.007Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65211c7f7c8965ddd44e01de"
+  },
+  "code": "DV004",
+  "name": "Gội đầu dưỡng sinh 99k",
+  "price": 99000,
+  "duration": 45,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "<h1>Gội đầu thường thư giãn 45p</h1>",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-07T08:53:19.216Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-11T13:27:30.007Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65215c99ea891ffac9a48196"
+  },
+  "code": "DV005",
+  "name": "Gội đầu dưỡng sinh 119k",
+  "price": 119000,
+  "duration": 50,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-07T13:26:49.098Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:23:08.708Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6527f925f2dfbd5d58baac09"
+  },
+  "code": "DV006",
+  "name": "Body thư giãn gói 1",
+  "price": 179000,
+  "duration": 40,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-12T13:48:21.801Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:23:08.708Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6527f94df2dfbd5d58bac823"
+  },
+  "code": "DV007",
+  "name": "Body thư giãn gói 2",
+  "price": 249000,
+  "duration": 60,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-12T13:49:01.376Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:40:12.223Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6527f965f2dfbd5d58bacfe5"
+  },
+  "code": "DV008",
+  "name": "Body thư giãn gói 3",
+  "price": 289000,
+  "duration": 90,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-12T13:49:25.742Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T09:21:16.369Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6529487ff8db0affc9fa28de"
+  },
+  "code": "DV009",
+  "name": "Gội đầu dưỡng sinh 149k",
+  "price": 149000,
+  "duration": 60,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-13T13:39:11.725Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-13T13:40:12.223Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "652a0785a60b69d6fe14037b"
+  },
+  "code": "DV010",
+  "name": "Gội trị rụng tóc",
+  "price": 79000,
+  "duration": 30,
+  "service_types": [],
+  "combos": [],
+  "courses": [],
+  "consultingCommission": 0,
+  "technicianCommission": 10,
+  "desc": "",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-14T03:14:13.015Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-14T03:14:13.015Z"
+  }
+}]
