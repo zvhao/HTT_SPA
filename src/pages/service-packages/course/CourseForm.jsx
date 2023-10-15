@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  FormHelperText,
   Grid,
   InputAdornment,
   Paper,
@@ -16,7 +17,7 @@ import {
   styled
 } from '@mui/material';
 import { Path } from 'constant/path';
-import { Form, Formik } from 'formik';
+import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -33,14 +34,26 @@ import { serviceApi, courseApi, comboApi } from 'api';
 import 'react-quill/dist/quill.snow.css';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import formatCurrency from 'utils/formatCurrency';
+import { DeleteOutlined } from '@ant-design/icons';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const validationSchema = yup.object({
   // code: yup.string().required('Mã gói - liệu trình là bắt buộc'),
   name: yup.string().required('Tên gói - liệu trình là bắt buộc'),
-  // price: yup.number().required('Giá gói - liệu trình là bắt buộc'),
   duration: yup.string().required('Thời gian gói - liệu trình là bắt buộc'),
   technicianCommission: yup.number().required('Hoa hồng là bắt buộc').min(0, 'Hoa hồng phải lớn hơn hoặc bằng 0'),
-  consultingCommission: yup.number().required('Hoa hồng là bắt buộc').min(0, 'Hoa hồng phải lớn hơn hoặc bằng 0')
+  consultingCommission: yup.number().required('Hoa hồng là bắt buộc').min(0, 'Hoa hồng phải lớn hơn hoặc bằng 0'),
+  package_details: yup.array().of(
+    yup
+      .object()
+      .shape({
+        times: yup.number().required('Vui lòng nhập số lần thực hiện gói'),
+        price: yup.number().required('Vui lòng nhập giá')
+      })
+      .required('Hãy thêm ít nhất 1 gói liệu trình')
+  ),
+  services: yup.array().required('Chọn ít nhất 1 dịch vụ')
 });
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
   const { onChange, ...other } = props;
@@ -84,19 +97,35 @@ const CourseForm = () => {
   };
 
   const [services, setServices] = useState([]);
+  const [totalPriceDuration, setTotalPriceDuration] = useState({
+    duration: 0,
+    price: 0
+  });
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [errorRequired, setErrorRequired] = useState({
+    services: ''
+  });
 
   const [initialValues, setInitialValues] = useState({
     code: '',
     name: '',
-    details_each_time: '',
-    imgs: '',
+    package_details: [
+      {
+        times: 5,
+        price: 529000
+      },
+      {
+        times: 10,
+        price: 999000
+      }
+    ],
+    imgs: [],
     duration: 0,
     consultingCommission: 0,
     technicianCommission: 0,
     desc: '',
-    services: ''
+    services: []
   });
 
   useEffect(() => {
@@ -152,6 +181,14 @@ const CourseForm = () => {
 
   const handleServicesChange = (event, value) => {
     setSelectedServices(value);
+    if (value.length === 0) {
+      setErrorRequired({ services: 'Cần ít nhất 1 dịch vụ' });
+      console.log(value.length);
+    }
+    setTotalPriceDuration({
+      price: value.reduce((acc, service) => acc + service.price, 0),
+      duration: value.reduce((acc, service) => acc + service.duration, 0)
+    });
   };
 
   const handleFileChange = (event) => {
@@ -174,11 +211,17 @@ const CourseForm = () => {
     let data = { ...values };
     data.code = courseCode;
     data.duration = parseInt(values.duration);
+    data.desc = desc.value;
+    if (selectedServices.length > 0) {
+      const servicesArray = selectedServices.map((service) => service._id);
+      data.services = servicesArray;
+    } else {
+      data.services = [];
+    }
     console.log(data);
-    console.log(selectedFiles);
+    // console.log(selectedFiles);
     if (isEditMode) {
       try {
-        data.desc = desc.value;
         // console.log(data);
         // const rs = await serviceApi.update(id, data);
         // console.log(rs);
@@ -243,26 +286,7 @@ const CourseForm = () => {
                   helperText={touched.name && errors.name}
                 />
               </Grid>
-              {/* <Grid item xs={3}>
-                <CssTextField
-                  fullWidth
-                  margin="normal"
-                  label="Giá"
-                  // value={values.numberformat}
-                  // onChange={handleChange}
-                  name="price"
-                  id="price"
-                  InputProps={{
-                    inputComponent: NumericFormatCustom
-                  }}
-                  variant="outlined"
-                  value={values.price}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={touched.price && Boolean(errors.price)}
-                  helperText={touched.price && errors.price}
-                />
-              </Grid> */}
+
               <Grid item xs={3}>
                 <CssTextField
                   fullWidth
@@ -320,32 +344,91 @@ const CourseForm = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={3}>
-                <Box sx={{mt: 2}}>
-                  <input id="upload-button" multiple type="file" style={{ display: 'none' }} onChange={handleFileChange} />
-                  <label htmlFor="upload-button">
-                    <Button variant="contained" component="span" startIcon={<CloudUploadIcon />}>
-                      Chọn nhiều hình ảnh mô tả
-                    </Button>
-                  </label>
-                </Box>
+              <Grid item xs={6}>
+                <FieldArray name="package_details">
+                  {({ push, remove }) => (
+                    <>
+                      {values.package_details.map((_, index) => (
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} key={index}>
+                          <Grid item xs={5}>
+                            <Field
+                              as={CssTextField}
+                              fullWidth
+                              margin="normal"
+                              label={`Số lần thực hiện gói ${index + 1}`}
+                              name={`package_details.${index}.times`}
+                              type="number"
+                              variant="outlined"
+                            />
+                            <ErrorMessage error={true} name={`package_details.${index}.times`} component={FormHelperText} />
+                          </Grid>
+                          <Grid item xs={5}>
+                            <Field
+                              as={CssTextField}
+                              fullWidth
+                              margin="normal"
+                              label="Giá"
+                              name={`package_details.${index}.price`}
+                              InputProps={{
+                                inputComponent: NumericFormatCustom
+                              }}
+                              variant="outlined"
+                            />
+                            <ErrorMessage error={true} name={`package_details.${index}.price`} component={FormHelperText} />
+                          </Grid>
+
+                          <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button
+                              sx={{ maxHeight: '40px', mt: 2 }}
+                              variant="outlined"
+                              color="error"
+                              onClick={() => remove(index)}
+                              disabled={values.package_details.length === 1}
+                            >
+                              <RemoveCircleOutlineIcon />
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      ))}
+                      <Grid item xs={12} sx={{ mt: 1 }}>
+                        <Button variant="outlined" color="primary" onClick={() => push({ times: 0, price: 0 })}>
+                          <AddCircleOutlineIcon></AddCircleOutlineIcon>
+                        </Button>
+                      </Grid>
+                    </>
+                  )}
+                </FieldArray>
               </Grid>
-              <Grid item xs={12}>
-                {selectedFiles.length > 0 && (
+              <Grid item xs={6}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box sx={{ mt: 2, mb: 2 }}>
+                      <input id="upload-button" multiple type="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                      <label htmlFor="upload-button">
+                        <Button variant="contained" component="span" startIcon={<CloudUploadIcon />}>
+                          Chọn nhiều hình ảnh mô tả
+                        </Button>
+                      </label>
+                    </Box>
+                  </Grid>
                   <Grid item xs={12}>
                     {selectedFiles.length > 0 && (
-                      <Paper elevation={3} style={{ padding: '20px' }}>
-                        <Grid container spacing={2}>
-                          {selectedFiles.map((file, index) => (
-                            <Grid item key={index}>
-                              <img src={URL.createObjectURL(file)} alt="" style={{ width: 'auto', height: '50px' }} />
+                      <Grid item xs={12}>
+                        {selectedFiles.length > 0 && (
+                          <Paper elevation={3} style={{ padding: '10px' }}>
+                            <Grid container spacing={2}>
+                              {selectedFiles.map((file, index) => (
+                                <Grid item key={index}>
+                                  <img src={URL.createObjectURL(file)} alt="" style={{ width: 'auto', height: '50px' }} />
+                                </Grid>
+                              ))}
                             </Grid>
-                          ))}
-                        </Grid>
-                      </Paper>
+                          </Paper>
+                        )}
+                      </Grid>
                     )}
                   </Grid>
-                )}
+                </Grid>
               </Grid>
               <Grid item xs={6}>
                 <Autocomplete
@@ -358,6 +441,7 @@ const CourseForm = () => {
                     '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
                   }}
                   multiple
+                  name="services"
                   id="tags-outlined"
                   options={services}
                   getOptionLabel={(option) => `${option.code} - ${option.name} - ${option.price / 1000}k - ${option.duration} phút`}
@@ -373,6 +457,11 @@ const CourseForm = () => {
                   filterSelectedOptions
                   renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ" placeholder={values.name} />}
                 />
+                {errorRequired.services !== '' && (
+                  <ErrorMessage error={true} component={FormHelperText}>
+                    {errorRequired.services}
+                  </ErrorMessage>
+                )}
               </Grid>
               <Grid item xs={6} mt={2}>
                 {selectedServices && selectedServices.length !== 0 && (
@@ -403,6 +492,17 @@ const CourseForm = () => {
                             <TableCell align="center">{formatCurrency(service.price)}</TableCell>
                           </TableRow>
                         ))}
+                        <TableRow>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }} colSpan={3}>
+                            Tổng
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {totalPriceDuration.duration}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {formatCurrency(totalPriceDuration.price)}
+                          </TableCell>
+                        </TableRow>
                       </TableBody>
                     </Table>
                   </TableContainer>
