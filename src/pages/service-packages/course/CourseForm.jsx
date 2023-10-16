@@ -103,9 +103,7 @@ const CourseForm = () => {
   });
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [errorRequired, setErrorRequired] = useState({
-    services: ''
-  });
+  const [errorRequired, setErrorRequired] = useState({});
 
   const [initialValues, setInitialValues] = useState({
     code: '',
@@ -130,16 +128,18 @@ const CourseForm = () => {
 
   useEffect(() => {
     const generateCourseCode = async () => {
-      try {
-        const result = await courseApi.fetchData();
-        // console.log(result);
-        const keys = Object.keys(result.metadata);
-        const count = keys.length;
-        setCourseCount(count);
-        const code = `LT${String(courseCount + 1).padStart(3, '0')}`;
-        setCourseCode(code);
-        // console.log(result);
-      } catch (error) {}
+      if (!isEditMode) {
+        try {
+          const result = await courseApi.fetchData();
+          // console.log(result);
+          const keys = Object.keys(result.metadata);
+          const count = keys.length;
+          setCourseCount(count);
+          const code = `LT${String(courseCount + 1).padStart(3, '0')}`;
+          setCourseCode(code);
+          // console.log(result);
+        } catch (error) {}
+      }
     };
 
     const getOneCourse = async (id) => {
@@ -181,14 +181,18 @@ const CourseForm = () => {
 
   const handleServicesChange = (event, value) => {
     setSelectedServices(value);
-    if (value.length === 0) {
-      setErrorRequired({ services: 'Cần ít nhất 1 dịch vụ' });
-      console.log(value.length);
-    }
     setTotalPriceDuration({
       price: value.reduce((acc, service) => acc + service.price, 0),
       duration: value.reduce((acc, service) => acc + service.duration, 0)
     });
+    if (value.length === 0) {
+      setErrorRequired((prevErrors) => ({ ...prevErrors, services: 'Cần ít nhất 1 dịch vụ' }));
+    } else {
+      setErrorRequired((prevErrors) => {
+        const { services, ...restErrors } = prevErrors;
+        return restErrors;
+      });
+    }
   };
 
   const handleFileChange = (event) => {
@@ -212,39 +216,45 @@ const CourseForm = () => {
     data.code = courseCode;
     data.duration = parseInt(values.duration);
     data.desc = desc.value;
+    data.imgs = selectedFiles;
     if (selectedServices.length > 0) {
       const servicesArray = selectedServices.map((service) => service._id);
       data.services = servicesArray;
     } else {
       data.services = [];
     }
-    console.log(data);
-    // console.log(selectedFiles);
-    if (isEditMode) {
-      try {
-        // console.log(data);
-        // const rs = await serviceApi.update(id, data);
-        // console.log(rs);
-        // navigation(Path.Service, { replace: true });
-        // return rs;
-      } catch (error) {
-        console.error(error);
+
+    if (selectedServices.length !== 0) {
+      // console.log(data);
+      if (isEditMode) {
+        try {
+          // console.log(data);
+          // const rs = await serviceApi.update(id, data);
+          // console.log(rs);
+          // navigation(Path.Service, { replace: true });
+          // return rs;
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          console.log(data);
+          const rs = await courseApi.create(data);
+          // navigation(Path.Course, { replace: true });
+          return rs;
+        } catch (error) {
+          // if (error?.response?.data?.message && error?.response?.data?.message === 'Code exists') {
+          //   setErrorApi(error?.response?.data?.message);
+          //   setTimeout(() => {
+          //     setErrorApi(null);
+          //   }, 3000);
+          // }
+          console.error(error);
+        }
       }
     } else {
-      try {
-        // console.log(data);
-        // const rs = await serviceApi.create(data);
-        // navigation(Path.Service, { replace: true });
-        // return rs;
-      } catch (error) {
-        // if (error?.response?.data?.message && error?.response?.data?.message === 'Code exists') {
-        //   setErrorApi(error?.response?.data?.message);
-        //   setTimeout(() => {
-        //     setErrorApi(null);
-        //   }, 3000);
-        // }
-        console.error(error);
-      }
+      // console.log(errorRequired);
+      setErrorRequired((prevErrors) => ({ ...prevErrors, services: 'Cần ít nhất 1 dịch vụ' }));
     }
   };
 
@@ -253,7 +263,7 @@ const CourseForm = () => {
       <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} gói - liệu trình</Typography>
       <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
-          <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
+          <Form autoComplete="none" noValidate onSubmit={handleSubmit} encType="multipart/form-data">
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={6}>
                 <CssTextField
@@ -435,7 +445,7 @@ const CourseForm = () => {
                   fullWidth
                   sx={{
                     '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                    '&': { mt: 2, mb: 2, p: 0 },
+                    '&': { mt: 2, p: 0 },
                     '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
                     '& .MuiInputLabel-root': { lineHeight: 'normal' },
                     '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
@@ -457,10 +467,10 @@ const CourseForm = () => {
                   filterSelectedOptions
                   renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ" placeholder={values.name} />}
                 />
-                {errorRequired.services !== '' && (
-                  <ErrorMessage error={true} component={FormHelperText}>
+                {selectedServices.services !== '' && (
+                  <FormHelperText sx={{}} error>
                     {errorRequired.services}
-                  </ErrorMessage>
+                  </FormHelperText>
                 )}
               </Grid>
               <Grid item xs={6} mt={2}>
@@ -529,7 +539,6 @@ const CourseForm = () => {
                 {desc.value}
               </ReactMarkdown>
             </Box>
-
             <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={isSubmitting} variant="contained">
               <span>Gửi</span>
             </LoadingButton>
