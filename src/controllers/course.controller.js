@@ -2,6 +2,7 @@
 
 const courseService = require("../services/course.service");
 const { CreatedResponse, OKResponse } = require("../utils/success.util");
+const cloudinary = require("cloudinary").v2;
 
 module.exports = {
   async create(req, res) {

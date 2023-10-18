@@ -5,7 +5,8 @@ const { toLowerCase } = require("../utils/convert.util");
 const { ConflictRequestError } = require("../utils/error.util");
 const courseModel = require("../models/Course.model");
 const ServiceService = require("./service.service");
-const ServiceModel = require("../models/Service.model");
+const ComboService = require("./combo.service");
+const comboModel = require("../models/Combo.model");
 const { regexData } = require("../core/fuction.code");
 
 const courseService = {
@@ -53,19 +54,23 @@ const courseService = {
   },
   getById: async (id) => {
     let course = await courseModel.findById(id).lean();
-    let services = course.services.map(
-      (p) =>
-        new Promise(async (resolve, reject) => {
-          try {
-            resolve(await ServiceService.getById(p));
-          } catch (error) {
-            reject(error);
-          }
-        })
-    );
-    services = await Promise.all(services);
+    let services = [];
+    // console.log(course.services);
+
+    for (let p of course.services) {
+      console.log(p);
+      try {
+        let combo = await ComboService.getById(p);
+        // console.log(service);
+        services.push(combo);
+      } catch (error) {
+        let service = await ServiceService.getById(p);
+        // console.log(course);
+        services.push(service);
+      }
+    }
+
     return { ...course, services };
-    return course;
   },
 
   // delete: async (id) => {
@@ -83,13 +88,15 @@ const courseService = {
       }
     }
 
-    return await courseModel.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(id),
-      },
-      { $set: data },
-      { new: true }
-    ).lean();
+    return await courseModel
+      .findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+        { $set: data },
+        { new: true }
+      )
+      .lean();
   },
 };
 

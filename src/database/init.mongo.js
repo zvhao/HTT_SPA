@@ -11,7 +11,7 @@ const connect = () => {
   mongoose.set("debug", { color: true });
 
   mongoose
-    .connect(env.MONGO_URI)
+    .connect(env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((_) => logger.info("Connected mongodb success."))
     .catch((error) => logger.error("Error connect mongodb:", error));
 };

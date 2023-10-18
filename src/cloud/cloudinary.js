@@ -13,12 +13,22 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-      folder: "HTTSPA",
-    },
-  });
-  
-  const uploadCloud = multer({ storage });
-  
-  module.exports = uploadCloud;
+  cloudinary,
+  params: {
+    folder: "HTTSPA",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "HTTSPA/"); // Thay đổi đường dẫn đến thư mục lưu trữ ảnh
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+
+const uploadCloud = multer({ storage });
+
+module.exports = uploadCloud;

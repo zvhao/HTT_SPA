@@ -4,9 +4,12 @@ const { Router } = require("express");
 const courseController = require("../controllers/course.controller");
 const { asyncHandler } = require("../utils/asyncHandler.util");
 const { CourseSchemaInput } = require("../schema/course.schema");
-
+const cloudinary = require("cloudinary").v2;
 const { validateResource } = require("../middleware/request.middleware");
+const env = require("../../config/env");
 const uploadCloud = require("../cloud/cloudinary");
+const multer = require("multer");
+const upload = multer({ dest: "uploads" });
 
 const {
   authentication,
@@ -20,7 +23,6 @@ router
   .route("/")
   .post(
     asyncHandler(checkPermission("course.add")),
-    uploadCloud.single("service_package/course"),
     validateResource(CourseSchemaInput),
     asyncHandler(courseController.create)
   )
