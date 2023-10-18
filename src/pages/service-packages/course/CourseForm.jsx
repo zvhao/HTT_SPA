@@ -34,9 +34,10 @@ import { serviceApi, courseApi, comboApi } from 'api';
 import 'react-quill/dist/quill.snow.css';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import formatCurrency from 'utils/formatCurrency';
-import { DeleteOutlined } from '@ant-design/icons';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Dropzone from 'react-dropzone';
+import uploadApi from 'api/uploads';
 
 const validationSchema = yup.object({
   // code: yup.string().required('Mã gói - liệu trình là bắt buộc'),
@@ -90,7 +91,6 @@ const CourseForm = () => {
   const navigation = useNavigate();
   const [courseCount, setCourseCount] = useState(0);
   const [courseCode, setCourseCode] = useState('');
-  const [errorApi, setErrorApi] = useState(null);
   const [desc, setDesc] = useState({ value: '' });
   const handleChangeDesc = (content) => {
     setDesc({ value: content });
@@ -102,7 +102,7 @@ const CourseForm = () => {
     price: 0
   });
   const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState({ imgs: [] });
   const [errorRequired, setErrorRequired] = useState({});
 
   const [initialValues, setInitialValues] = useState({
@@ -148,9 +148,13 @@ const CourseForm = () => {
         const oneCourseData = { ...courseApiGetById.metadata };
         setDesc({ value: oneCourseData.desc });
         setSelectedServices(oneCourseData.services);
+        setTotalPriceDuration({
+          price: oneCourseData.services.reduce((acc, service) => acc + service.price, 0),
+          duration: oneCourseData.services.reduce((acc, service) => acc + service.duration, 0)
+        });
         setCourseCode(oneCourseData.code);
         setInitialValues(oneCourseData);
-        console.log('data:', oneCourseData);
+        setSelectedFiles({ imgs: oneCourseData.imgs });
         try {
         } catch (error) {
           console.log(error);
@@ -197,7 +201,7 @@ const CourseForm = () => {
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-    setSelectedFiles(files);
+    setSelectedFiles({ ...selectedFiles, imgs: files });
   };
 
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
@@ -209,38 +213,23 @@ const CourseForm = () => {
       setSubmitting(false);
     }
   };
-
-  const handleSubmit = async (values) => {
-    // alert(JSON.stringify(values, null, 4));
-    let data = { ...values };
-    data.code = courseCode;
-    data.duration = parseInt(values.duration);
-    data.desc = desc.value;
-    data.imgs = selectedFiles;
-    if (selectedServices.length > 0) {
-      const servicesArray = selectedServices.map((service) => service._id);
-      data.services = servicesArray;
-    } else {
-      data.services = [];
-    }
-
+  const handleSubmitV2 = async (data) => {
     if (selectedServices.length !== 0) {
-      // console.log(data);
+      console.log(data);
       if (isEditMode) {
         try {
-          // console.log(data);
-          // const rs = await serviceApi.update(id, data);
-          // console.log(rs);
-          // navigation(Path.Service, { replace: true });
-          // return rs;
+          const rs = await courseApi.update(id, data);
+          console.log(rs);
+          navigation(Path.Course, { replace: true });
+          return rs;
         } catch (error) {
           console.error(error);
         }
       } else {
         try {
-          console.log(data);
           const rs = await courseApi.create(data);
-          // navigation(Path.Course, { replace: true });
+          console.log(rs);
+          navigation(Path.Course, { replace: true });
           return rs;
         } catch (error) {
           // if (error?.response?.data?.message && error?.response?.data?.message === 'Code exists') {
@@ -255,6 +244,38 @@ const CourseForm = () => {
     } else {
       // console.log(errorRequired);
       setErrorRequired((prevErrors) => ({ ...prevErrors, services: 'Cần ít nhất 1 dịch vụ' }));
+    }
+  };
+
+  const handleSubmit = async (values) => {
+    // alert(JSON.stringify(values, null, 4));
+    let data = { ...values };
+    data.code = courseCode;
+    data.duration = parseInt(values.duration);
+    data.desc = desc.value;
+    if (selectedServices.length > 0) {
+      const servicesArray = selectedServices.map((service) => service._id);
+      data.services = servicesArray;
+    } else {
+      data.services = [];
+    }
+    let formData = new FormData();
+    let imgsData = [];
+    if (selectedFiles.imgs.length > 0) {
+      selectedFiles.imgs.forEach((image, index) => {
+        formData.append(`image`, image);
+      });
+      try {
+        const rsImgs = await uploadApi.upload(formData);
+        console.log(rsImgs);
+        imgsData = rsImgs.metadata;
+        if (imgsData.length > 0) {
+          data.imgs = imgsData;
+        }
+        handleSubmitV2(data);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -413,7 +434,7 @@ const CourseForm = () => {
                 <Grid container>
                   <Grid item xs={12}>
                     <Box sx={{ mt: 2, mb: 2 }}>
-                      <input id="upload-button" multiple type="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                      <input id="upload-button" name="imgs" multiple type="file" style={{ display: 'none' }} onChange={handleFileChange} />
                       <label htmlFor="upload-button">
                         <Button variant="contained" component="span" startIcon={<CloudUploadIcon />}>
                           Chọn nhiều hình ảnh mô tả
@@ -422,14 +443,18 @@ const CourseForm = () => {
                     </Box>
                   </Grid>
                   <Grid item xs={12}>
-                    {selectedFiles.length > 0 && (
+                    {selectedFiles.imgs.length > 0 && (
                       <Grid item xs={12}>
-                        {selectedFiles.length > 0 && (
+                        {selectedFiles.imgs.length > 0 && (
                           <Paper elevation={3} style={{ padding: '10px' }}>
                             <Grid container spacing={2}>
-                              {selectedFiles.map((file, index) => (
+                              {selectedFiles.imgs.map((file, index) => (
                                 <Grid item key={index}>
-                                  <img src={URL.createObjectURL(file)} alt="" style={{ width: 'auto', height: '50px' }} />
+                                  <img
+                                    src={typeof file === 'object' ? URL.createObjectURL(file) : file}
+                                    alt=""
+                                    style={{ width: 'auto', height: '50px' }}
+                                  />
                                 </Grid>
                               ))}
                             </Grid>
@@ -468,7 +493,7 @@ const CourseForm = () => {
                   renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ" placeholder={values.name} />}
                 />
                 {selectedServices.services !== '' && (
-                  <FormHelperText sx={{}} error>
+                  <FormHelperText sx={{ ml: 3 }} error>
                     {errorRequired.services}
                   </FormHelperText>
                 )}
@@ -511,6 +536,28 @@ const CourseForm = () => {
                           </TableCell>
                           <TableCell align="center" sx={{ fontWeight: 'bold' }}>
                             {formatCurrency(totalPriceDuration.price)}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }} colSpan={3}>
+                            Gợi ý gói 1
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            x5
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {formatCurrency(totalPriceDuration.price * 5)}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }} colSpan={3}>
+                            Gợi ý gói 2
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            x10
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {formatCurrency(totalPriceDuration.price * 10)}
                           </TableCell>
                         </TableRow>
                       </TableBody>

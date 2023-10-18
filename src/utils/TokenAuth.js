@@ -38,7 +38,7 @@ const update = async (baseUrl, id, data) => {
     const localStore = JSON.parse(localStorage.getItem('data'));
     const res = await api.patch(baseUrl + '/' + id, data, {
       headers: {
-        'x-client-id': localStore.token
+        'x-client-id': localStore.token,
       }
     });
     return res.data;
@@ -49,7 +49,7 @@ const create = async (baseUrl, data) => {
     const localStore = JSON.parse(localStorage.getItem('data'));
     const res = await api.post(baseUrl, data, {
       headers: {
-        'x-client-id': localStore.token
+        'x-client-id': localStore.token,
       }
     });
     return res.data;

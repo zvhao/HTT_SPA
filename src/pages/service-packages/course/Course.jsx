@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import {
+  Box,
   Button,
   CardActions,
   Grid,
@@ -15,7 +16,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { courseApi, serviceTypeApi } from 'api';
+import { courseApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import React, { useState } from 'react';
@@ -23,9 +24,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import formatCurrency from 'utils/formatCurrency';
 
 const columns = [
-  { id: 'code', label: 'Code', minWidth: 50 },
-  { id: 'name', label: 'Tên loại dịch vụ', minWidth: 100 },
-  { id: 'services', label: 'Số dịch vụ', minWidth: 100 },
+  { id: 'code', label: 'Code' },
+  { id: 'name', label: 'Tên gói - liệu trình' },
+  { id: 'services', label: 'Các dịch vụ' },
+  { id: 'packages', label: 'Các gói' },
+  { id: 'duration', label: 'Thời gian' },
   {
     id: 'operation',
     label: 'Thao tác'
@@ -40,9 +43,6 @@ const Course = () => {
   const [data, setData] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
-
-  const [services, setServices] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -59,7 +59,7 @@ const Course = () => {
         const result = await courseApi.fetchData();
         if (result && result?.metadata) {
           const allData = result.metadata;
-
+          console.log(allData);
           setData(allData);
         }
         if (result?.response?.data?.code && result.response.data.code === 403) {
@@ -140,7 +140,16 @@ const Course = () => {
                       {row.code}
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell align="center">{row.services.length}</TableCell>
+                    <TableCell align="center">{row.services.map((e) => `${e?.code} - ${e?.name}`)}</TableCell>
+                    <TableCell>
+                      {row.package_details.map((e) => (
+                        <Box>
+                          {e.times} lần - {formatCurrency(e.price)}
+                        </Box>
+                      ))}
+                    </TableCell>
+                    <TableCell align="center">{row.duration} phút</TableCell>
+
                     <TableCell align="center">
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Course}/edit/${row._id}`}>
                         <EditIcon />
@@ -149,6 +158,13 @@ const Course = () => {
                   </TableRow>
                 );
               })}
+              {searchResults.length === 0 && (
+                <TableRow>
+                  <TableCell align="center" colSpan={columns.length} sx={{ fontSize: 20, fontWeight: 300 }}>
+                    Không tìm thấy dữ liệu
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
