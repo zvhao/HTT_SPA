@@ -38,6 +38,9 @@ const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
 const Branch = Loadable(lazy(() => import('pages/branch/Branch')));
 const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
 
+//calendar
+const WorkSchedule = Loadable(lazy(() => import('pages/calendar/work-schedule/WorkSchedule')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -171,7 +174,6 @@ const MainRoutes = {
       path: Path.Branch,
       children: [
         {
-          // path: '',
           index: true,
           element: <Branch />
         },
@@ -184,7 +186,8 @@ const MainRoutes = {
           element: <BranchForm />
         }
       ]
-    }
+    },
+    { path: Path.WorkSchedule, children: [{ index: true, element: <WorkSchedule /> }] }
   ]
 };
 

@@ -59,7 +59,6 @@ const Course = () => {
         const result = await courseApi.fetchData();
         if (result && result?.metadata) {
           const allData = result.metadata;
-          console.log(allData);
           setData(allData);
         }
         if (result?.response?.data?.code && result.response.data.code === 403) {

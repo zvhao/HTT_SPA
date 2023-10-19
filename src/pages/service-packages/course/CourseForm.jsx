@@ -36,8 +36,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import formatCurrency from 'utils/formatCurrency';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import Dropzone from 'react-dropzone';
 import uploadApi from 'api/uploads';
+import Swal from 'sweetalert2';
 
 const validationSchema = yup.object({
   // code: yup.string().required('Mã gói - liệu trình là bắt buộc'),
@@ -92,6 +92,7 @@ const CourseForm = () => {
   const [courseCount, setCourseCount] = useState(0);
   const [courseCode, setCourseCode] = useState('');
   const [desc, setDesc] = useState({ value: '' });
+  const [isLoading, setIsLoading] = useState(false);
   const handleChangeDesc = (content) => {
     setDesc({ value: content });
   };
@@ -158,6 +159,11 @@ const CourseForm = () => {
         try {
         } catch (error) {
           console.log(error);
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Lỗi rồi!',
+            icon: 'error'
+          });
         }
       }
     };
@@ -174,6 +180,11 @@ const CourseForm = () => {
         setServices(combinedArray);
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
+          Swal.fire({
+            title: 'Lỗi rồi!',
+            icon: 'error'
+          });
       }
     };
 
@@ -220,15 +231,30 @@ const CourseForm = () => {
         try {
           const rs = await courseApi.update(id, data);
           console.log(rs);
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Thành công!',
+            icon: 'success'
+          });
           navigation(Path.Course, { replace: true });
           return rs;
         } catch (error) {
           console.error(error);
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Lỗi rồi!',
+            icon: 'error'
+          });
         }
       } else {
         try {
           const rs = await courseApi.create(data);
           console.log(rs);
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Thành công!',
+            icon: 'success'
+          });
           navigation(Path.Course, { replace: true });
           return rs;
         } catch (error) {
@@ -239,6 +265,11 @@ const CourseForm = () => {
           //   }, 3000);
           // }
           console.error(error);
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Lỗi rồi!',
+            icon: 'error'
+          });
         }
       }
     } else {
@@ -248,7 +279,16 @@ const CourseForm = () => {
   };
 
   const handleSubmit = async (values) => {
-    // alert(JSON.stringify(values, null, 4));
+    setIsLoading(true);
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      showCancelButton: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
     let data = { ...values };
     data.code = courseCode;
     data.duration = parseInt(values.duration);
@@ -272,9 +312,15 @@ const CourseForm = () => {
         if (imgsData.length > 0) {
           data.imgs = imgsData;
         }
+
         handleSubmitV2(data);
       } catch (error) {
         console.error(error);
+        setIsLoading(false);
+        Swal.fire({
+          title: 'Lỗi rồi!',
+          icon: 'error'
+        });
       }
     }
   };
@@ -586,8 +632,16 @@ const CourseForm = () => {
                 {desc.value}
               </ReactMarkdown>
             </Box>
-            <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={isSubmitting} variant="contained">
-              <span>Gửi</span>
+            <LoadingButton
+              sx={{ mt: 3 }}
+              type="submit"
+              fullWidth
+              size="large"
+              variant="contained"
+              loading={isLoading}
+              loadingPosition="start"
+            >
+              <span> {isLoading ? 'Loading...' : 'Gửi'}</span>
             </LoadingButton>
           </Form>
         )}

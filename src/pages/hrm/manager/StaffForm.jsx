@@ -22,7 +22,6 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
-import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import NumericFormat from 'react-number-format';
