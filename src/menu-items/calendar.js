@@ -1,4 +1,4 @@
-import { MenuOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { CalendarOutlined, MenuOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Path } from "constant/path";
 
 const calendar = {
@@ -10,7 +10,7 @@ const calendar = {
         id: 'work-schedule',
         title: 'Lịch làm việc',
         url: Path.WorkSchedule,
-        icon: MenuOutlined
+        icon: CalendarOutlined
     }
   ]
 };
