@@ -11,15 +11,19 @@ Content-Type: application/json
 }
 
 ### Update
-PATCH {{url}}/
+PATCH {{url}}/651582fb9dce25997d637c13
 Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NzUxMTA0MCwiZXhwIjoxNjk4Mzc1MDQwfQ.3NVAvsh29IyIQMz-E5VseBRDcDj5xLdVZN6Y43WpFiY
 
 {
-  "permissions": ["", "", "", ""]
+  "permissions": ["64f5c2b22c268c9c00c1fdb5","64f5c3282c268c9c00c1fdf5", "64f5c32d2c268c9c00c1fdf9", "64f5c3322c268c9c00c1fdfd", "64f5c3372c268c9c00c1fe01","64f5c2bf2c268c9c00c1fdb9","64f5c2d82c268c9c00c1fdbd","64f5c2df2c268c9c00c1fdc1","64f5c2e62c268c9c00c1fdc5","64f5c2eb2c268c9c00c1fdc9","64f5c2f12c268c9c00c1fdcd","64f5c2f72c268c9c00c1fdd1","64f5c2fe2c268c9c00c1fdd5","64f5c3032c268c9c00c1fdd9","64f5c3082c268c9c00c1fddd","64f5c30d2c268c9c00c1fde1","64f5c3142c268c9c00c1fde5","64f5c3182c268c9c00c1fde9","64f5c31d2c268c9c00c1fded","64f5c3222c268c9c00c1fdf1"]
 }
 
 ### GET
 GET {{url}}
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NzUxMTA0MCwiZXhwIjoxNjk4Mzc1MDQwfQ.3NVAvsh29IyIQMz-E5VseBRDcDj5xLdVZN6Y43WpFiY
+
 
 ### GET ID
-GET {{url}}/
+GET {{url}}/651582fb9dce25997d637c13
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NzUxMTA0MCwiZXhwIjoxNjk4Mzc1MDQwfQ.3NVAvsh29IyIQMz-E5VseBRDcDj5xLdVZN6Y43WpFiY

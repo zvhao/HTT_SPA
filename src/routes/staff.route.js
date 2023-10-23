@@ -25,7 +25,7 @@ router.route("/getaccount").get(asyncHandler(staffController.getByToken));
 router
   .route("/")
   .post(
-    asyncHandler(checkPermission("staff.create")),
+    asyncHandler(checkPermission("staff.add")),
     validateResource(StaffSchemaInput),
     asyncHandler(staffController.create)
   )

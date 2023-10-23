@@ -22,9 +22,9 @@ const Headers = {
  */
 
 const authentication = async (req, res, next) => {
-  const data = req.headers[Headers.CLIENT_TOKEN]
+  const data = req.headers[Headers.CLIENT_TOKEN];
   // console.log(req.headers);
-  
+
   if (!data) {
     throw new UnauthorizedRequestError(
       `Missing headers \`${Headers.CLIENT_TOKEN}\``
@@ -80,7 +80,6 @@ const checkPermission = (permission) => async (req, res, next) => {
   });
   if (hasPermission) {
     req.dataAccount = dataAccount;
-    // console.log(dataAccount);
     return next();
   } else {
     throw new ForbiddenRequestError("Not allowed!");
