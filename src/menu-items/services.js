@@ -10,6 +10,7 @@ import {
 	MenuUnfoldOutlined
 } from '@ant-design/icons';
 import { Path } from 'constant/path';
+import SpaOutlinedIcon from '@mui/icons-material/SpaOutlined';
 
 // icons
 const icons = {
@@ -28,7 +29,7 @@ const icons = {
 const services = {
 	id: 'services',
 	title: 'Quản lý dịch vụ',
-	icon: icons.MenuUnfoldOutlined,
+	icon: SpaOutlinedIcon,
 	children: [
 
 		{

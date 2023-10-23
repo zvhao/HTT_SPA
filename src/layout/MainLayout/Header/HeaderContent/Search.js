@@ -42,7 +42,7 @@ const Search = () => {
         </Box>
       </Grid>
       <Grid item xs={6} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
-        <Typography sx={{ mr: 3, height: '25px' }} variant="h4">
+        <Typography sx={{ mr: 3, height: '25px', color: "white" }} variant="h4">
           {currentTime.format('dddd, DD/MM/YYYY HH:mm:ss')}
         </Typography>
       </Grid>

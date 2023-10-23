@@ -62,21 +62,21 @@ const Profile = () => {
   const navigation = useNavigate();
 
   const user = useSelector((state) => state.user);
-  useEffect(()=> {
+  useEffect(() => {
     // console.log('state:', user);
     // console.log('storage:',JSON.parse(localStorage.getItem('data')));
-  })
+  });
   const theme = useTheme();
 
   const handleLogout = () => {
-    if(localStorage.getItem('data')) {
+    if (localStorage.getItem('data')) {
       localStorage.removeItem('data');
-      dispatch(clearUser())
+      dispatch(clearUser());
       navigation(Path.Login, { replace: true });
     } else {
-      alert('chua dang nhap')
+      alert('Chưa đăng nhập');
     }
-    
+
     // Thực hiện bất kỳ xử lý đăng xuất khác ở đây
   };
 
@@ -108,7 +108,7 @@ const Profile = () => {
           p: 0.25,
           bgcolor: open ? iconBackColorOpen : 'transparent',
           borderRadius: 1,
-          '&:hover': { bgcolor: 'secondary.lighter' }
+          '&:hover': { bgcolor: 'secondary.lighter', color: 'black' }
         }}
         aria-label="open profile"
         ref={anchorRef}
@@ -118,7 +118,9 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">{user && user.username}</Typography>
+          <Typography variant="subtitle1" sx={{ color: 'white' }}>
+            {user && user.username}
+          </Typography>
         </Stack>
       </ButtonBase>
       <Popper

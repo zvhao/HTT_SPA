@@ -68,12 +68,12 @@ const Combo = () => {
         }
         if (result?.response?.data?.code && result.response.data.code === 403) {
           // console.log('result: ', result.response.data.code);
-          // navigation(Path.FORBIDDEN, { replace: true });
+          navigation(Path.FORBIDDEN, { replace: true });
         }
       } catch (error) {
         if (error?.response?.data?.code && error.response.data.code === 403) {
           // console.log('error: ', error.response.data.code);
-          // navigation(Path.FORBIDDEN, { replace: true });
+          navigation(Path.FORBIDDEN, { replace: true });
         }
       }
     };

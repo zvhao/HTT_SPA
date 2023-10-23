@@ -11,7 +11,8 @@ import calendar from './calendar';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, seniorManager, services, staff, utilities, pages, support, calendar]
+  items: [dashboard, seniorManager, services, staff, calendar]
+  // items: [dashboard, seniorManager, services, staff, utilities, pages, support, calendar]
 };
 
 export default menuItems;

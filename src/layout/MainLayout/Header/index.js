@@ -22,7 +22,8 @@ const Header = ({ open, handleDrawerToggle }) => {
 
   // common header
   const mainHeader = (
-    <Toolbar sx={{ background:"linear-gradient(-90deg, #ededed, #096dd9)" }}>
+    <Toolbar sx={{ background:"linear-gradient(-90deg, #F40076, #096dd9)" }}>
+      {/* background: 'linear-gradient(-90deg, #DF98FA , #F40076)' */}
       <IconButton
         disableRipple
         aria-label="open drawer"

@@ -20,7 +20,7 @@ dayjs.extend(timezone);
 
 const validationSchema = yup.object({
   name: yup.string().required('Tên dịch vụ là bắt buộc'),
-  code: yup.string().required('Tên dịch vụ là bắt buộc'),
+  // code: yup.string().required('Tên dịch vụ là bắt buộc'),
   capacity: yup.string().required('Tên dịch vụ là bắt buộc'),
   // manager: yup.string().required('Tên dịch vụ là bắt buộc'),
   address: yup.string().required('Tên dịch vụ là bắt buộc'),
@@ -75,8 +75,23 @@ const BranchForm = () => {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [errorApi, setErrorApi] = useState(null);
+  const [branchCount, setBranchCount] = useState(0);
+  const [branchCode, setBranchCode] = useState('');
 
   useEffect(() => {
+    const generateBranchCode = async () => {
+      if (!isEditMode) {
+        try {
+          const result = await branchApi.fetchData();
+          const keys = Object.keys(result.metadata);
+          const count = keys.length;
+          setBranchCount(count);
+          const code = `CN${String(branchCount + 1).padStart(2, '0')}`;
+          setBranchCode(code);
+          // console.log(result);
+        } catch (error) {}
+      }
+    };
     const getOneBranch = async (isEditMode) => {
       if (isEditMode) {
         try {
@@ -90,6 +105,7 @@ const BranchForm = () => {
             console.log(managerData.metadata);
           }
 
+          setBranchCode(newOneBranchData.code);
           setInitialValues(newOneBranchData);
           // console.log(oneBranchData);
           return newOneBranchData;
@@ -113,10 +129,11 @@ const BranchForm = () => {
 
       return () => clearTimeout(timer);
     }
+    generateBranchCode();
     fetchEmployees();
     getOneBranch(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [branchCode]);
 
   const handleEmployeeChange = (event, value) => {
     setSelectedEmployee(value);
@@ -133,7 +150,8 @@ const BranchForm = () => {
   };
 
   const handleSubmit = async (values) => {
-    const newdata = { ...values };
+    let newdata = { ...values };
+    newdata.code = branchCode;
     newdata.startTime = dayjs(values.startTime).format('HH:mm');
     newdata.endTime = dayjs(values.endTime).format('HH:mm');
     if (selectedEmployee) {
@@ -214,7 +232,8 @@ const BranchForm = () => {
                   name="code"
                   label="Mã chi nhánh"
                   variant="outlined"
-                  value={values.code}
+                  value={branchCode}
+                  disabled
                   onBlur={handleBlur}
                   onChange={handleChange}
                   error={touched.code && Boolean(errors.code)}

@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
@@ -27,6 +28,8 @@ import React, { useEffect, useState } from 'react';
 import NumericFormat from 'react-number-format';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -68,15 +71,15 @@ const StaffForm = () => {
   const navigation = useNavigate();
 
   const [initialValues, setInitialValues] = useState({
-    fullname: 'Huynh Thanh Thuong',
+    fullname: '',
     username: 'qlcn0101',
-    phone: '0939410692',
-    email: 'huynhthanhthuong0910@gmail.com',
-    address: 'Can Tho',
+    phone: '',
+    email: '',
+    address: '',
     numPaidLeave: 2,
     basicSalary: 4000000,
     position: '',
-    password: 'Hao291001',
+    password: '',
     consultingCommission: 10,
     serviceCommission: 10,
     allowances: [{ name: '', allowance: '' }],
@@ -112,6 +115,7 @@ const StaffForm = () => {
             const oneStaffData = await staffApi.getById(id);
             if (oneStaffData.metadata) {
               const newOneStaffData = { ...oneStaffData.metadata };
+              newOneStaffData.password = '';
               const dataWorkTime = newOneStaffData.workTime.pop();
 
               const formattedData = {
@@ -191,7 +195,6 @@ const StaffForm = () => {
         // console.log(newdata);
         const rs = await staffApi.update(id, newdata);
         if (rs && rs.status === 200) {
-          alert(rs.message);
           navigation(Path.Staff, { replace: true });
         } else {
           console.log('Error');
@@ -456,55 +459,54 @@ const StaffForm = () => {
                   <Grid item xs={12}>
                     <FieldArray name="allowances">
                       {({ push, remove }) => (
-                        <div>
-                          {values.allowances.map((allowance, index) => (
-                            <Grid container key={index} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-                              <Grid item xs={6}>
+                        <>
+                          {values.allowances.map((_, index) => (
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} key={index}>
+                              <Grid item xs={5}>
                                 <Field
                                   as={CssTextField}
                                   fullWidth
                                   margin="dense"
-                                  id={`allowances[${index}].name`}
-                                  name={`allowances[${index}].name`}
-                                  label={`Phụ cấp ${index + 1}`}
+                                  label={`Tên trợ cấp ${index + 1}`}
+                                  name={`allowances.${index}.name`}
                                   variant="outlined"
-                                  value={allowance.name}
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  sx={{ '& > label': { lineHeight: 'normal' } }}
                                 />
-                                <ErrorMessage name={`allowances[${index}].name`} component="div" />
+                                <ErrorMessage error={true} name={`allowances.${index}.name`} component={FormHelperText} />
                               </Grid>
-                              <Grid item xs={6}>
+                              <Grid item xs={5}>
                                 <Field
                                   as={CssTextField}
                                   fullWidth
                                   margin="dense"
-                                  id={`allowances[${index}].allowance`}
-                                  name={`allowances[${index}].allowance`}
-                                  label="Khoản tiền"
-                                  variant="outlined"
-                                  value={allowance.allowance}
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  sx={{ '& > label': { lineHeight: 'normal' } }}
+                                  label="Khoản trợ cấp"
+                                  name={`allowances.${index}.allowance`}
                                   InputProps={{
-                                    endAdornment: (
-                                      <Button type="button" onClick={() => remove(index)}>
-                                        Xóa
-                                      </Button>
-                                    ),
                                     inputComponent: NumericFormatCustom
                                   }}
+                                  variant="outlined"
                                 />
-                                <ErrorMessage name={`allowances[${index}].allowance`} component="div" />
+                                <ErrorMessage error={true} name={`allowances.${index}.allowance`} component={FormHelperText} />
+                              </Grid>
+
+                              <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button
+                                  sx={{ maxHeight: '40px', mt: 1 }}
+                                  variant="outlined"
+                                  color="error"
+                                  onClick={() => remove(index)}
+                                  disabled={values.allowances.length === 1}
+                                >
+                                  <RemoveCircleOutlineIcon />
+                                </Button>
                               </Grid>
                             </Grid>
                           ))}
-                          <Button type="button" onClick={() => push({ name: '', allowance: '' })}>
-                            Thêm khoản phụ cấp
-                          </Button>
-                        </div>
+                          <Grid item xs={12} sx={{ mt: 1 }}>
+                            <Button variant="outlined" color="primary" onClick={() => push({ name: 0, allowance: 0 })}>
+                              <AddCircleOutlineIcon></AddCircleOutlineIcon>
+                            </Button>
+                          </Grid>
+                        </>
                       )}
                     </FieldArray>
                   </Grid>

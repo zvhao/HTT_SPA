@@ -323,6 +323,8 @@ const CourseForm = () => {
         });
       }
     }
+    handleSubmitV2(data);
+
   };
 
   return (
@@ -639,7 +641,7 @@ const CourseForm = () => {
               size="large"
               variant="contained"
               loading={isLoading}
-              loadingPosition="start"
+              // loadingPosition="start"
             >
               <span> {isLoading ? 'Loading...' : 'Gửi'}</span>
             </LoadingButton>

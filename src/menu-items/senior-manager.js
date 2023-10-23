@@ -10,6 +10,8 @@ import {
   MenuUnfoldOutlined
 } from '@ant-design/icons';
 import { Path } from 'constant/path';
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
+import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
 
 // icons
 const icons = {
@@ -33,14 +35,14 @@ const icons = {
 // };
 const seniorManager = {
   id: 'senior-manager',
-  title: 'quản lý cấp cao',
-  icon: icons.MenuUnfoldOutlined,
+  title: 'Quản lý cấp cao',
+  icon: BusinessOutlinedIcon,
   children: [
     {
       id: 'branches',
       title: 'Quản lý chi nhánh',
       url: Path.Branch,
-      icon: icons.MenuOutlined
+      icon: AddBusinessOutlinedIcon
     }
   ]
 };

@@ -10,8 +10,8 @@ import {
 	MenuUnfoldOutlined
 } from '@ant-design/icons';
 import { Path } from 'constant/path';
-
-// icons
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 const icons = {
 	FontSizeOutlined,
 	BgColorsOutlined,
@@ -28,14 +28,13 @@ const icons = {
 const staff = {
 	id: 'staff',
 	title: 'Quản lý nhân sự',
-	icon: icons.MenuUnfoldOutlined,
+	icon: GroupsOutlinedIcon,
 	children: [
-
 		{
 			id: 'staff-list',
 			title: 'Nhân viên',
 			url: 'staff',
-			icon: icons.MenuOutlined,
+			icon: ManageAccountsOutlinedIcon,
 		},
 
 	]

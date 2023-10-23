@@ -150,11 +150,11 @@ const Notification = () => {
                       <ListItemText
                         primary={
                           <Typography variant="h6">
-                            It&apos;s{' '}
+                            Tài khoản {''}
                             <Typography component="span" variant="subtitle1">
-                              Cristina danny&apos;s
+                              user023
                             </Typography>{' '}
-                            birthday today.
+                            vừa đặt lịch hẹn.
                           </Typography>
                         }
                         secondary="2 min ago"
@@ -181,9 +181,9 @@ const Notification = () => {
                         primary={
                           <Typography variant="h6">
                             <Typography component="span" variant="subtitle1">
-                              Aida Burg
+                              user054
                             </Typography>{' '}
-                            commented your post.
+                            có phản hồi mới.
                           </Typography>
                         }
                         secondary="5 August"
@@ -209,9 +209,10 @@ const Notification = () => {
                       <ListItemText
                         primary={
                           <Typography variant="h6">
-                            Your Profile is Complete &nbsp;
+                            Thay đổi DV001 bởi
                             <Typography component="span" variant="subtitle1">
-                              60%
+                              {''}
+                              qlcn0101
                             </Typography>{' '}
                           </Typography>
                         }
@@ -239,15 +240,15 @@ const Notification = () => {
                         primary={
                           <Typography variant="h6">
                             <Typography component="span" variant="subtitle1">
-                              Cristina Danny
+                              zvhao
                             </Typography>{' '}
-                            invited to join{' '}
+                            mời tất cả quản lý {' '}
                             <Typography component="span" variant="subtitle1">
-                              Meeting.
+                              họp.
                             </Typography>
                           </Typography>
                         }
-                        secondary="Daily scrum meeting time"
+                        secondary="cuộc họp thường niên"
                       />
                       <ListItemSecondaryAction>
                         <Typography variant="caption" noWrap>

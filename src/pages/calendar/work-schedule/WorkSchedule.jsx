@@ -158,7 +158,8 @@ const WorkSchedule = () => {
                     <TableCell align="center">{staff.fullname}</TableCell>
                     <TableCell align="center">{fnGetTime(staff)}</TableCell>
                     <TableCell align="center">{fnGetStatus(staff)}
-                    Đang thực hiện tour</TableCell>
+                    {/* Đang thực hiện tour */}
+                    </TableCell>
                     <TableCell align="center">
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Staff}/edit/${staff._id}`}>
                         <EditIcon />

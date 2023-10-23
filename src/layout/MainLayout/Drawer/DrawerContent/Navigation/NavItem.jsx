@@ -13,7 +13,6 @@ function NavItem({ item }) {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
 
-
   const handleClick = () => {
     setOpen(!open);
   };
@@ -28,11 +27,11 @@ function NavItem({ item }) {
         onClick={item.url ? null : handleClick}
         sx={{
           '&.active': {
-						bgcolor: "z",
-            color: "primary.main"
+            bgcolor: 'z',
+            color: 'primary.main'
           },
           '&.active .MuiListItemIcon-root span': {
-            color: "primary.main"
+            color: 'primary.main'
           }
         }}
       >
@@ -41,36 +40,40 @@ function NavItem({ item }) {
             <Icon />
           </ListItemIcon>
         )}
-        <ListItemText primary={item.title} />
+        <ListItemText primary={item.title} sx={{ pl: 1 }} />
         {item.children && (open ? <ExpandLess /> : <ExpandMore />)}
       </ListItemButton>
 
       {item.children && (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {item?.children?.map((child) => {
+            {item?.children?.map((child, index) => {
               const IconChild = child.icon;
 
               return (
                 <ListItemButton
+                  key={index}
                   component={NavLink}
                   to={child.url}
                   sx={{
                     pl: 4,
                     '&.active': {
-                      bgcolor: "primary.dark",
+                      bgcolor: 'primary.dark',
                       borderRight: `5px solid ${theme.palette.warning.main}`,
-                      color: "primary.lighter"
+                      color: 'primary.lighter'
                     },
                     '&.active .MuiListItemIcon-root span': {
-                      color: "primary.lighter"
+                      color: 'primary.lighter'
+                    },
+                    '&.active .MuiListItemIcon-root': {
+                      color: 'primary.lighter'
                     }
                   }}
                 >
-                  <ListItemIcon>
+                  <ListItemIcon color="white">
                     <IconChild />
                   </ListItemIcon>
-                  <ListItemText primary={child.title} />
+                  <ListItemText primary={child.title} sx={{ pl: 1 }} />
                 </ListItemButton>
               );
             })}
