@@ -1,0 +1,34 @@
+@url=http://localhost:8888/api/v1/staffDayOffs
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+
+{
+	"branch": "650007e9c31b396b0f6ef13d",
+	"staff": "651917c7af5d6ef8a25fc0e8",
+	"dayOff": "2023-10-30T00:00:00.000Z",
+	"reason": "Bệnh"
+}
+
+### GET
+GET {{url}}
+
+### GET ID
+GET {{url}}/653b77dd6a2a75d71715c0c3
+
+### Update
+PATCH {{url}}/653b77dd6a2a75d71715c0c3
+Content-Type: application/json
+
+{
+	"branch": "650007e9c31b396b0f6ef13d",
+	"staff": "651917c7af5d6ef8a25fc0e8",
+	"dayOff": "2023-10-31T00:00:00.000Z",
+	"reason": "Bệnh"
+}
+
+
+
+
+

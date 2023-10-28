@@ -4,7 +4,6 @@ const ownerService = require("../services/owner.service")
 const { CreatedResponse, OKResponse } = require("../utils/success.util");
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
-var cookieParser = require('cookie-parser')
 
 module.exports = {
 	async create(req, res) {

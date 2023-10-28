@@ -35,7 +35,6 @@ const staffService = {
     serviceCommission,
     allowances,
     workTime,
-    role,
     branch,
   }) => {
     if (await findStaffByUsername(username)) {
@@ -55,7 +54,6 @@ const staffService = {
       serviceCommission,
       allowances,
       workTime,
-      role,
       branch,
     });
     const { password: pwd, ...staff } = response;
@@ -96,18 +94,19 @@ const staffService = {
     if (data.username) {
       // console.log(data.username);
       let user = await findStaffByUsername(data.username);
-      var workTime = user.workTime.pop();
+      // var workTime = user.workTime.pop();
       // console.log(user);
 
       if (user && id !== user._id.toString()) {
         throw new ConflictRequestError("Username exists");
       }
-      delete data.workTime;
+      // delete data.workTime;
       //   console.log(data);
       //   console.log(workTime);
     }
 
-    return await findOneAndUpdateStaff(id, data, workTime);
+    return await findOneAndUpdateStaff(id, data);
+    // return console.log(data);
   },
 
   login: async (data) => {
@@ -118,6 +117,7 @@ const staffService = {
     }
 
     const passwordMatch = await comparePasswords(data.password, user.password);
+    // console.log(passwordMatch);
 
     if (!passwordMatch) {
       throw new NotFoundRequestError("Incorrect password");
@@ -126,11 +126,11 @@ const staffService = {
     const token = jwt.sign({ id: user._id, role: "staff" }, "httspa", {
       expiresIn: "10d",
     });
-    // console.log(token);
     const role = await roleService.getById(user.role);
     const accInfo = { ...user, role };
 
     return handleLogin(data, token, accInfo);
+    // return console.log(passwordMatch);
   },
 };
 

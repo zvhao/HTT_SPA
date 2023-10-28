@@ -5,7 +5,8 @@ const StaffModel = require("../models/Staff.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { regexData } = require("../core/fuction.code");
-
+const { hashPassword } = require("../utils/hash.util");
+const RoleModel = require("../models/Role.model");
 
 exports.findStaffByUsername = async (username) => {
   return await StaffModel.findOne({ username: regexData(username) }).lean();
@@ -32,9 +33,16 @@ exports.saveStaff = async ({
   serviceCommission,
   allowances,
   workTime,
-  role,
   branch,
 }) => {
+  let role = "";
+  if (position === "manager") {
+    let roleData = await RoleModel.findOne({ name: "manager" });
+    role = roleData._id;
+  } else {
+    let roleData = await RoleModel.findOne({ name: "staff" });
+    role = roleData._id;
+  }
   return await StaffModel({
     fullname,
     username,
@@ -54,7 +62,8 @@ exports.saveStaff = async ({
   }).save();
 };
 
-exports.findOneAndUpdateStaff = async (id, data, workTime) => {
+exports.findOneAndUpdateStaff = async (id, data) => {
+  const hashedPassword = await hashPassword(data.password);
   return await StaffModel.findOneAndUpdate(
     {
       _id: new mongoose.Types.ObjectId(id),
@@ -70,14 +79,14 @@ exports.findOneAndUpdateStaff = async (id, data, workTime) => {
         address: data.address,
         basicSalary: data.basicSalary,
         position: data.position,
-        password: data.password,
+        password: hashedPassword,
         consultingCommission: data.consultingCommission,
         serviceCommission: data.serviceCommission,
         allowances: data.allowances,
         role: data.role,
         branch: data.branch,
       },
-      $push: { workTime: workTime },
+      $push: { workTime: data.workTime[0] },
     },
     { new: true }
   ).lean();

@@ -5,9 +5,9 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "staff view",
-  "desc": "Xem nhân viên",
-  "alias": "staff.view"
+  "name": "dayoff delete",
+  "desc": "Xoá ngày nghỉ",
+  "alias": "dayoff.delete"
 }
 
 
@@ -28,7 +28,6 @@ Content-Type: application/json
 
 ### GET
 GET {{url}}
-x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5NzUxMTA0MCwiZXhwIjoxNjk4Mzc1MDQwfQ.3NVAvsh29IyIQMz-E5VseBRDcDj5xLdVZN6Y43WpFiY
 
 
 ### GET ID

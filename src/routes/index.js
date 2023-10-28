@@ -14,5 +14,6 @@ router.use("/api/v1/serviceTypes", require("./servicetype.route"));
 router.use("/api/v1/combos", require("./combo.route"));
 router.use("/api/v1/courses", require("./course.route"));
 router.use("/api/v1/uploads", require("./upload.route"));
+router.use("/api/v1/staffDayOffs", require("./staffDayOff.route"));
 
 module.exports = router;
