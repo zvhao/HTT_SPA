@@ -1,5 +1,5 @@
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { DateCalendar } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,7 +22,7 @@ dayjs.extend(timezone);
 const WorkSchedule = () => {
   const [allStaffs, setAllStaffs] = useState([]);
   const [staffsByDate, setStaffsByDate] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
 
   useEffect(() => {
     const fetchAllStaffs = async () => {
@@ -31,13 +31,13 @@ const WorkSchedule = () => {
         const allStaffs = data.metadata;
         // console.log(allStaffs);
         setAllStaffs(allStaffs);
-        setSelectedDate(dayjs());
+        // setSelectedDate(dayjs());
         const filteredStaffs = allStaffs.filter((staff) => {
           const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
           return new Date(lastStartDate) <= dayjs();
         });
         setStaffsByDate(filteredStaffs);
-        console.log(filteredStaffs);
+        // console.log(filteredStaffs);
       } catch (error) {}
     };
 
@@ -50,14 +50,19 @@ const WorkSchedule = () => {
       const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
       return new Date(lastStartDate) <= date;
     });
+    // console.log(filteredStaffs);
     setStaffsByDate(filteredStaffs);
   };
 
   const fnGetTime = (staff) => {
+    // const final = staff.workTime.pop()
     const workTime = staff.workTime.map((e) =>
       e.weekSchedule.find((schedule) => schedule.day === new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }))
     );
-    return `${dayjs(workTime[0].startTime).format('HH:mm')} - ${dayjs(workTime[0].endTime).format('HH:mm')}`;
+    // console.log(workTime);
+    return `${dayjs(workTime[workTime.length - 1].startTime).format('HH:mm')} - ${dayjs(workTime[workTime.length - 1].endTime).format(
+      'HH:mm'
+    )}`;
   };
 
   const fnGetStatus = (staff) => {
@@ -65,8 +70,8 @@ const WorkSchedule = () => {
       e.weekSchedule.find((schedule) => schedule.day === new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }))
     );
     const currentDate = dayjs();
-    const startTime = new Date(workTime[0].startTime);
-    const endTime = new Date(workTime[0].endTime);
+    const startTime = new Date(workTime[workTime.length - 1].startTime);
+    const endTime = new Date(workTime[workTime.length - 1].endTime);
     const ST = dayjs(currentDate.format('YYYY-MM-DD') + ' ' + dayjs(startTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
     const ET = dayjs(currentDate.format('YYYY-MM-DD') + ' ' + dayjs(endTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
 
@@ -74,27 +79,54 @@ const WorkSchedule = () => {
       start: new Date(ST),
       end: new Date(ET)
     });
+    const currentDateV2 = new Date(dayjs(currentDate.format('YYYY-MM-DD')));
+    const selectedDateV2 = new Date(dayjs(selectedDate.format('YYYY-MM-DD')));
+    const isPastDate = isAfter(currentDateV2, selectedDateV2); // đúng nếu ngày chọn trước ngày hiện tại
+    const isFutureDate = isBefore(currentDateV2, selectedDateV2); // đúng nếu ngày chọn sau ngày hiện tại
 
-    const isPastDate = isAfter(new Date(dayjs(currentDate.format('YYYY-MM-DD'))), new Date(dayjs(selectedDate.format('YYYY-MM-DD'))));
-    const isFutureDate = isBefore(new Date(dayjs(currentDate.format('YYYY-MM-DD'))), new Date(dayjs(selectedDate.format('YYYY-MM-DD'))));
-    const isPastTime = isAfter(new Date(dayjs(currentDate)), new Date(ET));
-    const isFutureTime = isBefore(new Date(dayjs(currentDate)), new Date(ST));
-    if (isPastDate || isPastTime) {
+    const isPastTime = isAfter(new Date(dayjs(currentDate)), new Date(ET)); // đúng nếu đã qua giờ làm
+
+    const isFutureTime = isBefore(new Date(dayjs(currentDate)), new Date(ST)); // đúng nếu chưa tới giờ làm
+    if (isPastDate) {
       return (
         <Grid container justifyContent={'center'} sx={{ color: 'green' }}>
           <CheckCircleOutlineIcon />
-          <Typography>Đã xong!</Typography>
+          <Typography>Đã qua ngày làm</Typography>
         </Grid>
       );
     }
-    if (isFutureDate || isFutureTime) {
+
+    if (
+      selectedDateV2.getDate() === currentDateV2.getDate() &&
+      selectedDateV2.getMonth() === currentDateV2.getMonth() &&
+      selectedDateV2.getFullYear() === currentDateV2.getFullYear()
+    ) {
+      if (isPastTime) {
+        return (
+          <Grid container justifyContent={'center'} sx={{ color: 'green' }}>
+            <CheckCircleOutlineIcon />
+            <Typography>Đã qua giờ làm</Typography>
+          </Grid>
+        );
+      }
+      if (isFutureTime) {
+        return (
+          <Grid container justifyContent={'center'} sx={{ color: 'blue' }}>
+            <HourglassBottomRoundedIcon />
+            <Typography>Chưa tới giờ làm</Typography>
+          </Grid>
+        );
+      }
+    }
+    if (isFutureDate) {
       return (
         <Grid container justifyContent={'center'} sx={{ color: 'blue' }}>
           <HourglassBottomRoundedIcon />
-          <Typography>Chưa tới ca làm</Typography>
+          <Typography>Chưa tới ngày làm</Typography>
         </Grid>
       );
     }
+
     if (isWorking) {
       return (
         <Grid container justifyContent={'center'} sx={{ color: 'orange' }}>
@@ -157,8 +189,9 @@ const WorkSchedule = () => {
                     </TableCell>
                     <TableCell align="center">{staff.fullname}</TableCell>
                     <TableCell align="center">{fnGetTime(staff)}</TableCell>
-                    <TableCell align="center">{fnGetStatus(staff)}
-                    {/* Đang thực hiện tour */}
+                    <TableCell align="center">
+                      {fnGetStatus(staff)}
+                      {/* Đang thực hiện tour */}
                     </TableCell>
                     <TableCell align="center">
                       <Button size="medium" variant="contained" component={Link} to={`${Path.Staff}/edit/${staff._id}`}>

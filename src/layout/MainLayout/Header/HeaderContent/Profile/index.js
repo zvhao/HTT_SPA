@@ -75,6 +75,7 @@ const Profile = () => {
       navigation(Path.Login, { replace: true });
     } else {
       alert('Chưa đăng nhập');
+      navigation(Path.Login, { replace: true });
     }
 
     // Thực hiện bất kỳ xử lý đăng xuất khác ở đây

@@ -40,6 +40,7 @@ const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
 
 //calendar
 const WorkSchedule = Loadable(lazy(() => import('pages/calendar/work-schedule/WorkSchedule')));
+const LeaveSchedule = Loadable(lazy(() => import('pages/calendar/leave-schedule/LeaveSchedule')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -187,7 +188,8 @@ const MainRoutes = {
         }
       ]
     },
-    { path: Path.WorkSchedule, children: [{ index: true, element: <WorkSchedule /> }] }
+    { path: Path.WorkSchedule, children: [{ index: true, element: <WorkSchedule /> }] },
+    { path: Path.LeaveSchedule, children: [{ index: true, element: <LeaveSchedule /> }] }
   ]
 };
 

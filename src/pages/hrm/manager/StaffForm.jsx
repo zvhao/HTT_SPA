@@ -97,7 +97,6 @@ const StaffForm = () => {
         ]
       }
     ],
-    role: '651582fb9dce25997d637c13',
     branch: ''
   });
 
@@ -115,7 +114,6 @@ const StaffForm = () => {
             const oneStaffData = await staffApi.getById(id);
             if (oneStaffData.metadata) {
               const newOneStaffData = { ...oneStaffData.metadata };
-              newOneStaffData.password = '';
               const dataWorkTime = newOneStaffData.workTime.pop();
 
               const formattedData = {
@@ -195,7 +193,7 @@ const StaffForm = () => {
         // console.log(newdata);
         const rs = await staffApi.update(id, newdata);
         if (rs && rs.status === 200) {
-          navigation(Path.Staff, { replace: true });
+          navigation(Path.Staff, { replace: true }); 
         } else {
           console.log('Error');
         }

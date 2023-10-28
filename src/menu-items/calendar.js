@@ -15,15 +15,15 @@ const calendar = {
       icon: CalendarTodayOutlinedIcon
     },
     {
-      id: 'work-schedule',
-      title: 'Lịch làm việc',
-      url: Path.WorkSchedule,
+      id: 'tour-schedule',
+      title: 'Lịch thực hiện dịch vụ',
+      url: '/tour-schedule',
       icon: CalendarTodayOutlinedIcon
     },
     {
-      id: 'work-schedule',
-      title: 'Lịch làm việc',
-      url: Path.WorkSchedule,
+      id: 'leave-schedule',
+      title: 'Lịch nghỉ phép',
+      url: '/leave-schedule',
       icon: CalendarTodayOutlinedIcon
     }
   ]

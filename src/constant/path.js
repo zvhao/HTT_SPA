@@ -8,7 +8,8 @@ export const Path = {
 	ServiceDetail: '/service-detail/',
 	Staff: '/staff',
 	Branch: '/branch',
-	WorkSchedule: '/work-schedule',
 	NOT_FOUND: '/404',
 	FORBIDDEN: '/403',
+	WorkSchedule: '/work-schedule',
+	LeaveSchedule: '/leave-schedule',
 }
