@@ -124,7 +124,7 @@ const staffService = {
     }
 
     const token = jwt.sign({ id: user._id, role: "staff" }, "httspa", {
-      expiresIn: "10d",
+      expiresIn: "60d",
     });
     const role = await roleService.getById(user.role);
     const accInfo = { ...user, role };

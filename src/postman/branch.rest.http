@@ -17,6 +17,8 @@ Content-Type: application/json
 
 ### GET
 GET {{url}}
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5ODU5MjMyNCwiZXhwIjoxNzAzNzc2MzI0fQ.5nqsUxSDwTEe6SAS12WQako2TmCGoPy1_0jc5i5dRIA
+
 
 ### GET ID
 GET {{url}}/650007e9c31b396b0f6ef13d

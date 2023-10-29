@@ -15,28 +15,28 @@ const {
 const router = Router();
 
 // auth
-// router.use(asyncHandler(authentication));
+router.use(asyncHandler(authentication));
 
 router
   .route("/")
   .post(
-    // asyncHandler(checkPermission("staffDayOff.add")),
+    asyncHandler(checkPermission("dayoff.add")),
     // validateResource(StaffDayOffSchemaInput),
     asyncHandler(staffDayOffController.create)
   )
   .get(
-    // asyncHandler(checkPermission("staffDayOff.view")),
+    asyncHandler(checkPermission("dayoff.view")),
     asyncHandler(staffDayOffController.getAll)
   );
 // router.route("/get/:token").get(asyncHandler(staffDayOffController.))
 router
   .route("/:id")
   .get(
-    // asyncHandler(checkPermission("staffDayOff.view")),
+    asyncHandler(checkPermission("dayoff.view")),
     asyncHandler(staffDayOffController.getById)
   )
   .patch(
-    // asyncHandler(checkPermission("staffDayOff.update")),
+    asyncHandler(checkPermission("dayoff.update")),
     // validateResource(StaffDayOffSchemaInput),
     asyncHandler(staffDayOffController.update)
   );

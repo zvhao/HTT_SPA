@@ -100,7 +100,7 @@ const ownerService = {
     }
 
     const token = jwt.sign({ id: user._id, role: "owner" }, "httspa", {
-      expiresIn: "10d",
+      expiresIn: "60d",
     });
     const role = await roleService.getById(user.role);
     const newData = {...user, role}

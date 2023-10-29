@@ -3,16 +3,20 @@
 ### CREATE
 POST {{ url }}
 Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5ODU5MjMyNCwiZXhwIjoxNzAzNzc2MzI0fQ.5nqsUxSDwTEe6SAS12WQako2TmCGoPy1_0jc5i5dRIA
 
 {
-	"branch": "650007e9c31b396b0f6ef13d",
-	"staff": "651917c7af5d6ef8a25fc0e8",
-	"dayOff": "2023-10-30T00:00:00.000Z",
+	"branch": "6507127aa484aabc954a2e7c",
+	"staff": "6519178aaf5d6ef8a25f8087",
+	"dayOff": "2023-10-29T00:00:00.000Z",
 	"reason": "Bệnh"
 }
 
 ### GET
 GET {{url}}
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5ODU5MjMyNCwiZXhwIjoxNzAzNzc2MzI0fQ.5nqsUxSDwTEe6SAS12WQako2TmCGoPy1_0jc5i5dRIA
+
+
 
 ### GET ID
 GET {{url}}/653b77dd6a2a75d71715c0c3

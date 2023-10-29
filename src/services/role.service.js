@@ -7,7 +7,6 @@ const { ConflictRequestError } = require("../utils/error.util");
 const permissionService = require("./permission.service");
 const { regexData } = require("../core/fuction.code");
 
-
 const roleService = {
   add: async ({ name, desc, permissions }) => {
     if (await RoleModel.findOne({ name: regexData(name) })) {
@@ -55,7 +54,6 @@ const roleService = {
     return { ...role, permissions };
   },
 
-  
   delete: async (id) => {
     // return await RoleModel.find().lean();
     return true;

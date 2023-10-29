@@ -13,10 +13,11 @@ module.exports = {
     }).send(res);
   },
   async getAll(req, res) {
-    const filters = req.query;
+    const filters = req.body.filters;
+    const dataAccount = req.dataAccount;
     return new OKResponse({
       message: "Get day-offs success",
-      metadata: await staffDayOffService.getAll(filters),
+      metadata: await staffDayOffService.getAll(dataAccount, filters),
     }).send(res);
   },
 
