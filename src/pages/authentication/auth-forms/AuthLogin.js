@@ -77,7 +77,6 @@ const AuthLogin = ({ role }) => {
         };
         localStorage.setItem('data', JSON.stringify(data));
         dispatch(setUser(data));
-        console.log(permissions);
         navigation(Path.Index, { replace: true });
       }
       // console.log(result); // Xử lý kết quả đăng nhập từ backend

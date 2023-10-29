@@ -1,6 +1,21 @@
 import EditIcon from '@mui/icons-material/Edit';
-import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { DateCalendar } from '@mui/x-date-pickers';
+import {
+  Button,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { DateCalendar, StaticDatePicker, pickersLayoutClasses } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { staffApi } from 'api';
@@ -18,6 +33,24 @@ import AvTimerRoundedIcon from '@mui/icons-material/AvTimerRounded';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+function ActionList(props) {
+  const { onSetToday, className } = props;
+  const actions = [ { text: 'Today', method: onSetToday }];
+
+  return (
+    // Propagate the className such that CSS selectors can be applied
+    <List className={className}>
+      {actions.map(({ text, method }) => (
+        <ListItem key={text} disablePadding>
+          <ListItemButton onClick={method}>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  );
+}
 
 const WorkSchedule = () => {
   const [allStaffs, setAllStaffs] = useState([]);
@@ -148,6 +181,25 @@ const WorkSchedule = () => {
       <Grid container rowSpacing={1}>
         <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <StaticDatePicker
+              value={selectedDate}
+              onChange={handleDateChange}
+              slotProps={{
+                layout: {
+                  sx: {
+                    [`.${pickersLayoutClasses.actionBar}`]: {
+                      gridColumn: 1,
+                      gridRow: 2
+                    }
+                  }
+                }
+              }}
+              slots={{
+                actionBar: ActionList
+              }}
+            />
+          </LocalizationProvider>
+          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateCalendar
               value={selectedDate}
               onChange={handleDateChange}
@@ -158,7 +210,7 @@ const WorkSchedule = () => {
                 </div>
               )}
             />
-          </LocalizationProvider>
+          </LocalizationProvider> */}
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h5">
