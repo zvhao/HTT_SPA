@@ -11,7 +11,7 @@ const BranchModel = require("../models/Branch.model");
 const { findStaffById } = require("../repositories/staff.resp");
 
 const staffDayOffService = {
-  add: async ({ branch, staff, dayOff, reason }) => {
+  add: async ({ branch, staff, dayOff, reason, status }) => {
     if (await staffDayOffService.checkDayOffExist(staff, dayOff)) {
       throw new ConflictRequestError("Bạn đã đăng ký ngày này trước đó");
     }
@@ -20,6 +20,7 @@ const staffDayOffService = {
       staff,
       dayOff,
       reason,
+      status,
     }).save();
 
     return response;

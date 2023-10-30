@@ -19,6 +19,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
 const { regexData } = require("../core/fuction.code");
+const BranchModel = require("../models/Branch.model");
 
 const staffService = {
   add: async ({
@@ -88,6 +89,13 @@ const staffService = {
     // console.log(staff);
     const role = await roleService.getById(staff.role);
     return { ...staff, role };
+  },
+  getByTokenId: async (id) => {
+    const staff = await findStaffById(id);
+    // console.log(staff);
+    const role = await roleService.getById(staff.role);
+    const branch = await BranchModel.findById(staff.branch);
+    return { ...staff, role, branch };
   },
 
   update: async (id, data) => {

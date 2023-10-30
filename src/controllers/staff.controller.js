@@ -36,7 +36,7 @@ module.exports = {
     // console.log(dataAccount);
     return new OKResponse({
       message: "Get staff success",
-      metadata: await staffService.getById(id),
+      metadata: await staffService.getByTokenId(id),
     }).send(res);
   },
 
