@@ -127,8 +127,10 @@ const StaffForm = () => {
               };
               newOneStaffData.workTime = [formattedData];
               // console.log(JSON.stringify(formattedData, null, 4));
-              const branchData = await branchApi.getById(newOneStaffData.branch);
-              setSelectedBranch(branchData.metadata);
+              if (role === 'owner') {
+                const branchData = await branchApi.getById(newOneStaffData.branch);
+                setSelectedBranch(branchData.metadata);
+              }
 
               setInitialValues(newOneStaffData);
               // console.log(initialValues)
@@ -136,7 +138,7 @@ const StaffForm = () => {
               console.log('loi');
             }
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       } catch (error) {}
@@ -182,7 +184,7 @@ const StaffForm = () => {
     } else if (role === 'staff') {
       try {
         const AccountData = await staffApi.getByToken();
-        newdata.branch = AccountData.metadata.branch;
+        newdata.branch = AccountData.metadata.branch._id;
         // console.log(newdata);
       } catch (error) {
         console.log(error);
@@ -193,7 +195,7 @@ const StaffForm = () => {
         // console.log(newdata);
         const rs = await staffApi.update(id, newdata);
         if (rs && rs.status === 200) {
-          navigation(Path.Staff, { replace: true }); 
+          navigation(Path.Staff, { replace: true });
         } else {
           console.log('Error');
         }
