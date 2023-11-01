@@ -3,7 +3,7 @@ const apiOwners = '/api/v1/owners'
 
 const fetchData = async () => {
   try {
-    const response = await api.get(apiOwners); // Thay đổi '/data' thành đường dẫn tương ứng với API của backend Node.js
+    const response = await api.get(apiOwners);
     return response.data;
   } catch (error) {
     console.error(error);

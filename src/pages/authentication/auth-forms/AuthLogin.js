@@ -64,7 +64,7 @@ const AuthLogin = ({ role }) => {
       if (result && result.error) {
         setError(result.error);
       }
-      if (result && result.status === 200 && result.metadata) {
+      if (result && result.metadata) {
         // console.log(result.metadata.user);
         const token = result.metadata.token;
         const accountName = result.metadata.user;

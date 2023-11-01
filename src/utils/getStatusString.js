@@ -3,11 +3,11 @@ import { Typography } from '@mui/material';
 const getStatusString = (status) => {
   switch (status) {
     case 1:
-      return <Typography sx={{ color: 'orange' }}>Chờ duyệt</Typography>;
+      return { color: 'orange', status: 'chờ duyệt' };
     case 2:
-      return <Typography sx={{ color: 'green' }}>Đã duyệt</Typography>;
+      return { color: 'green', status: 'đã duyệt' };
     case 0:
-      return <Typography sx={{ color: 'red' }}>Không được duyệt</Typography>;
+      return { color: 'red', status: 'không được duyệt' };
     default:
       return '';
   }

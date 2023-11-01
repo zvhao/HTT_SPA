@@ -194,7 +194,7 @@ const StaffForm = () => {
       try {
         // console.log(newdata);
         const rs = await staffApi.update(id, newdata);
-        if (rs && rs.status === 200) {
+        if (rs && rs?.status) {
           navigation(Path.Staff, { replace: true });
         } else {
           console.log('Error');
