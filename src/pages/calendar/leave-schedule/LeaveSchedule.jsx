@@ -15,17 +15,11 @@ import {
   ListItemButton,
   ListItemText,
   MenuItem,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
   styled
 } from '@mui/material';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { DatePicker, LocalizationProvider, StaticDatePicker, pickersLayoutClasses } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -174,8 +168,9 @@ const LeaveSchedule = () => {
 
   const handleSave = () => {
     // let data = { ...selectedDayOff };
-    const id = selectedDayOff._id;
+    const id = selectedDayOff.id;
     let data = { status: statusV1, dayOff: selectedDayOff.dayOff, staff: selectedDayOff.staff._id };
+    // return console.log({ id, data });
 
     // setOpen(false);
     if (statusV1 === selectedDayOff.status) {
@@ -289,27 +284,53 @@ const LeaveSchedule = () => {
     if (!hasMissingData) {
       formData.staff = formDayOffAdd.staff._id;
       try {
-        let created = await dayoffApi.create(formData);
-        if (created && created?.metadata) {
-          setOpenAddPopup(false);
-          Swal.fire({
-            title: 'Đã lưu!',
-            text: '',
-            icon: 'success',
-            customClass: {
-              container: 'custom-z-index'
+        Swal.fire({
+          title: 'Bạn chắc chắn muốn lưu?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Lưu',
+          denyButtonText: `Không lưu`,
+          cancelButtonText: 'Thoát',
+          customClass: {
+            container: 'custom-z-index'
+          }
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              let created = await dayoffApi.create(formData);
+              if (created?.metadata?._id) {
+                allDayOffs();
+                Swal.fire('Đã lưu!', '', 'success');
+                setOpenAddPopup(false);
+                setStatusV1('');
+                setFormDayOffAdd({
+                  staff: '',
+                  branch: '',
+                  dayOff: '',
+                  reason: '',
+                  status: 1
+                });
+              }
+              // console.log(updated);
+            } catch (error) {
+              console.log(error);
+              Swal.fire('Lỗi!', `${error?.response?.data?.message}`, 'error');
+              setOpenAddPopup(false);
             }
-          });
-          setFormDayOffAdd({
-            staff: '',
-            branch: '',
-            dayOff: '',
-            reason: '',
-            status: 1
-          });
-          // setSelectedDate(formData.dayOff);
-          // handleDateChange(formData.dayOff)
-        }
+          } else if (result.isDenied) {
+            Swal.fire({
+              title: 'Các thay đổi không được lưu',
+              icon: 'info',
+              customClass: {
+                container: 'custom-z-index'
+              }
+            });
+            // setOpen(false);
+            // setStatusV1('');
+          }
+        });
+        // setSelectedDate(formData.dayOff);
+        // handleDateChange(formData.dayOff)
       } catch (error) {
         if (error?.response?.data?.message)
           Swal.fire({
@@ -330,11 +351,9 @@ const LeaveSchedule = () => {
     setFormDayOffAdd(data);
   };
 
-  const getSalary = (daySalary) => {
+  const getSalary = (daySalary, dayOff) => {
     const calcSalaryDate = dayjs(daySalary).format('DD');
-    // console.log(typeof daySalaryData);
-    const selectedDateData = new Date(selectedDate);
-    // console.log(selectedDateData);
+    const selectedDateData = new Date(dayOff);
 
     // Tính ngày bắt đầu và ngày kết thúc lương
     const selectedMonth = selectedDateData.getMonth() + 1;
@@ -344,6 +363,7 @@ const LeaveSchedule = () => {
     if (calcSalaryDate > selectedDateData.getDate()) {
       const thangTruoc = selectedMonth > 1 ? selectedMonth - 1 : 12;
       const namTruoc = selectedMonth > 1 ? selectedYear : selectedYear - 1;
+      // console.log({ thangTruoc, namTruoc });
       startDate = new Date(namTruoc, thangTruoc - 1, calcSalaryDate);
       endDate = new Date(selectedYear, selectedMonth - 1, calcSalaryDate);
     } else {
@@ -357,6 +377,80 @@ const LeaveSchedule = () => {
       </span>
     );
   };
+
+  const columns = [
+    {
+      field: 'stt',
+      headerName: 'STT',
+      width: 100,
+      align: 'center'
+    },
+    {
+      field: 'staff',
+      headerName: 'Nhân viên',
+      width: 250,
+
+      flex: 1,
+      // align: 'center',
+      renderCell: (params) => (
+        <div style={{ fontWeight: 'bold' }}>
+          {params.row.staff.username}
+          <br />
+          {params.row.staff.fullname}
+          <br />
+        </div>
+      )
+    },
+    {
+      field: 'dayOff',
+      headerName: 'Ngày nghỉ',
+      // flex: 1,
+      width: 150,
+      align: 'center',
+      renderCell: (params) => dayjs(params.row.dayOff).format('ddd, DD/MM/YYYY')
+    },
+    {
+      field: 'reason',
+      headerName: 'Lý do',
+      width: 50,
+      flex: 1,
+      align: 'center'
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      // flex: 1,
+      width: 200,
+      align: 'center',
+      renderCell: (params) => (
+        <div style={{ color: getStatusString(params.row.status).color }}>{getStatusString(params.row.status).status}</div>
+      )
+    },
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      width: 100,
+      align: 'center',
+      renderCell: (params) => (
+        <Button variant="contained" onClick={() => handleViewClick(params.row)}>
+          <EditIcon />
+        </Button>
+      )
+    }
+  ];
+
+  const rows = dayOffsByDate.map((dayOff, index) => ({
+    id: dayOff._id,
+    stt: index + 1,
+    staff: dayOff.staff,
+    dayOff: dayOff.dayOff,
+    reason: dayOff.reason,
+    status: dayOff.status,
+    action: dayOff._id
+  }));
+
+  
+
   return (
     <>
       <Typography sx={{ mb: 1 }} variant="h4">
@@ -367,33 +461,64 @@ const LeaveSchedule = () => {
         </Grid>
       </Typography>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-        <Grid item xs={5}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDatePicker
-              value={selectedDate}
-              onChange={handleDateChange}
-              slotProps={{
-                layout: {
-                  sx: {
-                    [`.${pickersLayoutClasses.actionBar}`]: {
-                      gridColumn: 1,
-                      gridRow: 2
+        <Grid item xs={4}>
+          <Grid container>
+            <Grid item width={'100%'}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                  showDaysOutsideCurrentMonth
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  slotProps={{
+                    layout: {
+                      sx: {
+                        [`.${pickersLayoutClasses.actionBar}`]: {
+                          // gridColumn: 1,
+                          gridRow: 3,
+                          display: 'flex'
+                        }
+                      }
                     }
-                  }
-                }
-              }}
-              slots={{
-                actionBar: ActionList
-              }}
-            />
-          </LocalizationProvider>
+                  }}
+                  slots={{
+                    actionBar: ActionList
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item>
+              <Typography variant="h5" color={'red'}>
+                LƯU Ý:
+              </Typography>
+              <Box paddingLeft={4}>
+                <Typography>
+                  Tổng số kỹ thuật viên: <strong>{allStaffs.length}</strong>
+                </Typography>
+                <Typography>
+                  Số khách tối đa được phục vụ cùng một lúc: <strong>{branch.capacity}</strong>
+                </Typography>
+                <Typography>
+                  Số nhân viên tối thiểu cần có mặt mỗi ngày:{' '}
+                  {allStaffs.length > branch.capacity ? <strong>{branch.capacity / 2}</strong> : <strong>{allStaffs.length - 1}</strong>}
+                </Typography>
+                <Typography>
+                  Số nhân viên tối đa có thể nghỉ trong ngày:{' '}
+                  {allStaffs.length > branch.capacity ? <strong>{allStaffs.length - branch.capacity / 2}</strong> : <strong>1</strong>}
+                </Typography>
+              </Box>
+              {/* Nếu tổng số kỹ thuật viên lớn hơn số sức chứa của chi nhánh / 2: <br />
+          Số nhân viên tối thiểu cần có mặt mỗi ngày: sức chứa của chi nhánh / 2 <br />
+          Nếu số nhân viên nhỏ hơn hoặc bằng số sức chứa của chi nhánh / 2: <br />
+          Số nhân viên tối thiểu cần có mặt mỗi ngày = tổng số nhân viên - 1 */}
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={8}>
           <Button variant="outlined" onClick={() => handleAddPopup()}>
             Đăng ký ngày nghỉ cho nhân viên
           </Button>
-          <Grid container>
-            <Grid item xs={6}>
+          <Grid container mt={2}>
+            <Grid item xs={8}>
               <Typography variant="h5">
                 {selectedDate ? (
                   <div> Nhân viên đăng ký nghỉ trong ngày {dayjs(selectedDate).format('DD/MM/YYYY')}</div>
@@ -402,89 +527,27 @@ const LeaveSchedule = () => {
                 )}
               </Typography>
             </Grid>
-            <Grid item xs={6} display={'flex'} justifyContent={'flex-end'}>
+            <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
               <Typography> Có {dayOffsByDate.length} lượt đăng ký</Typography>
             </Grid>
           </Grid>
-
-          <TableContainer component={Paper} sx={{ width: '100%', mt: 1 }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" width="50px">
-                    STT
-                  </TableCell>
-                  <TableCell align="center">Nhân viên</TableCell>
-                  <TableCell align="center">Ngày nghỉ</TableCell>
-                  <TableCell align="center">Lý do</TableCell>
-                  <TableCell align="center">Trạng thái</TableCell>
-                  <TableCell align="center">Thao tác</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {dayOffsByDate.map((dayOff, index) => (
-                  <TableRow key={index}>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="center">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="center">
-                      {dayOff.staff.username}
-                      <br></br>
-                      {dayOff.staff.fullname}
-                      <br></br>
-                    </TableCell>
-                    <TableCell align="center">{dayjs(dayOff.dayOff).format('ddd, DD/MM/YYYY')}</TableCell>
-                    <TableCell align="center">{dayOff.reason}</TableCell>
-                    <TableCell align="center">
-                      <Typography sx={{ color: getStatusString(dayOff.status).color }}>{getStatusString(dayOff.status).status}</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      {/* <Button size="medium" variant="contained" component={Link} to={`${Path.LeaveSchedule}/edit/${dayOff._id}`}>
-                        
-                      </Button> */}
-                      <Button variant="contained" onClick={() => handleViewClick(dayOff)}>
-                        <EditIcon />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {dayOffsByDate.length === 0 && (
-                  <TableRow>
-                    <TableCell align="center" colSpan={6}>
-                      Không có nhân viên nào làm việc
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {dayOffsByDate && (
+            <div>
+              <DataGrid
+                sx={{ width: '100%', fontSize: '14px' }}
+                autoHeight
+                rows={rows}
+                columns={columns}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true
+                  }
+                }}
+              />
+            </div>
+          )}
         </Grid>
-        <Grid item xs={6}>
-          <Typography variant="h5" color={'red'}>
-            LƯU Ý:
-          </Typography>
-          <Box paddingLeft={4}>
-            <Typography>
-              Tổng số kỹ thuật viên: <strong>{allStaffs.length}</strong>
-            </Typography>
-            <Typography>
-              Số khách tối đa được phục vụ cùng một lúc: <strong>{branch.capacity}</strong>
-            </Typography>
-            <Typography>
-              Số nhân viên tối thiểu cần có mặt mỗi ngày:{' '}
-              {allStaffs.length > branch.capacity ? <strong>{branch.capacity / 2}</strong> : <strong>{allStaffs.length - 1}</strong>}
-            </Typography>
-            <Typography>
-              Số nhân viên tối đa có thể nghỉ trong ngày:{' '}
-              {allStaffs.length > branch.capacity ? <strong>{allStaffs.length - branch.capacity / 2}</strong> : <strong>1</strong>}
-            </Typography>
-          </Box>
-          {/* Nếu tổng số kỹ thuật viên lớn hơn số sức chứa của chi nhánh / 2: <br />
-          Số nhân viên tối thiểu cần có mặt mỗi ngày: sức chứa của chi nhánh / 2 <br />
-          Nếu số nhân viên nhỏ hơn hoặc bằng số sức chứa của chi nhánh / 2: <br />
-          Số nhân viên tối thiểu cần có mặt mỗi ngày = tổng số nhân viên - 1 */}
-        </Grid>
-        <Grid item xs={6}></Grid>
       </Grid>
       {/* Popup */}
       {selectedDayOff && (
@@ -496,7 +559,7 @@ const LeaveSchedule = () => {
               <Typography>Username: {selectedDayOff.staff.username}</Typography>
               <Typography>Tên: {selectedDayOff.staff.fullname}</Typography>
               <Typography>
-                Trong tháng lương: <strong>{getSalary(selectedDayOff.staff.createdAt)}</strong>
+                Trong tháng lương: <strong>{getSalary(selectedDayOff.staff.createdAt, selectedDayOff.dayOff)}</strong>
               </Typography>
               <Typography>
                 Số ngày nghỉ có lương: <strong>{selectedDayOff.staff.numPaidLeave}</strong> ngày
@@ -565,57 +628,68 @@ const LeaveSchedule = () => {
         <DialogContent sx={{ minWidth: '50vw' }}>
           {/* Hiển thị thông tin chi tiết của nhân viên */}
           <div>
-            <Autocomplete
-              sx={{
-                '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                '&': { mt: 1, p: 0 },
-                '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-              }}
-              fullWidth
-              margin={'normal'}
-              options={allStaffs}
-              getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
-              // value={formDayOffAdd.staff}
-              onChange={(event, value) => handleFieldAddChange('staff', value)}
-              renderInput={(params) => <TextField {...params} variant="outlined" label="Nhân viên" />}
-            ></Autocomplete>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  sx={{ mt: 1, mb: 1 }}
-                  label="Basic date picker"
-                  value={selectedDate}
-                  onChange={(date) => handleFieldAddChange('dayOff', date)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-            <TextField
-              margin="dense"
-              value={formDayOffAdd.reason}
-              label="Lý do nghỉ"
-              onChange={(event) => handleFieldAddChange('reason', event.target.value)}
-            ></TextField>
-            <CssTextField
-              fullWidth
-              margin="dense"
-              label="Trạng thái"
-              variant="outlined"
-              value={formDayOffAdd.status}
-              select
-              onChange={(event) => handleFieldAddChange('status', event.target.value)}
-            >
-              <MenuItem value={2} sx={{ color: 'green' }}>
-                Duyệt
-              </MenuItem>
-              <MenuItem value={1} sx={{ color: 'orange' }}>
-                Chờ duyệt
-              </MenuItem>
-              <MenuItem value={0} sx={{ color: 'red' }}>
-                Không duyệt
-              </MenuItem>
-            </CssTextField>
+            <Grid container columnSpacing={{ xs: 1, sm: 2 }}>
+              <Grid item xs={8}>
+                <Autocomplete
+                  sx={{
+                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                    '&': { mt: 2, p: 0 },
+                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                  }}
+                  fullWidth
+                  margin={'normal'}
+                  options={allStaffs}
+                  getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
+                  // value={formDayOffAdd.staff}
+                  onChange={(event, value) => handleFieldAddChange('staff', value)}
+                  renderInput={(params) => <TextField {...params} variant="outlined" label="Nhân viên" />}
+                ></Autocomplete>
+              </Grid>
+              <Grid item xs={4}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      sx={{ mt: 1, mb: 1 }}
+                      label="Basic date picker"
+                      value={selectedDate}
+                      onChange={(date) => handleFieldAddChange('dayOff', date)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  value={formDayOffAdd.reason}
+                  label="Lý do nghỉ"
+                  onChange={(event) => handleFieldAddChange('reason', event.target.value)}
+                ></TextField>
+              </Grid>
+              <Grid item xs={4}>
+                <CssTextField
+                  fullWidth
+                  margin="normal"
+                  label="Trạng thái"
+                  variant="outlined"
+                  value={formDayOffAdd.status}
+                  select
+                  onChange={(event) => handleFieldAddChange('status', event.target.value)}
+                >
+                  <MenuItem value={2} sx={{ color: 'green' }}>
+                    Duyệt
+                  </MenuItem>
+                  <MenuItem value={1} sx={{ color: 'orange' }}>
+                    Chờ duyệt
+                  </MenuItem>
+                  <MenuItem value={0} sx={{ color: 'red' }}>
+                    Không duyệt
+                  </MenuItem>
+                </CssTextField>
+              </Grid>
+            </Grid>
           </div>
         </DialogContent>
         <DialogActions>
