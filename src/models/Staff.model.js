@@ -1,7 +1,7 @@
 "use trict";
 
-const mongoose = require("mongoose")
-const { hashPassword } = require("../utils/hash.util")
+const mongoose = require("mongoose");
+const { hashPassword } = require("../utils/hash.util");
 const MongooseDelete = require("mongoose-delete");
 
 const DOCUMENT_NAME = "Staff";
@@ -39,7 +39,7 @@ var StaffSchema = new mongoose.Schema(
     },
     position: {
       type: String,
-      required: true
+      required: true,
     },
     password: {
       type: String,
@@ -47,19 +47,19 @@ var StaffSchema = new mongoose.Schema(
     },
     consultingCommission: {
       type: Number,
-      required: true
+      required: true,
     },
     serviceCommission: {
       type: Number,
-      required: true
+      required: true,
     },
     allowances: {
       type: [mongoose.Schema.Types.Mixed],
-      required: true
+      required: true,
     },
     workTime: {
       type: [mongoose.Schema.Types.Mixed],
-      required: true
+      required: true,
     },
     role: {
       type: mongoose.Types.ObjectId,
@@ -73,19 +73,16 @@ var StaffSchema = new mongoose.Schema(
   {
     timestamps: true,
     collection: COLLECTION_NAME,
-    versionKey: false
-
+    versionKey: false,
   }
 );
 
-StaffSchema.plugin(MongooseDelete, { deletedAt: true })
+StaffSchema.plugin(MongooseDelete, { deletedAt: true });
 
 StaffSchema.pre("save", async function (next) {
   this.password = await hashPassword(this.password);
   next();
 });
-
-
 
 //Export the model
 module.exports = mongoose.model(DOCUMENT_NAME, StaffSchema);

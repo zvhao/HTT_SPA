@@ -5,8 +5,8 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "technicians",
-  "desc": "Kỹ thuật viên",
+  "name": "customer",
+  "desc": "Khách hàng",
   "permissions": ["653bca92ec8ec92cb6207084", "653bcb04ec8ec92cb620ab73"]
 }
 

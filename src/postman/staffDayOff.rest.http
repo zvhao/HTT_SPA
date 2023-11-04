@@ -6,11 +6,11 @@ Content-Type: application/json
 x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5ODU5MjMyNCwiZXhwIjoxNzAzNzc2MzI0fQ.5nqsUxSDwTEe6SAS12WQako2TmCGoPy1_0jc5i5dRIA
 
 {
-	"branch": "6507127aa484aabc954a2e7c",
-	"staff": "6519178aaf5d6ef8a25f8087",
-	"dayOff": "2023-10-30T00:00:00.000Z",
+	"branch": "650007e9c31b396b0f6ef13d",
+	"staff": "65410252498c0c02e2c6ef63",
+	"dayOff": "2023-11-11T00:00:00.000Z",
 	"reason": "Bệnh",
-	"status": 0
+	"status": 1
 }
 
 ### GET
@@ -28,7 +28,7 @@ Content-Type: application/json
 x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjk0MjI5N2RhNDQzMjEzZmE2NTAwOCIsInJvbGUiOiJvd25lciIsImlhdCI6MTY5ODU5MjMyNCwiZXhwIjoxNzAzNzc2MzI0fQ.5nqsUxSDwTEe6SAS12WQako2TmCGoPy1_0jc5i5dRIA
 
 {
-	"status": 0
+	"status": 1
 }
 
 

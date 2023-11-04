@@ -13,7 +13,7 @@ const { findStaffById } = require("../repositories/staff.resp");
 const staffDayOffService = {
   add: async ({ branch, staff, dayOff, reason, status }) => {
     if (await staffDayOffService.checkDayOffExist(staff, dayOff)) {
-      throw new ConflictRequestError("Bạn đã đăng ký ngày này trước đó");
+      throw new ConflictRequestError("Đã đăng ký ngày này trước đó");
     }
     const response = await StaffDayOffModel({
       branch,
@@ -59,27 +59,27 @@ const staffDayOffService = {
   },
 
   checkDayOffExist: async (staffId, dayOff) => {
-    let dayOffs = await StaffDayOffModel.find({
+    let dayOffs = await StaffDayOffModel.findOne({
       staff: staffId,
       dayOff: dayOff,
     });
-    if (dayOffs.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return dayOffs;
+
+    // if (dayOffs.length > 0) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   },
 
   update: async (id, data) => {
-    // console.log(data.code);
     if (data.staff && data.dayOff) {
       let isDayOff = await staffDayOffService.checkDayOffExist(
         data.staff,
         data.dayOff
       );
-
-      if (isDayOff && id !== isDayOff._id) {
-        throw new ConflictRequestError("Bạn đã đăng ký ngày này trước đó");
+      if (isDayOff && id !== isDayOff._id.toString()) {
+        throw new ConflictRequestError("Đã đăng ký ngày này trước đó");
       }
     }
 
