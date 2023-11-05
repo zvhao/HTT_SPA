@@ -5,7 +5,7 @@ const customerController = require("../controllers/customer.controller");
 const { asyncHandler } = require("../utils/asyncHandler.util");
 
 const { validateResource } = require("../middleware/request.middleware");
-// const { StaffSchemaInput } = require("../schema/staff.schema");
+const { CustomerSchemaInput } = require("../schema/customer.schema");
 
 // const {
 //   authentication,
@@ -26,7 +26,7 @@ router
   .route("/")
   .post(
     // asyncHandler(checkPermission("staff.add")),
-    // validateResource(StaffSchemaInput),
+    validateResource(CustomerSchemaInput),
     asyncHandler(customerController.create)
   )
   .get(
@@ -36,7 +36,10 @@ router
 
 router
   .route("/:id")
-  // .get(asyncHandler(customerController.getById))
-  .patch(asyncHandler(customerController.update));
+  .get(asyncHandler(customerController.getById))
+  .patch(
+    validateResource(CustomerSchemaInput),
+    asyncHandler(customerController.update)
+  );
 
 module.exports = router;

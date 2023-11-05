@@ -4,11 +4,12 @@ const compression = require("compression");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const { logger, options } = require("./utils");
-var cookieParser = require('cookie-parser')
+var cookieParser = require("cookie-parser");
 const {
   catchError404ResourceNotFound,
   catchErrorIntervalServer,
 } = require("./middleware/app.middleware");
+const { default: mongoose } = require("mongoose");
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression(options.comp(compression)));
 app.use(helmet());
 app.use(morgan("dev", { stream: logger }));
-app.use(cookieParser())
+app.use(cookieParser());
 // Routes
 app.use("/", require("./routes"));
 

@@ -2,6 +2,7 @@
 const {
   ConflictRequestError,
   NotFoundRequestError,
+  BadRequestError,
 } = require("../utils/error.util");
 const roleService = require("./role.service");
 const bcrypt = require("bcrypt");
@@ -10,6 +11,7 @@ const cookie = require("cookie");
 const { regexData } = require("../core/fuction.code");
 const CustomerModel = require("../models/Customer.model");
 const { hashPassword } = require("../utils/hash.util");
+const RoleModel = require("../models/Role.model");
 
 const customerService = {
   add: async ({
@@ -19,9 +21,10 @@ const customerService = {
     password,
     email,
     address,
-    sex,
+    gender,
     birthday,
     customerLevel,
+    score,
   }) => {
     if (await CustomerModel.findOne({ phone: phone })) {
       throw new ConflictRequestError("phone exists");
@@ -41,11 +44,13 @@ const customerService = {
       password,
       email,
       address,
-      sex,
+      gender,
       birthday,
       customerLevel,
+      score,
       role,
-    }).lean();
+    }).save();
+
     return response;
   },
 
@@ -56,13 +61,13 @@ const customerService = {
     //   filters.position = { $ne: "manager" };
     // }
     const customers = await CustomerModel.find(filters);
-
+    // return customers
     return await Promise.all(
       customers.map(
         (u) =>
           new Promise(async (resolve, reject) => {
             try {
-              resolve(await this.getById(u._id));
+              resolve(await customerService.getById(u._id));
             } catch (error) {
               reject(error);
             }
@@ -72,7 +77,8 @@ const customerService = {
   },
 
   getById: async (id) => {
-    const customer = await CustomerModel.findById(id);
+    const customer = await CustomerModel.findById(id).lean();
+    // return customer
     // console.log(customer);
     const role = await roleService.getById(customer.role);
     return { ...customer, role };
@@ -86,24 +92,30 @@ const customerService = {
   //   return { ...staff, role, branch };
   // },
 
-  // update: async (id, data) => {
-  //   if (data.username) {
-  //     // console.log(data.username);
-  //     let user = await findStaffByUsername(data.username);
-  //     // var workTime = user.workTime.pop();
-  //     // console.log(user);
-
-  //     if (user && id !== user._id.toString()) {
-  //       throw new ConflictRequestError("Username exists");
-  //     }
-  //     // delete data.workTime;
-  //     //   console.log(data);
-  //     //   console.log(workTime);
-  //   }
-
-  //   return await findOneAndUpdateStaff(id, data);
-  //   // return console.log(data);
-  // },
+  update: async (id, data) => {
+    if (data.phone && data.code) {
+      let customerByPhone = await CustomerModel.findOne({
+        phone: data.phone,
+      }).lean();
+      if (customerByPhone && id !== customerByPhone._id.toString()) {
+        throw new ConflictRequestError("phone exists");
+      }
+      let customerByCode = await CustomerModel.findOne({
+        code: data.code,
+      }).lean();
+      if (customerByCode && id !== customerByCode._id.toString()) {
+        throw new ConflictRequestError("phone exists");
+      }
+      return await CustomerModel.findByIdAndUpdate(
+        id,
+        { $set: data },
+        { new: true }
+      ).lean();
+    } else {
+      throw new BadRequestError("Lỗi");
+    }
+    // return console.log(data);
+  },
 
   // login: async (data) => {
   //   let user = await findStaffByUsername(data.username);

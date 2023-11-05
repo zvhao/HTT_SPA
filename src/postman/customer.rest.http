@@ -5,12 +5,16 @@ POST {{ url }}
 Content-Type: application/json
 
 {
-  "fullname": "Huynh Thanh Thuong 1",
-  "phone": "123456789",
-  "email": "john.doe@example.com",
-  "address": "123 Main St",
-  "password": "password123",
-
+  "code": "KH00000002",
+  "fullname": "Nguyễn Văn Phúc",
+  "phone": "0907811367",
+  "password": "",
+  "email": "",
+  "address": "Hậu Giang",
+  "gender": "nam",
+  "birthday": "1976-12-12T00:00:00.000Z",
+  "customerLevel": 1,
+  "score": 0
 }
 
 
@@ -20,18 +24,26 @@ GET {{url}}
 
 
 ### GET ID
-GET {{url}}/651588404eb4c2adc3f3b529
-x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTY5NjIyNzc5OCwiZXhwIjoxNjk3MDkxNzk4fQ.Sy1qvSsRtqdXfSyPzUwp8rjvMkaqmhXErgWGKv9chx0
+GET {{url}}/65475bae33e9bd33a73275c8
+# x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTY5NjIyNzc5OCwiZXhwIjoxNjk3MDkxNzk4fQ.Sy1qvSsRtqdXfSyPzUwp8rjvMkaqmhXErgWGKv9chx0
 
 
 ### Update
-PATCH {{url}}/64ed80658d9907fd5dedd129
+PATCH {{url}}/65475bae33e9bd33a73275c8
 Content-Type: application/json
 
 {
-
+  "code": "KH00000002",
+  "fullname": "Nguyễn Văn Phúc",
+  "phone": "0907811367",
+  "password": "Nvp7676",
+  "email": "phuc@gmail.com",
+  "address": "Hậu Giang",
+  "gender": "nam",
+  "birthday": "1976-12-12T00:00:00.000Z",
+  "customerLevel": 1,
+  "score": 0
 }
-
 ### Login
 POST {{ url }}/login
 Content-Type: application/json

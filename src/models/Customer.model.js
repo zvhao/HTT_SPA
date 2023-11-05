@@ -32,15 +32,21 @@ var CustomerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    sex: {
-      type: Boolean,
+    gender: {
+      type: String,
       required: true,
+      enum: ["nam", "nữ", "khác"],
     },
     birthday: {
       type: Date,
     },
     customerLevel: {
-      type: mongoose.Types.ObjectId,
+      type: Number,
+      default: 1,
+    },
+    score: {
+      type: Number,
+      default: 0,
     },
     role: {
       type: mongoose.Types.ObjectId,
@@ -51,6 +57,7 @@ var CustomerSchema = new mongoose.Schema(
     timestamps: true,
     collection: COLLECTION_NAME,
     versionKey: false,
+    timezone: "Asia/Ho_Chi_Minh",
   }
 );
 

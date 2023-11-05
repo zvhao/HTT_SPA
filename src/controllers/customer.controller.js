@@ -41,14 +41,14 @@ module.exports = {
   //   }).send(res);
   // },
 
-  // async update(req, res) {
-  //   const id = req.params.id;
-  //   const body = req.body;
-  //   return new OKResponse({
-  //     message: "Update customer success",
-  //     metadata: await customerService.update(id, body),
-  //   }).send(res);
-  // },
+  async update(req, res) {
+    const id = req.params.id;
+    const body = req.body;
+    return new OKResponse({
+      message: "Update customer success",
+      metadata: await customerService.update(id, body),
+    }).send(res);
+  },
 
   // async login(req, res) {
   //   const body = req.body;
