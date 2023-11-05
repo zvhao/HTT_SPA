@@ -25,16 +25,22 @@ const ServiceForm = Loadable(lazy(() => import('pages/service-packages/service/S
 const ServiceType = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceType')));
 const ServiceTypeForm = Loadable(lazy(() => import('pages/service-packages/service-type/ServiceTypeForm')));
 
+// Course
 const Course = Loadable(lazy(() => import('pages/service-packages/course/Course')));
 const CourseForm = Loadable(lazy(() => import('pages/service-packages/course/CourseForm')));
 
-// combo
+// Combo
 const Combo = Loadable(lazy(() => import('pages/service-packages/combo/Combo')));
 const ComboForm = Loadable(lazy(() => import('pages/service-packages/combo/ComboForm')));
 
+// HRM
 const Staff = Loadable(lazy(() => import('pages/hrm/manager/Staff')));
 const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
 
+// CRM
+const Customer = Loadable(lazy(() => import('pages/crm/customer/Customer')));
+
+// Senior-manager
 const Branch = Loadable(lazy(() => import('pages/branch/Branch')));
 const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
 
@@ -171,6 +177,7 @@ const MainRoutes = {
         }
       ]
     },
+    { path: Path.Customer, children: [{ index: true, element: <Customer /> }] },
     {
       path: Path.Branch,
       children: [

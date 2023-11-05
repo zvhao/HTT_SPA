@@ -311,7 +311,6 @@ const LeaveSchedule = () => {
                   status: 1
                 });
               }
-              // console.log(updated);
             } catch (error) {
               console.log(error);
               Swal.fire('Lỗi!', `${error?.response?.data?.message}`, 'error');
@@ -420,7 +419,7 @@ const LeaveSchedule = () => {
       field: 'status',
       headerName: 'Trạng thái',
       // flex: 1,
-      width: 200,
+      width: 150,
       align: 'center',
       renderCell: (params) => (
         <div style={{ color: getStatusString(params.row.status).color }}>{getStatusString(params.row.status).status}</div>
@@ -448,8 +447,6 @@ const LeaveSchedule = () => {
     status: dayOff.status,
     action: dayOff._id
   }));
-
-  
 
   return (
     <>

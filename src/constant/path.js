@@ -7,6 +7,7 @@ export const Path = {
 	Course: '/course',
 	ServiceDetail: '/service-detail/',
 	Staff: '/staff',
+	Customer: '/customer',
 	Branch: '/branch',
 	NOT_FOUND: '/404',
 	FORBIDDEN: '/403',

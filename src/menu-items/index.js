@@ -1,17 +1,18 @@
 // project import
-import pages from './pages';
+// import pages from './pages';
 import dashboard from './dashboard';
-import utilities from './utilities';
-import support from './support';
+// import utilities from './utilities';
+// import support from './support';
 import services from './services';
 import staff from './staff';
+import crm from './crm';
 import seniorManager from './senior-manager';
 import calendar from './calendar';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, seniorManager, services, staff, calendar]
+  items: [dashboard, seniorManager, services, staff, crm, calendar]
   // items: [dashboard, seniorManager, services, staff, utilities, pages, support, calendar]
 };
 

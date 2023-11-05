@@ -212,7 +212,7 @@ const WorkSchedule = () => {
             />
           </LocalizationProvider> */}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Typography variant="h5">
             {selectedDate && <div> Nhân viên làm trong ngày {dayjs(selectedDate).format('DD/MM/YYYY')}</div>}
           </Typography>

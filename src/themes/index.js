@@ -40,7 +40,7 @@ export default function ThemeCustomization({ children }) {
         }
       },
       palette: {
-        ...theme.palette,
+        ...theme.palette
       },
       customShadows: themeCustomShadows,
       typography: themeTypography
@@ -50,6 +50,7 @@ export default function ThemeCustomization({ children }) {
 
   const themes = createTheme(themeOptions);
   themes.components = componentsOverride(themes);
+
 
   return (
     <StyledEngineProvider injectFirst>
