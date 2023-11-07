@@ -19,12 +19,12 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const validationSchema = yup.object({
-  name: yup.string().required('Tên dịch vụ là bắt buộc'),
+  name: yup.string().required('Tên chi nhánh là bắt buộc'),
   // code: yup.string().required('Tên dịch vụ là bắt buộc'),
-  capacity: yup.string().required('Tên dịch vụ là bắt buộc'),
+  capacity: yup.string().required('Sức chứa là bắt buộc'),
   // manager: yup.string().required('Tên dịch vụ là bắt buộc'),
-  address: yup.string().required('Tên dịch vụ là bắt buộc'),
-  desc: yup.string().required('Tên dịch vụ là bắt buộc')
+  address: yup.string().required('Địa chỉ là bắt buộc'),
+  desc: yup.string().required('Mô tả là bắt buộc')
 });
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
   const { onChange, ...other } = props;

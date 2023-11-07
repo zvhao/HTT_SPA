@@ -39,6 +39,7 @@ const StaffForm = Loadable(lazy(() => import('pages/hrm/manager/StaffForm')));
 
 // CRM
 const Customer = Loadable(lazy(() => import('pages/crm/customer/Customer')));
+const CustomerForm = Loadable(lazy(() => import('pages/crm/customer/CustomerForm')));
 
 // Senior-manager
 const Branch = Loadable(lazy(() => import('pages/branch/Branch')));
@@ -177,7 +178,20 @@ const MainRoutes = {
         }
       ]
     },
-    { path: Path.Customer, children: [{ index: true, element: <Customer /> }] },
+    {
+      path: Path.Customer,
+      children: [
+        { index: true, element: <Customer /> },
+        {
+          path: 'add',
+          element: <CustomerForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <CustomerForm />
+        }
+      ]
+    },
     {
       path: Path.Branch,
       children: [

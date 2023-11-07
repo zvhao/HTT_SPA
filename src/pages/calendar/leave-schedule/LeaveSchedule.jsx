@@ -514,7 +514,7 @@ const LeaveSchedule = () => {
           <Button variant="outlined" onClick={() => handleAddPopup()}>
             Đăng ký ngày nghỉ cho nhân viên
           </Button>
-          <Grid container mt={2}>
+          <Grid container mt={2} mb={2}>
             <Grid item xs={8}>
               <Typography variant="h5">
                 {selectedDate ? (
@@ -531,7 +531,16 @@ const LeaveSchedule = () => {
           {dayOffsByDate && (
             <div>
               <DataGrid
-                sx={{ width: '100%', fontSize: '14px' }}
+                sx={{
+                  width: '100%',
+                  fontSize: '14px',
+                  boxShadow: 2,
+                  border: 2,
+                  borderColor: 'primary.light',
+                  '& .MuiDataGrid-cell:hover': {
+                    color: 'primary.main'
+                  }
+                }}
                 autoHeight
                 rows={rows}
                 columns={columns}
@@ -649,7 +658,7 @@ const LeaveSchedule = () => {
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
                       sx={{ mt: 1, mb: 1 }}
-                      label="Basic date picker"
+                      label="Chọn ngày nghỉ"
                       value={selectedDate}
                       onChange={(date) => handleFieldAddChange('dayOff', date)}
                     />
