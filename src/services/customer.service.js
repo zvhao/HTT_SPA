@@ -106,6 +106,11 @@ const customerService = {
       if (customerByCode && id !== customerByCode._id.toString()) {
         throw new ConflictRequestError("phone exists");
       }
+      let hashedPassword = "";
+      if (data.password !== "") {
+        hashedPassword = await hashPassword(data.password);
+        data.password = hashedPassword;
+      }
       return await CustomerModel.findByIdAndUpdate(
         id,
         { $set: data },

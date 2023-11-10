@@ -2,7 +2,6 @@
 
 const mongoose = require("mongoose");
 const MongooseDelete = require("mongoose-delete");
-const ttl = require('mongoose-ttl');
 const DOCUMENT_NAME = "StaffDayOff";
 const COLLECTION_NAME = "StaffDayOff";
 

@@ -57,9 +57,7 @@ const courseService = {
     let services = [];
     // console.log(course.services);
 
-    for (let p of course.services) {
-      console.log(p);
-      try {
+    for (let p of course.services) {      try {
         let combo = await ComboService.getById(p);
         // console.log(service);
         services.push(combo);

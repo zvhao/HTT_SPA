@@ -1,0 +1,85 @@
+@url=http://localhost:8888/api/v1/booking
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "services": ["652944bc90a19111a4a2a556", "652ff7fd491f2037438a96a4"],
+  "status": 1,
+  "branch": "650007e9c31b396b0f6ef13d",
+  "date": "2023-11-14T13:03:00.000Z",
+  "startTime": "2023-11-14T15:00:00.000Z",
+  "endTime": "2023-11-14T16:30:00.000Z",
+  "technician": "651588404eb4c2adc3f3b529",
+  "note": "",
+  "customerInfo": [
+    {
+      "fullname": "Nguyễn Thị Tư",
+      "phone": "0987526341",
+      "gender": "nữ"
+    },
+    {
+      "fullname": "Nguyễn Thị Năm",
+      "phone": "0987526343",
+      "gender": "nữ"
+    }
+  ],
+  "account": "65475ae1202c88e80660c1cb",
+  "customersNumber": 2
+}
+
+
+### GET
+GET {{url}}
+
+
+### GET ID
+GET {{url}}/654e3dd937f89f90647e4c01
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTY5NjIyNzc5OCwiZXhwIjoxNjk3MDkxNzk4fQ.Sy1qvSsRtqdXfSyPzUwp8rjvMkaqmhXErgWGKv9chx0
+
+
+
+### Update
+PATCH {{url}}/654e3dd937f89f90647e4c01
+Content-Type: application/json
+
+{
+  "services": ["652944bc90a19111a4a2a556", "652ff7fd491f2037438a96a4"],
+  "status": 1,
+  "branch": "650007e9c31b396b0f6ef13d",
+  "date": "2023-11-12T13:03:00.000Z",
+  "startTime": "2023-11-12T15:00:00.000Z",
+  "endTime": "2023-11-12T16:30:00.000Z",
+  "technician": "651588404eb4c2adc3f3b529",
+  "note": "",
+  "customerInfo": [
+    {
+      "fullname": "Nguyễn Thị Tư",
+      "phone": "0987526341",
+      "gender": "nữ"
+    },
+    {
+      "fullname": "Nguyễn Thị Năm",
+      "phone": "0987526343",
+      "gender": "nữ"
+    }
+  ],
+  "account": "65475ae1202c88e80660c1cb",
+  "customersNumber": 2
+}
+
+### Login
+POST {{ url }}/login
+Content-Type: application/json
+
+{
+	"username": "qlcn0101",
+	"password": "Hao291001"
+}
+
+### Logout
+GET {{ url }}/logout
+
+
+
