@@ -4,6 +4,8 @@ const { Router } = require("express");
 const { asyncHandler } = require("../utils/asyncHandler.util");
 const { validateResource } = require("../middleware/request.middleware");
 const bookingController = require("../controllers/booking.controller");
+const { BookingSchemaInput } = require("../schema/booking.schema");
+
 const {
   authentication,
   checkPermission,
@@ -15,7 +17,7 @@ router
   .route("/")
   .post(
     // asyncHandler(checkPermission("staff.add")),
-    // validateResource(StaffSchemaInput),
+    validateResource(BookingSchemaInput),
     asyncHandler(bookingController.create)
   )
   .get(
@@ -26,6 +28,9 @@ router
 router
   .route("/:id")
   .get(asyncHandler(bookingController.getById))
-  .patch(asyncHandler(bookingController.update));
+  .patch(
+    validateResource(BookingSchemaInput),
+    asyncHandler(bookingController.update)
+  );
 
 module.exports = router;
