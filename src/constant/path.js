@@ -13,4 +13,5 @@ export const Path = {
 	FORBIDDEN: '/403',
 	WorkSchedule: '/work-schedule',
 	LeaveSchedule: '/leave-schedule',
+	TourSchedule: '/tour-schedule',
 }

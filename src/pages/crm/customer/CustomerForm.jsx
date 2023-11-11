@@ -48,7 +48,7 @@ const CustomerForm = () => {
     customerLevel: 1
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isPwd, setIsPwd] = useState('');
+  const [isPwd, setIsPwd] = useState('Mật khẩu (bỏ trống nếu không tạo TK đăng nhập cho khách hàng)');
   const [getScore, setGetScore] = useState(0);
 
   // const [allCustomers, setAllCustomers] = useState([]);
@@ -92,11 +92,11 @@ const CustomerForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onChangeScore = async (event) => {
-    const data = event.target.value;
-    console.log(data);
-    cusLevel.setLevel(data);
-  };
+  // const onChangeScore = async (event) => {
+  //   const data = event.target.value;
+  //   console.log(data);
+  //   cusLevel.setLevel(data);
+  // };
   const onChangeLevel = async (event) => {
     const data = event.target.value;
     const score = await cusLevel.setMininumScore(parseInt(data));

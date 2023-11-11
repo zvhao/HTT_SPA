@@ -265,47 +265,6 @@ const BranchForm = () => {
                 />
               </Grid>
               <Grid item xs={3}>
-                {/* <CssTextField
-                  sx={{ '& > div': { padding: 0 } }}
-                  fullWidth
-                  margin="dense"
-                  id="manager"
-                  name="manager"
-                  label="Nhân viên"
-                  variant="outlined"
-                  value={values.manager}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={touched.manager && Boolean(errors.manager)}
-                  helperText={touched.manager && errors.manager}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton size="large" color="primary" component={Link} to={Path.Staff + `/add`} target="_blank">
-                          <AddIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                /> */}
-                {/* <Autocomplete
-                  sx={{
-                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                    '&': { mt: 1, p: 0 },
-                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-                  }}
-                  options={Array.isArray(employees) ? employees : []}
-                  getOptionLabel={(employee) => employee.username}
-                  onChange={(event, value) => {
-                    handleChange(event);
-                    handleEmployeeChange(value);
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Nhân viên quản lý" />}
-                  name="manager"
-                  value={values.manager}
-                /> */}
                 <Autocomplete
                   sx={{
                     '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
