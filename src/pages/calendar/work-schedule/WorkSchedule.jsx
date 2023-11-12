@@ -199,18 +199,6 @@ const WorkSchedule = () => {
               }}
             />
           </LocalizationProvider>
-          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateCalendar
-              value={selectedDate}
-              onChange={handleDateChange}
-              renderDay={(day, _value, DayComponentProps) => (
-                <div>
-                  {dayjs(day).format('DD/MM/YYYY')}
-                  <DayComponentProps />
-                </div>
-              )}
-            />
-          </LocalizationProvider> */}
         </Grid>
         <Grid item xs={8}>
           <Typography variant="h5">
