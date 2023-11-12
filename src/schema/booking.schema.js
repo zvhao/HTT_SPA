@@ -7,9 +7,9 @@ const BookingSchemaInput = object({
     services: array(string()), // Update with the correct validation for mongoose.Types.ObjectId
     status: number(),
     branch: string(), // Update with the correct validation for mongoose.Types.ObjectId
-    date: date(),
-    startTime: date(),
-    endTime: date(),
+    date: string(),
+    startTime: string(),
+    endTime: string(),
     technician: string().nullable(),
     note: string(),
     customerInfo: array(unknown()), // Update with the correct validation for mongoose.Schema.Types.Mixed
