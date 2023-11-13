@@ -12,7 +12,7 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import { bookingApi, comboApi, courseApi, customerApi, serviceApi, staffApi } from 'api';
+import { bookingApi, comboApi, customerApi, serviceApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
@@ -48,7 +48,7 @@ const validationSchema = yup.object({
   account: yup.object().shape({}),
   customersNumber: yup.number().min(1, 'Chưa có khách hàng nào được chọn')
 });
-const TourForm = () => {
+const TourForm = ({ selectStartTime, idDialog }) => {
   const CssTextField = styled(TextField)({ '& > div > input': { lineHeight: 2 }, '& > label': { lineHeight: 'normal' } });
   const { id } = useParams();
   const isEditMode = Boolean(id);
@@ -58,7 +58,7 @@ const TourForm = () => {
     status: 1,
     date: dayjs(),
     startTime: null,
-    endTime: null,
+    endTime: dayjs('2023-10-10 23:55:00'),
     technician: '',
     note: '',
     customerInfo: [{ name: '', gender: '' }],
@@ -66,34 +66,68 @@ const TourForm = () => {
     customersNumber: 1
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [checkedAccount, setCheckedAccount] = useState(true);
 
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
 
   const [staffs, setStaffs] = useState([]);
-  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [selectedTechnician, setSelectedTechnician] = useState(null);
 
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const [errorRequired, setErrorRequired] = useState({});
-  const [totalPriceDuration, setTotalPriceDuration] = useState({
-    duration: 0,
-    price: 0
-  });
+  // const [totalPriceDuration, setTotalPriceDuration] = useState({
+  //   duration: 0,
+  //   price: 0
+  // });
 
+  const [checkedAccount, setCheckedAccount] = useState(true);
   const [isCus, setIsCus] = useState(0);
 
   useEffect(() => {
     const getOneTour = async (isEditMode) => {
-      if (isEditMode) {
+      if (idDialog && idDialog?._id !== undefined) {
         try {
-          const oneTourData = await bookingApi.getById(id);
-          const metadata = { ...oneTourData.metadata };
+          const oneTourData = await bookingApi.getById(idDialog?._id);
+          let metadata = { ...oneTourData.metadata };
+          metadata.date = dayjs(metadata.date);
+          metadata.startTime = dayjs(metadata.startTime);
+          metadata.endTime = dayjs(metadata.endTime);
+          setSelectedServices(metadata.services);
+          setSelectedTechnician(metadata.technician);
+          setSelectedAccount(metadata.account);
+
           setInitialValues(metadata);
         } catch (error) {
           console.log(error);
+        }
+      }
+      if (isEditMode) {
+        try {
+          const oneTourData = await bookingApi.getById(id);
+          let metadata = { ...oneTourData.metadata };
+          metadata.date = dayjs(metadata.date);
+          metadata.startTime = dayjs(metadata.startTime);
+          metadata.endTime = dayjs(metadata.endTime);
+          setSelectedServices(metadata.services);
+          setSelectedTechnician(metadata.technician);
+          setSelectedAccount(metadata.account);
+          if (metadata.customersNumber > metadata.customerInfo.length) {
+            console.log(true);
+            setCheckedAccount(true);
+            setIsCus(1);
+          } else {
+            setCheckedAccount(false);
+            setIsCus(0);
+          }
+          setInitialValues(metadata);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        if (selectStartTime?.date !== undefined) {
+          setInitialValues({ ...initialValues, startTime: dayjs(selectStartTime?.date), date: dayjs(selectStartTime?.date) });
         }
       }
     };
@@ -129,25 +163,17 @@ const TourForm = () => {
         });
       }
     };
-    const isCus = (checkedAccount, selectedAccount) => {
-      if (checkedAccount && selectedAccount !== null) {
-        setIsCus(1);
-      } else {
-        setIsCus(0);
-      }
-    };
 
-    getOneTour();
+    getOneTour(isEditMode);
     fetchServices();
-    isCus(checkedAccount, selectedAccount);
-  }, [checkedAccount, selectedAccount]);
+  }, []);
 
   const handleServicesChange = (event, value) => {
     setSelectedServices(value);
-    setTotalPriceDuration({
-      price: value.reduce((acc, service) => acc + service.price, 0),
-      duration: value.reduce((acc, service) => acc + service.duration, 0)
-    });
+    // setTotalPriceDuration({
+    //   price: value.reduce((acc, service) => acc + service.price, 0),
+    //   duration: value.reduce((acc, service) => acc + service.duration, 0)
+    // });
     if (value.length === 0) {
       setErrorRequired((prevErrors) => ({ ...prevErrors, services: 'Cần ít nhất 1 dịch vụ' }));
     } else {
@@ -159,14 +185,29 @@ const TourForm = () => {
   };
 
   const handleStaffChange = (event, value) => {
-    setSelectedStaff(value);
+    setSelectedTechnician(value);
   };
   const handleAccountChange = (event, value) => {
     setSelectedAccount(value);
+    if (value === null) {
+      setCheckedAccount(false);
+      setIsCus(0);
+    } else {
+      setCheckedAccount(true);
+      setIsCus(1);
+    }
   };
 
-  const handleChangeCheckbox = (event) => {
-    setCheckedAccount(event.target.checked);
+  const handleChangeCheckbox = async (event) => {
+    const checked = event.target.checked;
+    setCheckedAccount(checked);
+    if (checked) {
+      console.log(checked);
+      setIsCus(1);
+    } else {
+      console.log(checked);
+      setIsCus(0);
+    }
   };
 
   const handleSubmit = async (values) => {
@@ -185,8 +226,8 @@ const TourForm = () => {
       }
       formData.services = services;
       formData.customersNumber = customersNumber;
-      if (selectedStaff) {
-        formData.technician = selectedStaff._id;
+      if (selectedTechnician) {
+        formData.technician = selectedTechnician._id;
       }
       if (selectedAccount) {
         formData.account = selectedAccount._id;
@@ -195,20 +236,34 @@ const TourForm = () => {
       formData.branch = AccountData.metadata.branch._id;
       formData.startTime = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(values.startTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
       formData.endTime = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(values.endTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
-      console.log(formData);
+      // console.log(formData);
     } catch (error) {
       console.log(error);
       return Swal.fire('Lỗi dữ liệu nhập vào', 'Vui lòng kiểm tra lại', 'error');
     }
-    try {
-      const created = await bookingApi.create(formData);
-      // const metadata = created.metadata;
-      if (created && created?.status === 201 && created?.metadata) {
-        Swal.fire('Thành công!', '', 'success');
-        navigation(Path.TourSchedule, { replace: true });
+    if (isEditMode) {
+      try {
+        const updated = await bookingApi.update(id, formData);
+        // const metadata = updated.metadata;
+        console.log(updated);
+        if (updated && updated?.status === 200 && updated?.metadata) {
+          Swal.fire('Thành công!', '', 'success');
+          navigation(Path.TourSchedule, { replace: true });
+        }
+      } catch (error) {
+        return Swal.fire('Lỗi Server', '', 'error');
       }
-    } catch (error) {
-      return Swal.fire('Lỗi Server', '', 'error');
+    } else {
+      try {
+        const created = await bookingApi.create(formData);
+        // const metadata = created.metadata;
+        if (created && created?.status === 201 && created?.metadata) {
+          Swal.fire('Thành công!', '', 'success');
+          navigation(Path.TourSchedule, { replace: true });
+        }
+      } catch (error) {
+        return Swal.fire('Lỗi Server', '', 'error');
+      }
     }
   };
 
@@ -399,7 +454,7 @@ const TourForm = () => {
                   label="Yêu cầu kỹ thuật viên"
                   options={staffs}
                   getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
-                  value={selectedStaff}
+                  value={selectedTechnician}
                   onChange={handleStaffChange}
                   renderInput={(params) => <CssTextField {...params} variant="outlined" label="Yêu cầu kỹ thuật viên" />}
                 />
@@ -420,7 +475,7 @@ const TourForm = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} sx={{mt: -1}}>
+              <Grid item xs={12} sx={{ mt: -1 }}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
                   <Grid item xs={6}>
                     <FieldArray name="customerInfo">
