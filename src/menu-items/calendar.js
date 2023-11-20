@@ -1,4 +1,4 @@
-import { CalendarOutlined, MenuOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+// import { CalendarOutlined, MenuOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Path } from 'constant/path';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
@@ -25,7 +25,13 @@ const calendar = {
       title: 'Lịch nghỉ phép',
       url: '/leave-schedule',
       icon: CalendarTodayOutlinedIcon
-    }
+    },
+    {
+      id: 'course-schedule',
+      title: 'Theo dõi liệu trình',
+      url: '/course-schedule',
+      icon: CalendarTodayOutlinedIcon
+    },
   ]
 };
 

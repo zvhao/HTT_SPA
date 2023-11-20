@@ -292,6 +292,7 @@ const CustomerForm = () => {
                         onChange={(date) => {
                           setFieldValue('birthday', date); // Cập nhật giá trị birthday bằng setFieldValue
                         }}
+                        maxDate={new Date()}
                         error={touched.birthday && Boolean(errors.birthday)}
                         helperText={touched.birthday && errors.birthday}
                       />

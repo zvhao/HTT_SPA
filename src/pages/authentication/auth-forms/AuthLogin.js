@@ -95,7 +95,7 @@ const AuthLogin = ({ role }) => {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          username: Yup.string().max(255).required('username là bất buộc'),
+          username: Yup.string().max(255).required('username là bắt buộc'),
           password: Yup.string().max(255).required('Mật khẩu là bắt buộc')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -210,7 +210,7 @@ const AuthLogin = ({ role }) => {
               </Grid>
               <Grid item xs={12}>
                 <Divider>
-                  <Typography variant="caption"> Đăng nhập với quyền </Typography>
+                  <Typography variant="caption"> Đăng nhập với vai trò </Typography>
                   <Link variant="h6" component={RouterLink} to={toPath} sx={{ textDecoration: 'none' }}>
                     {role === 'owner' ? 'Nhân viên' : 'Chủ SPA'}
                   </Link>

@@ -61,7 +61,7 @@ function a11yProps(index) {
 const Profile = () => {
   const navigation = useNavigate();
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.data);
   useEffect(() => {
     // console.log('state:', user);
     // console.log('storage:',JSON.parse(localStorage.getItem('data')));

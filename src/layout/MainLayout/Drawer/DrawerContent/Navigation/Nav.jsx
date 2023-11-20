@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const NestedList = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.data);
   const [items, setItems] = useState(menuItems.items);
   const setNavItem = (user) => {
     try {

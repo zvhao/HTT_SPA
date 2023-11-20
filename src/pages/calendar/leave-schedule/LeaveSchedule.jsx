@@ -29,6 +29,10 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import getStatusString from 'utils/getStatusString';
 import '../../../components/css/sweetAlert2.css';
+import { Path } from 'constant/path';
+import { useNavigate } from 'react-router-dom';
+import 'dayjs/locale/en-gb';
+
 
 function ActionList(props) {
   const { onClear, onSetToday, className } = props;
@@ -53,7 +57,7 @@ function ActionList(props) {
 }
 const LeaveSchedule = () => {
   const CssTextField = styled(TextField)({ '& > div > input': { lineHeight: 2 }, '& > label': { lineHeight: 'normal' } });
-
+  const navigation = useNavigate();
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const [selectedDate, setSelectedDate] = useState(dayjs(currentDate));
@@ -72,26 +76,32 @@ const LeaveSchedule = () => {
   const [open, setOpen] = useState(false);
   const [openAddPopup, setOpenAddPopup] = useState(false);
   const [statusV1, setStatusV1] = useState('');
+  const [role, setRole] = useState('owner');
 
   useEffect(() => {
+    
     const allStaffs = async () => {
       try {
         let fetchData = await staffApi.fetchData();
         let metadata = fetchData.metadata;
         setAllStaffs(metadata);
+        console.log(fetchData);
       } catch (error) {
         console.error(error);
       }
     };
     const branchCurrent = async () => {
-      try {
-        const AccountData = await staffApi.getByToken();
-        setBranch(AccountData.metadata.branch);
-      } catch (error) {
-        console.error(error);
+      const role = JSON.parse(localStorage.getItem('data')).role;
+      setRole(role);
+      if (role && role === 'staff') {
+        try {
+          const AccountData = await staffApi.getByToken();
+          setBranch(AccountData.metadata.branch);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
-
     allDayOffs();
     allStaffs();
     branchCurrent();
@@ -511,9 +521,12 @@ const LeaveSchedule = () => {
           </Grid>
         </Grid>
         <Grid item xs={8}>
-          <Button variant="outlined" onClick={() => handleAddPopup()}>
-            Đăng ký ngày nghỉ cho nhân viên
-          </Button>
+          {role === 'staff' && (
+            <Button variant="outlined" onClick={() => handleAddPopup()}>
+              Đăng ký ngày nghỉ cho nhân viên
+            </Button>
+          )}
+
           <Grid container mt={2} mb={2}>
             <Grid item xs={8}>
               <Typography variant="h5">
@@ -574,20 +587,6 @@ const LeaveSchedule = () => {
                 Ngày tạo lượt đăng ký: <strong>{dayjs(selectedDayOff.createdAt).format('ddd, DD/MM/YYYY HH:mm:ss')}</strong>
               </Typography>
               <Typography>Lý do nghỉ: {selectedDayOff.reason}</Typography>
-              {/* <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
-                <InputLabel id="select-label">Trạng thái</InputLabel>
-                <Select labelId="select-label" id="selectStatus" value={statusV1} label="status" onChange={handleChangeStatus}>
-                  <MenuItem value={2} sx={{ color: 'green' }}>
-                    Duyệt
-                  </MenuItem>
-                  <MenuItem value={1} sx={{ color: 'orange' }}>
-                    Chờ duyệt
-                  </MenuItem>
-                  <MenuItem value={0} sx={{ color: 'red' }}>
-                    Không duyệt
-                  </MenuItem>
-                </Select>
-              </FormControl> */}
               <CssTextField
                 fullWidth
                 margin="normal"
@@ -654,7 +653,7 @@ const LeaveSchedule = () => {
                 ></Autocomplete>
               </Grid>
               <Grid item xs={4}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}  adapterLocale={'en-gb'}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
                       sx={{ mt: 1, mb: 1 }}

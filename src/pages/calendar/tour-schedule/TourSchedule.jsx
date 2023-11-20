@@ -22,6 +22,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { bookingApi } from 'api';
 import { TourDetail } from './components';
 import TourForm from './TourForm';
+import 'dayjs/locale/en-gb';
+
 
 const TourSchedule = () => {
   const navigation = useNavigate();
@@ -38,10 +40,13 @@ const TourSchedule = () => {
   const [selectStartTime, setSelectStartTime] = useState(null);
   const calendarRef = useRef(null);
   const [allTours, setAllTours] = useState([]);
+  const [role, setRole] = useState('owner');
 
   useEffect(() => {
     const getAllTours = async () => {
       try {
+        const role = JSON.parse(localStorage.getItem('data')).role;
+        setRole(role);
         const fetchData = await bookingApi.fetchData();
         const metadata = fetchData.metadata;
         let eventsData = [];
@@ -89,10 +94,12 @@ const TourSchedule = () => {
             setDialogOpenInfo(true);
           },
           dateClick: function (info) {
-            console.log(info);
+            // console.log(info);
             // navigation(Path.TourSchedule + '/add', { replace: true });
-            setSelectStartTime(info);
-            setDialogOpenAdd(true);
+            if (role && role === 'staff') {
+              setSelectStartTime(info);
+              setDialogOpenAdd(true);
+            }
           },
           // select: function (info) {
           //   alert('selected ' + info.startStr + ' to ' + info.endStr);
@@ -114,9 +121,11 @@ const TourSchedule = () => {
   return (
     <>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.TourSchedule + `/add`}>
-          Tạo tour
-        </Button>
+        {role === 'staff' && (
+          <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.TourSchedule + `/add`}>
+            Tạo tour
+          </Button>
+        )}
       </CardActions>
 
       <Box sx={{ height: '100vh' }} ref={calendarRef}></Box>
@@ -125,19 +134,19 @@ const TourSchedule = () => {
         <DialogTitle variant="h4">Chi tiết lịch hẹn</DialogTitle>
         <DialogContent>{selectedEvent && <TourDetail selectedEvent={selectedEvent} />}</DialogContent>
         <DialogActions>
-          {/* <Button
-            onClick={() => {
-              setDialogOpenAdd(true);
-              setDialogOpenInfo(false);
-            }}
-            color="primary"
-          >
-            Cập nhật
-          </Button> */}
-          <Button sx={{ mr: 5 }} size="medium" variant="contained" component={Link} to={`${Path.TourSchedule}/edit/${selectedEvent?._id}`}>
-            <EditIcon />
-            vào trang Cập nhật
-          </Button>
+          {role === 'staff' && (
+            <Button
+              sx={{ mr: 5 }}
+              size="medium"
+              variant="contained"
+              component={Link}
+              to={`${Path.TourSchedule}/edit/${selectedEvent?._id}`}
+            >
+              <EditIcon />
+              vào trang Cập nhật
+            </Button>
+          )}
+
           <Button onClick={() => setDialogOpenInfo(false)} color="primary">
             Đóng
           </Button>

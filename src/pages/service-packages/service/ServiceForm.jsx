@@ -85,7 +85,9 @@ const ServiceForm = () => {
         const code = `DV${String(serviceCount + 1).padStart(3, '0')}`;
         setServiceCode(code);
         // console.log(result);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     const getOneService = async (id) => {

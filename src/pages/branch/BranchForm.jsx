@@ -191,7 +191,7 @@ const BranchForm = () => {
           <Form autoComplete="none" noValidate onSubmit={handleSubmit}>
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} dịch vụ</Typography>
+                <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} chi nhánh</Typography>
               </Grid>
               <Grid item>
                 <CardActions sx={{ justifyContent: 'flex-end' }}>

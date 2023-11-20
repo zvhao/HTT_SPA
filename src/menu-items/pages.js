@@ -20,12 +20,12 @@ const pages = {
       url: '/login',
       icon: icons.LoginOutlined,
     },
-    {
-      id: 'register1',
-      title: 'Đăng ký',
-      url: '/register',
-      icon: icons.ProfileOutlined,
-    }
+    // {
+    //   id: 'register1',
+    //   title: 'Đăng ký',
+    //   url: '/register',
+    //   icon: icons.ProfileOutlined,
+    // }
   ]
 };
 

@@ -84,8 +84,16 @@ const TourForm = ({ selectStartTime, idDialog }) => {
 
   const [checkedAccount, setCheckedAccount] = useState(true);
   const [isCus, setIsCus] = useState(0);
+  const [role, setRole] = useState('owner');
 
   useEffect(() => {
+    const FORBIDDEN = async () => {
+      const role = JSON.parse(localStorage.getItem('data')).role;
+      setRole(role);
+      if (role && role !== 'staff') {
+        navigation(Path.FORBIDDEN, { replace: true });
+      }
+    };
     const getOneTour = async (isEditMode) => {
       if (idDialog && idDialog?._id !== undefined) {
         try {
@@ -163,7 +171,7 @@ const TourForm = ({ selectStartTime, idDialog }) => {
         });
       }
     };
-
+    FORBIDDEN();
     getOneTour(isEditMode);
     fetchServices();
   }, []);

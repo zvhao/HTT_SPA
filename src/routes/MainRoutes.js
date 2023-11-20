@@ -49,6 +49,9 @@ const BranchForm = Loadable(lazy(() => import('pages/branch/BranchForm')));
 const WorkSchedule = Loadable(lazy(() => import('pages/calendar/work-schedule/WorkSchedule')));
 const LeaveSchedule = Loadable(lazy(() => import('pages/calendar/leave-schedule/LeaveSchedule')));
 
+const CourseSchedule = Loadable(lazy(() => import('pages/calendar/course-schedule/CourseSchedule')));
+const SellingCourseForm = Loadable(lazy(() => import('pages/calendar/course-schedule/SellingCourseForm')));
+
 const TourSchedule = Loadable(lazy(() => import('pages/calendar/tour-schedule/TourSchedule')));
 const TourForm = Loadable(lazy(() => import('pages/calendar/tour-schedule/TourForm')));
 
@@ -225,6 +228,20 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <TourForm />
+        }
+      ]
+    },
+    {
+      path: Path.CourseSchedule,
+      children: [
+        { index: true, element: <CourseSchedule /> },
+        {
+          path: 'add',
+          element: <SellingCourseForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <SellingCourseForm />
         }
       ]
     }
