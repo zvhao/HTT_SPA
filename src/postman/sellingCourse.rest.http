@@ -1,0 +1,128 @@
+@url=http://localhost:8888/api/v1/sellingCourses
+
+### CREATE
+POST {{ url }}
+Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTcwMDQ2OTQyNCwiZXhwIjoxNzA1NjUzNDI0fQ.LZ2xM__MKb54SYd5Jj962uSyGmwLFcag9bycXGE9aQo
+
+{
+  "course": "652a9c3c0282e4377377d6d0",
+  "status": 1,
+  "branch": "650007e9c31b396b0f6ef13d",
+  "note": "a",
+  "customerInfo": {},
+  "account": "65475ae1202c88e80660c1cb",
+  "package_detail": {
+    "times": 5,
+    "price": 1090000
+  },
+  "detailsOfTurns": [
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z"
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z"
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z"
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z"
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+    "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z"
+    }
+  ]
+}
+
+
+### GET
+GET {{url}}
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTcwMDQ2OTQyNCwiZXhwIjoxNzA1NjUzNDI0fQ.LZ2xM__MKb54SYd5Jj962uSyGmwLFcag9bycXGE9aQo
+
+
+
+
+### GET ID
+GET {{url}}/655b2c02584775bfbd259e15
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTcwMDQ2OTQyNCwiZXhwIjoxNzA1NjUzNDI0fQ.LZ2xM__MKb54SYd5Jj962uSyGmwLFcag9bycXGE9aQo
+
+
+
+### Update
+PATCH {{url}}/655b62abe3ac022b0ee90726
+Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTcwMDQ2OTQyNCwiZXhwIjoxNzA1NjUzNDI0fQ.LZ2xM__MKb54SYd5Jj962uSyGmwLFcag9bycXGE9aQo
+
+{
+  "course": "652a9c3c0282e4377377d6d0",
+  "status": 1,
+  "branch": "650007e9c31b396b0f6ef13d",
+  "note": "tôi muốn làm chủ nhật hàng tuần",
+  "customerInfo": {
+    "name": "Nguyễn Văn Hào",
+    "gender": "nam",
+    "phone": "0938744376",
+    "address": "Hậu Giang" 
+  },
+  "account": "",
+  "package_detail": {
+    "times": 5,
+    "price": 1090000
+  },
+  "detailsOfTurns": [
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z",
+      "status": 0
+    },
+    {
+      "technician": "",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z",
+      "status": 0
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z",
+      "status": 0
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+      "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z",
+      "status": 0
+    },
+    {
+      "technician": "651588404eb4c2adc3f3b529",
+    "date": "2023-11-14T13:03:00.000Z",
+      "startTime": "2023-11-14T15:00:00.000Z",
+      "endTime": "2023-11-14T16:30:00.000Z",
+      "status": 0
+    }
+  ]
+}
+
+
+

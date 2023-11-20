@@ -13,22 +13,29 @@ const {
 
 const router = Router();
 
+// auth
+router.use(asyncHandler(authentication));
+
 router
   .route("/")
   .post(
-    // asyncHandler(checkPermission("staff.add")),
+    asyncHandler(checkPermission("booking.add")),
     validateResource(BookingSchemaInput),
     asyncHandler(bookingController.create)
   )
   .get(
-    // asyncHandler(checkPermission("staff.view")),
+    asyncHandler(checkPermission("booking.view")),
     asyncHandler(bookingController.getAll)
   );
 
 router
   .route("/:id")
-  .get(asyncHandler(bookingController.getById))
+  .get(
+    asyncHandler(checkPermission("booking.view")),
+    asyncHandler(bookingController.getById)
+  )
   .patch(
+    asyncHandler(checkPermission("booking.update")),
     validateResource(BookingSchemaInput),
     asyncHandler(bookingController.update)
   );

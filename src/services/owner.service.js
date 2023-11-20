@@ -90,13 +90,13 @@ const ownerService = {
     let user = await findOwnerByUsername(data.username);
 
     if (!user) {
-      throw new NotFoundRequestError("Username does not exist");
+      throw new NotFoundRequestError("Kiểm tra Username và vai trò");
     }
 
     const passwordMatch = await comparePasswords(data.password, user.password);
 
     if (!passwordMatch) {
-      throw new NotFoundRequestError("Incorrect password");
+      throw new NotFoundRequestError("Sai mật khẩu");
     }
 
     const token = jwt.sign({ id: user._id, role: "owner" }, "httspa", {

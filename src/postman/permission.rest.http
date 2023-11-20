@@ -5,9 +5,9 @@ POST {{url}}
 Content-Type: application/json
 
 {
-  "name": "dayoff delete",
-  "desc": "Xoá ngày nghỉ",
-  "alias": "dayoff.delete"
+  "name": "booking update",
+  "desc": "cập nhật lịch hẹn",
+  "alias": "booking.update"
 }
 
 

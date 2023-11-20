@@ -17,5 +17,6 @@ router.use("/api/v1/courses", require("./course.route"));
 router.use("/api/v1/uploads", require("./upload.route"));
 router.use("/api/v1/staffDayOffs", require("./staffDayOff.route"));
 router.use("/api/v1/bookings", require("./booking.route"));
+router.use("/api/v1/sellingCourses", require("./sellingCourse.route"));
 
 module.exports = router;

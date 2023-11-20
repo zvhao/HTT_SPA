@@ -13,6 +13,7 @@ const {
   NotFoundRequestError,
   BadRequestError,
 } = require("../utils/error.util");
+const { findStaffById } = require("../repositories/staff.resp");
 
 const bookingService = {
   add: async ({
@@ -45,7 +46,11 @@ const bookingService = {
     return res;
   },
   getAll: async (dataAccount, filters = {}) => {
-    const allBooking = await BookingModel.find().lean();
+    if (dataAccount !== null && dataAccount.role === "staff") {
+      const manager = await findStaffById(dataAccount.id);
+      filters.branch = manager.branch;
+    }
+    const allBooking = await BookingModel.find(filters).lean();
     return await Promise.all(
       allBooking.map(
         (u) =>
