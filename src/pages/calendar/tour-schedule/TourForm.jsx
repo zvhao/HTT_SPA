@@ -30,6 +30,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import 'dayjs/locale/en-gb';
 import dayjs from 'dayjs';
+import '../../../components/css/sweetAlert2.css';
 
 const validationSchema = yup.object({
   // services: yup.array().min(1, 'Please select at least one service'),
@@ -95,22 +96,22 @@ const TourForm = ({ selectStartTime, idDialog }) => {
       }
     };
     const getOneTour = async (isEditMode) => {
-      if (idDialog && idDialog?._id !== undefined) {
-        try {
-          const oneTourData = await bookingApi.getById(idDialog?._id);
-          let metadata = { ...oneTourData.metadata };
-          metadata.date = dayjs(metadata.date);
-          metadata.startTime = dayjs(metadata.startTime);
-          metadata.endTime = dayjs(metadata.endTime);
-          setSelectedServices(metadata.services);
-          setSelectedTechnician(metadata.technician);
-          setSelectedAccount(metadata.account);
-
-          setInitialValues(metadata);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      // if (idDialog && idDialog?._id !== undefined) {
+      //   try {
+      //     const oneTourData = await bookingApi.getById(idDialog?._id);
+      //     let metadata = { ...oneTourData.metadata };
+      //     metadata.date = dayjs(metadata.date);
+      //     metadata.startTime = dayjs(metadata.startTime);
+      //     metadata.endTime = dayjs(metadata.endTime);
+      //     setSelectedServices(metadata.services);
+      //     setSelectedTechnician(metadata.technician);
+      //     setSelectedAccount(metadata.account);
+      //     setInitialValues(metadata);
+      //     console.log(metadata);
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // }
       if (isEditMode) {
         try {
           const oneTourData = await bookingApi.getById(id);
@@ -119,8 +120,13 @@ const TourForm = ({ selectStartTime, idDialog }) => {
           metadata.startTime = dayjs(metadata.startTime);
           metadata.endTime = dayjs(metadata.endTime);
           setSelectedServices(metadata.services);
-          setSelectedTechnician(metadata.technician);
-          setSelectedAccount(metadata.account);
+          if (Object.keys(metadata.account).length !== 0) {
+            setSelectedAccount(metadata.account);
+          }
+          if (Object.keys(metadata.technician).length !== 0) {
+            setSelectedTechnician(metadata.technician);
+          }
+          console.log(metadata);
           if (metadata.customersNumber > metadata.customerInfo.length) {
             console.log(true);
             setCheckedAccount(true);
@@ -230,24 +236,42 @@ const TourForm = ({ selectStartTime, idDialog }) => {
       let services = [];
       selectedServices.map((e) => services.push(e._id));
       if (customersNumber === 0) {
-        return Swal.fire('Thiếu khách hàng', 'Cần chọn 1 khách hàng hoặc điền đầy đủ thông tin khách hàng', 'error');
+        return Swal.fire({
+          title: 'Thiếu khách hàng',
+          text: 'Cần chọn 1 khách hàng hoặc điền đầy đủ thông tin khách hàng',
+          icon: 'error',
+          customClass: {
+            container: 'custom-z-index'
+          }
+        });
       }
       formData.services = services;
       formData.customersNumber = customersNumber;
       if (selectedTechnician) {
         formData.technician = selectedTechnician._id;
+      } else {
+        formData.technician = '';
       }
       if (selectedAccount) {
         formData.account = selectedAccount._id;
+      } else {
+        formData.account = '';
       }
       const AccountData = await staffApi.getByToken();
       formData.branch = AccountData.metadata.branch._id;
       formData.startTime = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(values.startTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
       formData.endTime = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(values.endTime).format('HH:mm'), 'YYYY-MM-DD HH:mm');
-      // console.log(formData);
+      console.log(formData);
     } catch (error) {
       console.log(error);
-      return Swal.fire('Lỗi dữ liệu nhập vào', 'Vui lòng kiểm tra lại', 'error');
+      return Swal.fire({
+        title: 'Lỗi dữ liệu nhập vào',
+        text: 'Vui lòng kiểm tra lại',
+        icon: 'error',
+        customClass: {
+          container: 'custom-z-index'
+        }
+      });
     }
     if (isEditMode) {
       try {
@@ -255,22 +279,51 @@ const TourForm = ({ selectStartTime, idDialog }) => {
         // const metadata = updated.metadata;
         console.log(updated);
         if (updated && updated?.status === 200 && updated?.metadata) {
-          Swal.fire('Thành công!', '', 'success');
+          Swal.fire({
+            title: 'Thành công!',
+            text: '',
+            icon: 'success',
+            customClass: {
+              container: 'custom-z-index'
+            }
+          });
           navigation(Path.TourSchedule, { replace: true });
         }
       } catch (error) {
-        return Swal.fire('Lỗi Server', '', 'error');
+        return Swal.fire({
+          title: 'Lỗi Server',
+          text: '',
+          icon: 'error',
+          customClass: {
+            container: 'custom-z-index'
+          }
+        });
       }
     } else {
       try {
         const created = await bookingApi.create(formData);
         // const metadata = created.metadata;
         if (created && created?.status === 201 && created?.metadata) {
-          Swal.fire('Thành công!', '', 'success');
+          Swal.fire({
+            title: 'Thành công!',
+            text: '',
+            icon: 'success',
+            customClass: {
+              container: 'custom-z-index'
+            }
+          });
           navigation(Path.TourSchedule, { replace: true });
+          window.location.reload();
         }
       } catch (error) {
-        return Swal.fire('Lỗi Server', '', 'error');
+        return Swal.fire({
+          title: 'Lỗi Server',
+          text: '',
+          icon: 'error',
+          customClass: {
+            container: 'custom-z-index'
+          }
+        });
       }
     }
   };

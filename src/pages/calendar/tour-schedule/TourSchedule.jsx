@@ -20,6 +20,7 @@ import TourForm from './TourForm';
 import { TourDetail } from './components';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
+import '../../../components/css/sweetAlert2.css';
 
 const TourSchedule = () => {
   const navigation = useNavigate();
@@ -71,9 +72,18 @@ const TourSchedule = () => {
 
         const calendarEl = calendarRef.current;
         const calendar = new Calendar(calendarEl, {
+          eventContent: function (arg) {
+            console.log({title: arg.event._def.title, status: arg.event._def.extendedProps.status});
+            return ( arg.event._def.title + ' ' + arg.event._def.extendedProps.status
+              // <div>
+              //   <p>{arg.event._def.title}</p>
+              //   <p>{arg.event._def.extendedProps.status}</p>
+              // </div>
+            );
+          }, 
           plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
           locale: 'vi',
-          initialView: 'listWeek',
+          initialView: 'timeGridDay',
           firstDay: 1,
           dayMaxEvents: true,
           weekNumbers: true,
@@ -114,7 +124,8 @@ const TourSchedule = () => {
                 cancelButtonText: 'Quay lại'
               }).then((result) => {
                 if (result.isConfirmed) {
-                  navigation(`${Path.CourseSchedule}/edit/${filter[0]._id}`, { replace: true });
+                  // navigation(`${Path.CourseSchedule}/edit/${filter[0]._id}`, { replace: true });
+                  window.open(`${Path.CourseSchedule}/edit/${filter[0]._id}`, '_blank').focus();
                 }
               });
             } else {
@@ -123,16 +134,12 @@ const TourSchedule = () => {
             }
           },
           dateClick: function (info) {
-            // console.log(info);
-            // navigation(Path.TourSchedule + '/add', { replace: true });
             if (role && role === 'staff') {
               setSelectStartTime(info);
               setDialogOpenAdd(true);
             }
           },
-          // select: function (info) {
-          //   alert('selected ' + info.startStr + ' to ' + info.endStr);
-          // },
+
           events: eventsData
         });
         calendar.render();
@@ -182,7 +189,6 @@ const TourSchedule = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={isDialogOpenAdd} onClose={() => setDialogOpenAdd(false)} sx={{ '.MuiPaper-root': { minWidth: '90%' } }}>
-        <DialogTitle>Thêm lịch hẹn</DialogTitle>
         <DialogContent>
           <TourForm selectStartTime={selectStartTime} idDialog={selectedEvent} />
         </DialogContent>

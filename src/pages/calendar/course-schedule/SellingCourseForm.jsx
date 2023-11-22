@@ -26,6 +26,7 @@ import formatCurrency from 'utils/formatCurrency';
 import getStatusDetailsOfTurnsString from 'utils/getStatusDetailsOfTurnsString';
 import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
 import * as yup from 'yup';
+import '../../../components/css/sweetAlert2.css';
 
 const validationSchema = yup.object({});
 
