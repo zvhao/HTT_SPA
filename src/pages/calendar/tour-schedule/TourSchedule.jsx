@@ -1,38 +1,28 @@
+import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list'; // Import plugin danh sách
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list'; // Import plugin danh sách
+import timeGridPlugin from '@fullcalendar/timegrid';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, CardActions } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Calendar } from '@fullcalendar/core';
-import { useEffect, useRef, useState } from 'react';
-import MainCard from 'components/MainCard';
-import { Box, CardActions } from '@mui/material';
-import { Form, Formik } from 'formik';
-import { LoadingButton } from '@mui/lab';
-import * as yup from 'yup';
-import { Link, useNavigate } from 'react-router-dom';
+import { bookingApi, sellingCourseApi } from 'api';
 import { Path } from 'constant/path';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { bookingApi } from 'api';
-import { TourDetail } from './components';
-import TourForm from './TourForm';
 import 'dayjs/locale/en-gb';
-
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import TourForm from './TourForm';
+import { TourDetail } from './components';
+import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 const TourSchedule = () => {
   const navigation = useNavigate();
-
-  // const [selectedDate, setSelectedDate] = useState(null);
-
-  // const handleSelect = (info) => {
-  //   setSelectedDate(info.startStr); // Lấy ngày bắt đầu của khoảng thời gian lựa chọn
-  // };
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isDialogOpenInfo, setDialogOpenInfo] = useState(false);
@@ -49,12 +39,35 @@ const TourSchedule = () => {
         setRole(role);
         const fetchData = await bookingApi.fetchData();
         const metadata = fetchData.metadata;
-        let eventsData = [];
+        let ServiceComboData = [];
         metadata.map((e) =>
-          eventsData.push({ ...e, title: e?.technician?.fullname || 'chưa có nhân viên', start: e.startTime, end: e.endTime })
+          ServiceComboData.push({ ...e, title: e?.technician?.fullname || 'chưa có nhân viên', start: e.startTime, end: e.endTime })
         );
-        setAllTours(eventsData);
+        const fetchDataSellingCourse = await sellingCourseApi.fetchData();
+        const metadataSellingCourse = fetchDataSellingCourse.metadata;
+        // console.log(metadataSellingCourse);
+        let courseData = [];
+        metadataSellingCourse.forEach((f) => {
+          f.detailsOfTurns.forEach((e) => {
+            if (e.date !== null && e.startTime !== null && e.endTime !== null) {
+              const date = dayjs(e.date).format('YYYY-MM-DD');
+              const timeStartTime = dayjs(e.startTime).format('HH:mm');
+              const timeEndTime = dayjs(e.endTime).format('HH:mm');
+              const startTime = dayjs(date + ' ' + timeStartTime, 'YYYY-MM-DD HH:mm').toISOString();
+              const endTime = dayjs(date + ' ' + timeEndTime, 'YYYY-MM-DD HH:mm').toISOString();
+              // console.log({ date, timeStartTime, timeEndTime, startTime, endTime });
+              courseData.push({
+                ...f,
+                title: e?.technician?.fullname || 'chưa có nhân viên',
+                start: startTime,
+                end: endTime
+              });
+            }
+          });
+        });
+        let eventsData = [...ServiceComboData, ...courseData];
         // console.log(eventsData);
+        setAllTours(eventsData);
 
         const calendarEl = calendarRef.current;
         const calendar = new Calendar(calendarEl, {
@@ -89,9 +102,25 @@ const TourSchedule = () => {
           eventClick: function (info) {
             const event = info.event;
             const filter = eventsData.filter((e) => e._id === event.extendedProps._id);
-            // console.log(filter);
-            setSelectedEvent(filter[0]);
-            setDialogOpenInfo(true);
+            if ('course' in filter[0]) {
+              Swal.fire({
+                title: 'Đây là gói - liệu trình',
+                text: 'Bạn muốn đến trang xem - cập nhật liệu trình?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK, chuyển hướng!',
+                cancelButtonText: 'Quay lại'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  navigation(`${Path.CourseSchedule}/edit/${filter[0]._id}`, { replace: true });
+                }
+              });
+            } else {
+              setSelectedEvent(filter[0]);
+              setDialogOpenInfo(true);
+            }
           },
           dateClick: function (info) {
             // console.log(info);

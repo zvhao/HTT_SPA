@@ -1,24 +1,19 @@
-import { Autocomplete, Button, Grid, TextField, Typography, styled } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Button, CardActions, Grid, TextField, Typography, styled } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { sellingCourseApi } from 'api';
 import { Path } from 'constant/path';
+import 'dayjs/locale/en-gb';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import formatCurrency from 'utils/formatCurrency';
 import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import 'dayjs/locale/en-gb';
-import getStatusDetailsOfTurnsString from 'utils/getStatusDetailsOfTurnsString';
 import { SellingCourseDetail } from './components';
 
 const CourseSchedule = () => {
@@ -63,11 +58,12 @@ const CourseSchedule = () => {
       width: 300,
       //   align: 'center',
       renderCell: (params) => (
-        <div style={{ fontWeight: 'bold' }}>
-          {params.row.course.code}
+        <div>
+          {params.row.course[0]}
           <br />
-          {params.row.course.name}
+          {params.row.course[1]}
           <br />
+          {params.row.course[2]} phút
         </div>
       )
     },
@@ -77,15 +73,26 @@ const CourseSchedule = () => {
       width: 200,
       //   align: 'center',
       renderCell: (params) => (
-        <div style={{ fontWeight: 'bold' }}>
-          {params.row?.customerInfo?.name}
-          {params.row?.account?.fullname}
-          <br />
-          {params.row?.customerInfo?.gender}
-          {params.row?.account?.gender}
-          <br />
-          {params.row?.customerInfo?.phone}
-          {params.row?.account?.phone}
+        <div>
+          {params.row?.account[0] !== '' ? (
+            <div>
+              {' '}
+              {params.row.account[0]}
+              <br />
+              {params.row.account[1]}
+              <br />
+              {params.row.account[2]}
+            </div>
+          ) : (
+            <div>
+              {' '}
+              {params.row.account[3]}
+              <br />
+              {params.row.account[4]}
+              <br />
+              {params.row.account[5]}
+            </div>
+          )}
         </div>
       )
     },
@@ -95,7 +102,7 @@ const CourseSchedule = () => {
       width: 140,
       align: 'center',
       renderCell: (params) => (
-        <div style={{ fontWeight: 'bold' }}>
+        <div>
           {params.row?.package_detail?.times} lần
           <br />
           {formatCurrency(params.row?.package_detail?.price)}
@@ -137,19 +144,37 @@ const CourseSchedule = () => {
   const rows = sellingCourse.map((e, index) => ({
     id: e._id,
     stt: index + 1,
-    course: e.course,
+    course: [e.course.code, e.course.name, e.course.duration],
     status: getStatusSellingCourseString(e.status),
     branch: e.branch,
     note: e.note,
     customerInfo: e.customerInfo,
-    account: e.account,
+    account: [
+      e.customerInfo?.name,
+      e.customerInfo?.gender,
+      e.customerInfo?.phone,
+      e.account?.fullname,
+      e.account?.gender,
+      e.account?.phone
+    ],
     package_detail: e.package_detail,
     detailsOfTurns: e.detailsOfTurns
   }));
   return (
     <>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-        <Grid item xs={6}></Grid>
+        <Grid item xs={6}>
+          <Typography sx={{ mb: 1 }} variant="h4">
+            Theo dõi gói - liệu trình
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <CardActions sx={{ justifyContent: 'flex-end' }}>
+            <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.CourseSchedule + `/add`}>
+              Mua gói - liệu trình
+            </Button>
+          </CardActions>
+        </Grid>
         <Grid item xs={12}>
           <DataGrid
             sx={{
@@ -177,11 +202,7 @@ const CourseSchedule = () => {
       </Grid>
       <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)}>
         <DialogTitle variant="h4">Chi tiết lịch hẹn</DialogTitle>
-        <DialogContent>
-          {selectedSellingCourse && (
-            <SellingCourseDetail selectedEvent={selectedSellingCourse}/>
-          )}
-        </DialogContent>
+        <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={selectedSellingCourse} />}</DialogContent>
         <DialogActions>
           {role === 'staff' && (
             <Button

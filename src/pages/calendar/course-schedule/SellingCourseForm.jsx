@@ -1,37 +1,31 @@
 import { LoadingButton } from '@mui/lab';
 import {
   Autocomplete,
-  Button,
-  CardActions,
   Checkbox,
   FormControlLabel,
-  FormHelperText,
   Grid,
   MenuItem,
+  Paper,
   TextField,
   Typography,
   styled
 } from '@mui/material';
-import { bookingApi, comboApi, courseApi, customerApi, sellingCourseApi, serviceApi, staffApi } from 'api';
-import MainCard from 'components/MainCard';
-import { Path } from 'constant/path';
-import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import * as yup from 'yup';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import 'dayjs/locale/en-gb';
+import { courseApi, customerApi, sellingCourseApi, staffApi } from 'api';
+import MainCard from 'components/MainCard';
+import { Path } from 'constant/path';
 import dayjs from 'dayjs';
+import 'dayjs/locale/en-gb';
+import { Field, Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import formatCurrency from 'utils/formatCurrency';
+import getStatusDetailsOfTurnsString from 'utils/getStatusDetailsOfTurnsString';
 import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
+import * as yup from 'yup';
 
 const validationSchema = yup.object({});
 
@@ -40,15 +34,42 @@ const SellingCourseForm = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const navigation = useNavigate();
-  const [initialValues, setInitialValues] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [initialValues, setInitialValues] = useState({
+    customerInfo: {
+      name: '',
+      genrder: '',
+      phone: '',
+      address: ''
+    },
+    note: ''
+  });
 
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [packageDetails, setPackageDetails] = useState([]);
   const [selectedPackageDetail, setSelectedPackageDetail] = useState(null);
+
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
+
+  const [detailsOfTurns, setDetailsOfTurns] = useState([]);
+
+  const [staffs, setStaffs] = useState([]);
+
+  const [checkedAccount, setCheckedAccount] = useState(false);
+
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    genrder: '',
+    phone: '',
+    address: ''
+  });
+
+  const [branch, setBranch] = useState(null);
+
   useEffect(() => {
     const getOneSellingCourse = async () => {
       if (isEditMode) {
@@ -59,9 +80,14 @@ const SellingCourseForm = () => {
           setSelectedCourse(metadata.course);
           setPackageDetails(metadata.course.package_details);
           setSelectedPackageDetail(metadata.package_detail);
+          setDetailsOfTurns(metadata.detailsOfTurns);
           if (Object.keys(metadata.account).length !== 0) {
             setSelectedAccount(metadata.account);
           }
+          if (metadata?.customerInfo?.name !==  '' && Object.keys(metadata.account).length !== 0) {
+            setCheckedAccount(true);
+          }
+          setCustomerInfo(metadata.customerInfo);
           console.log(metadata);
         } catch (error) {
           Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
@@ -86,9 +112,27 @@ const SellingCourseForm = () => {
         Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
       }
     };
+    const allStaffs = async () => {
+      try {
+        const fetchStaffs = await staffApi.fetchData();
+        const staffMetadata = fetchStaffs.metadata;
+        setStaffs(staffMetadata);
+      } catch (error) {}
+    };
+
+    const getBranch = async () => {
+      try {
+        const AccountData = await staffApi.getByToken();
+        setBranch(AccountData.metadata.branch._id);
+      } catch (error) {
+        Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
+      }
+    };
+    allStaffs();
     getOneSellingCourse();
     getAllCourses();
     getAllAccounts();
+    getBranch();
   }, []);
 
   const handleCourseChange = (event, value) => {
@@ -96,20 +140,154 @@ const SellingCourseForm = () => {
     setSelectedCourse(value);
     if (value !== null) {
       setPackageDetails(value.package_details);
+      setSelectedPackageDetail(value.package_details[0]);
+      setDOT(value?.package_details[0]?.times);
     } else {
       setPackageDetails([]);
     }
   };
+  const setDOT = async (value) => {
+    if (value) {
+      let newDetailsOfTurns = [];
+      for (let index = 0; index < value; index++) {
+        newDetailsOfTurns = Array.from({ length: value }, (_, index) => ({
+          technician: '',
+          date: null,
+          startTime: null,
+          endTime: null,
+          status: 0
+        }));
+      }
+      setDetailsOfTurns(newDetailsOfTurns);
+    } else if (!value) {
+      setDetailsOfTurns([]);
+    }
+  };
   const handlePackageDetailChange = (event, value) => {
-    // console.log(value);
     setSelectedPackageDetail(value);
+    return setDOT(value?.times);
   };
   const handleAccountChange = (event, value) => {
     // console.log(value);
     setSelectedAccount(value);
+    if (value) {
+      if (customerInfo?.name !== '') {
+        setCheckedAccount(true);
+      } else {
+        setCheckedAccount(false);
+      }
+    }
   };
+
+  const handleDetailsOfTurnsChange = (index, key, value) => {
+    console.log(value);
+    setDetailsOfTurns((prevAppointments) => {
+      const updatedAppointments = [...prevAppointments];
+      updatedAppointments[index] = {
+        ...updatedAppointments[index],
+        [key]: value
+      };
+      return updatedAppointments;
+    });
+  };
+
+  const handleChangeCheckbox = async (event) => {
+    const checked = event.target.checked;
+    setCheckedAccount(checked);
+    if (!checked) {
+      setCustomerInfo({
+        name: '',
+        genrder: '',
+        phone: '',
+        address: ''
+      });
+    }
+  };
+
+  const handleChangeCustomerInfo = async (key, value) => {
+    console.log(key, value);
+    setCustomerInfo((prevCustomerInfo) => ({
+      ...prevCustomerInfo,
+      [key]: value
+    }));
+  };
+
   const handleSubmit = async (values) => {
-    console.log(values);
+    setIsLoading(true);
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      showCancelButton: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    let formData = { ...values };
+    try {
+      formData.course = selectedCourse._id;
+      formData.branch = branch;
+      formData.package_detail = selectedPackageDetail;
+      formData.account = selectedAccount?._id || '';
+      if (formData.account === '' && customerInfo.name === '') {
+        setIsLoading(false);
+
+        return Swal.fire('Lỗi rồi?', 'thiếu khách hàng', 'error');
+      }
+      if (formData.account !== '' && customerInfo.name === '' && checkedAccount) {
+        setIsLoading(false);
+
+        return Swal.fire('Lỗi rồi?', 'thiếu khách hàng được đặt hộ', 'error');
+      }
+      if (detailsOfTurns.length === 0) {
+        setIsLoading(false);
+        return Swal.fire('Lỗi rồi?', 'Tạo ít nhất 1 lượt thực hiện tour', 'error');
+      }
+      if (
+        detailsOfTurns[0]?.date === null &&
+        detailsOfTurns[0]?.startTime === null &&
+        detailsOfTurns[0]?.endTime === null &&
+        detailsOfTurns[0]?.technician === ''
+      ) {
+        setIsLoading(false);
+        return Swal.fire('Lỗi rồi?', 'Tạo ít nhất 1 lượt thực hiện tour', 'error');
+      }
+      formData.detailsOfTurns = detailsOfTurns;
+      formData.customerInfo = customerInfo;
+      if (isEditMode) {
+        console.log(formData);
+        try {
+          const updated = await sellingCourseApi.update(id, formData);
+          if (updated?.status === 200) {
+            setIsLoading(false);
+            Swal.fire({
+              title: 'Cập nhật thành công!',
+              icon: 'success'
+            });
+            navigation(Path.CourseSchedule, { replace: true });
+          }
+        } catch (error) {
+          Swal.fire('Lỗi rồi?', '', 'error');
+        }
+      } else {
+        const created = await sellingCourseApi.create(formData);
+        console.log(created);
+        if (created?.status === 201) {
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Tạo thành công!',
+            icon: 'success'
+          });
+          navigation(Path.CourseSchedule, { replace: true });
+        }
+        console.log(formData);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+
+      Swal.fire('Lỗi rồi?', 'Thiếu dữ liệu', 'error');
+    }
   };
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
@@ -169,7 +347,7 @@ const SellingCourseForm = () => {
                   getOptionLabel={(option) => `${option.times} lần -  ${formatCurrency(option.price)}`}
                   value={selectedPackageDetail}
                   onChange={handlePackageDetailChange}
-                  renderInput={(params) => <CssTextField {...params} variant="outlined" label="Gói - liệu trình" />}
+                  renderInput={(params) => <CssTextField {...params} variant="outlined" label="Chi tiết gói" />}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -202,6 +380,183 @@ const SellingCourseForm = () => {
                   renderInput={(params) => <CssTextField {...params} variant="outlined" label="Tài khoản khách hàng tích điểm" />}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <Grid container alignItems={'center'}>
+                  <Grid item xs={6}>
+                    <Typography variant="h5">Khách đi cùng</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    {selectedAccount && (
+                      <FormControlLabel
+                        sx={{ color: 'blue' }}
+                        control={<Checkbox checked={checkedAccount} onChange={handleChangeCheckbox} />}
+                        label="Đặt hộ cho khách hàng khác"
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                  <Grid item xs={3}>
+                    <TextField
+                      fullWidth
+                      margin="dense"
+                      id="name"
+                      name="name"
+                      label="Tên khách hàng"
+                      variant="outlined"
+                      value={customerInfo?.name}
+                      onChange={(e) => handleChangeCustomerInfo('name', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Field
+                      as={CssTextField}
+                      fullWidth
+                      margin="dense"
+                      label="Giới tính"
+                      name="gender"
+                      variant="outlined"
+                      select
+                      value={customerInfo?.gender}
+                      onChange={(e) => handleChangeCustomerInfo('gender', e.target.value)}
+                    >
+                      <MenuItem value="nam">Nam</MenuItem>
+                      <MenuItem value="nữ">Nữ</MenuItem>
+                      <MenuItem value="khác">Khác</MenuItem>
+                    </Field>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      fullWidth
+                      margin="dense"
+                      id="phone"
+                      name="phone"
+                      label="Số điện thoại"
+                      variant="outlined"
+                      value={customerInfo?.phone}
+                      onChange={(e) => handleChangeCustomerInfo('phone', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      fullWidth
+                      margin="dense"
+                      id="address"
+                      name="address"
+                      label="Địa chỉ"
+                      variant="outlined"
+                      value={customerInfo?.address}
+                      onChange={(e) => handleChangeCustomerInfo('address', e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  margin="dense"
+                  id="note"
+                  name="note"
+                  label="Ghi chú"
+                  variant="outlined"
+                  value={values.note}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              {detailsOfTurns.length !== 0 && (
+                <Grid item xs={12}>
+                  {/* <Grid container></Grid> */}
+                  {detailsOfTurns.map((appointment, index) => (
+                    <Paper key={index} elevation={3} style={{ padding: '16px', marginBottom: '16px' }}>
+                      <Grid container spacing={2} mt={1}>
+                        <Grid item xs={6}>
+                          <Typography variant="h6">Thực hiện lần {index + 1} </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Field
+                            as={CssTextField}
+                            fullWidth
+                            label="Trạng thái"
+                            name="status"
+                            variant="outlined"
+                            select
+                            value={appointment.status}
+                            onChange={(e) => handleDetailsOfTurnsChange(index, 'status', e.target.value)}
+                          >
+                            <MenuItem value={0}>{getStatusDetailsOfTurnsString(0).status}</MenuItem>
+                            <MenuItem value={1}>{getStatusDetailsOfTurnsString(1).status}</MenuItem>
+                            <MenuItem value={2}>{getStatusDetailsOfTurnsString(2).status}</MenuItem>
+                          </Field>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                          <Autocomplete
+                            sx={{
+                              '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                              '&': { mt: 1, p: 0 },
+                              '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                              '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                              '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                            }}
+                            fullWidth
+                            margin="dense"
+                            id="technician"
+                            name="technician"
+                            label="Yêu cầu kỹ thuật viên"
+                            options={staffs}
+                            getOptionLabel={(option) => (option ? `${option.username} - ${option.fullname}` : '')}
+                            value={appointment.technician}
+                            onChange={(e, value) => handleDetailsOfTurnsChange(index, 'technician', value)}
+                            renderInput={(params) => <TextField {...params} variant="outlined" label="Yêu cầu kỹ thuật viên" />}
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+                            <DemoContainer components={['DatePicker']}>
+                              <DatePicker
+                                sx={{ width: '100%' }}
+                                label="Date"
+                                value={dayjs(appointment.date)}
+                                onChange={(date) => handleDetailsOfTurnsChange(index, 'date', date)}
+                                fullWidth
+                              />
+                            </DemoContainer>
+                          </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['TimePicker']}>
+                              <TimePicker
+                                sx={{ width: '100%' }}
+                                label="Start Time"
+                                value={dayjs(appointment.startTime)}
+                                onChange={(time) => handleDetailsOfTurnsChange(index, 'startTime', time)}
+                                fullWidth
+                              />
+                            </DemoContainer>
+                          </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['TimePicker']}>
+                              <TimePicker
+                                sx={{ width: '100%' }}
+                                label="End Time"
+                                value={dayjs(appointment.endTime)}
+                                onChange={(time) => handleDetailsOfTurnsChange(index, 'endTime', time)}
+                                fullWidth
+                              />
+                            </DemoContainer>
+                          </LocalizationProvider>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  ))}
+                </Grid>
+              )}
             </Grid>
             <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={isSubmitting} variant="contained">
               <span>Gửi</span>
