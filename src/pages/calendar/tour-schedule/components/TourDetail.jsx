@@ -5,6 +5,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-gb';
 import { useEffect } from 'react';
+import getCustomerLevel from 'utils/getCustomerLevel';
 import getStatusBookingString from 'utils/getStatusBookingString';
 
 const TourDetail = ({ selectedEvent }) => {
@@ -48,21 +49,21 @@ const TourDetail = ({ selectedEvent }) => {
         <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
             <DemoContainer components={['DatePicker']}>
-              <DatePicker label="Ngày" name="date" value={dayjs(selectedEvent.date)} />
+              <DatePicker sx={{ width: '100%' }} label="Ngày" name="date" value={dayjs(selectedEvent.date)} />
             </DemoContainer>
           </LocalizationProvider>
         </Grid>
         <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
-              <TimePicker name="startTime" value={dayjs(selectedEvent.startTime)} label="Thời gian bắt đầu" />
+              <TimePicker sx={{ width: '100%' }} name="startTime" value={dayjs(selectedEvent.startTime)} label="Thời gian bắt đầu" />
             </DemoContainer>
           </LocalizationProvider>
         </Grid>
         <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
-              <TimePicker name="endTime" value={dayjs(selectedEvent.endTime)} label="Thời gian Kết thúc" />
+              <TimePicker sx={{ width: '100%' }} name="endTime" value={dayjs(selectedEvent.endTime)} label="Thời gian Kết thúc" />
             </DemoContainer>
           </LocalizationProvider>
         </Grid>
@@ -85,7 +86,7 @@ const TourDetail = ({ selectedEvent }) => {
             renderInput={(params) => <TextField {...params} label="Các dịch vụ" />}
           />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           {/* {Object.keys(selectedEvent.account).length !== 0 && ( */}
           <CssTextField
             fullWidth
@@ -96,7 +97,9 @@ const TourDetail = ({ selectedEvent }) => {
             variant="outlined"
             value={
               Object.keys(selectedEvent.account).length !== 0
-                ? `${selectedEvent.account.fullname} - ${selectedEvent.account.phone}`
+                ? `${selectedEvent.account.fullname}  -  ${selectedEvent.account.gender}  -  ${selectedEvent.account.phone}  -  Hạng ${getCustomerLevel(
+                    selectedEvent.account.customerLevel
+                  )}`
                 : 'Không có tài khoản khách hàng'
             }
           />
@@ -105,14 +108,14 @@ const TourDetail = ({ selectedEvent }) => {
         <Grid item xs={12}>
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={12}>
-              <Typography variant="h5">
+              <Typography variant="h6" color={'blue'}>
                 {selectedEvent.customersNumber > selectedEvent.customerInfo.length &&
                   selectedEvent.account &&
                   `Thông tin khách hàng đi cùng nhau - bao gồm chủ tài khoản (tổng ${selectedEvent.customersNumber} KH)`}
                 {selectedEvent.customersNumber === selectedEvent.customerInfo.length &&
                   Object.keys(selectedEvent.account).length !== 0 &&
                   `Đặt hộ cho các khách hàng - Không có chủ tài khoản tham gia (tổng ${selectedEvent.customersNumber} KH)`}
-                  {selectedEvent.customersNumber === selectedEvent.customerInfo.length &&
+                {selectedEvent.customersNumber === selectedEvent.customerInfo.length &&
                   Object.keys(selectedEvent.account).length === 0 &&
                   `Các khách hàng (tổng ${selectedEvent.customersNumber} KH)`}
               </Typography>
@@ -124,6 +127,7 @@ const TourDetail = ({ selectedEvent }) => {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={8}>
                 <CssTextField
+                  fullWidth
                   margin="dense"
                   id=""
                   name=""
@@ -133,17 +137,25 @@ const TourDetail = ({ selectedEvent }) => {
                 />
               </Grid>
               <Grid item xs={4}>
-                <CssTextField margin="dense" id="" name="" label="Giới tính" variant="outlined" value={selectedEvent.account.gender} />
+                <CssTextField
+                  fullWidth
+                  margin="dense"
+                  id=""
+                  name=""
+                  label="Giới tính"
+                  variant="outlined"
+                  value={selectedEvent.account.gender}
+                />
               </Grid>
             </Grid>
           )}
           {selectedEvent.customerInfo.map((e) => (
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={8}>
-                <CssTextField margin="dense" id="" name="" label="Tên khách hàng" variant="outlined" value={e.name} />
+                <CssTextField fullWidth margin="dense" id="" name="" label="Tên khách hàng" variant="outlined" value={e.name} />
               </Grid>
               <Grid item xs={4}>
-                <CssTextField margin="dense" id="" name="" label="Giới tính" variant="outlined" value={e.gender} />
+                <CssTextField fullWidth margin="dense" id="" name="" label="Giới tính" variant="outlined" value={e.gender} />
               </Grid>
             </Grid>
           ))}

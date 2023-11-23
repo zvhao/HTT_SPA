@@ -5,22 +5,25 @@ import listPlugin from '@fullcalendar/list'; // Import plugin danh sách
 import timeGridPlugin from '@fullcalendar/timegrid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, CardActions } from '@mui/material';
+import { Box, CardActions, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { bookingApi, sellingCourseApi } from 'api';
+import { bookingApi, sellingCourseApi, staffApi } from 'api';
 import { Path } from 'constant/path';
 import 'dayjs/locale/en-gb';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TourForm from './TourForm';
 import { TourDetail } from './components';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 import '../../../components/css/sweetAlert2.css';
+import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
+import getStatusBookingString from 'utils/getStatusBookingString';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 const TourSchedule = () => {
   const navigation = useNavigate();
@@ -40,6 +43,7 @@ const TourSchedule = () => {
         setRole(role);
         const fetchData = await bookingApi.fetchData();
         const metadata = fetchData.metadata;
+
         let ServiceComboData = [];
         metadata.map((e) =>
           ServiceComboData.push({ ...e, title: e?.technician?.fullname || 'chưa có nhân viên', start: e.startTime, end: e.endTime })
@@ -70,21 +74,30 @@ const TourSchedule = () => {
         // console.log(eventsData);
         setAllTours(eventsData);
 
+        const accountData = await staffApi.getByToken();
+        const branchMetadata = accountData.metadata.branch;
+        const startTime = branchMetadata.startTime;
+        const endTime = branchMetadata.endTime;
+
         const calendarEl = calendarRef.current;
         const calendar = new Calendar(calendarEl, {
-          eventContent: function (arg) {
-            console.log({title: arg.event._def.title, status: arg.event._def.extendedProps.status});
-            return ( arg.event._def.title + ' ' + arg.event._def.extendedProps.status
-              // <div>
-              //   <p>{arg.event._def.title}</p>
-              //   <p>{arg.event._def.extendedProps.status}</p>
-              // </div>
-            );
-          }, 
+          // eventContent: function (arg) {
+          //   console.log(arg.event._def.extendedProps);
+          //   const title = arg.event._def.title;
+          //   const status = arg.event._def.extendedProps.status;
+
+          //   const statusString =
+          //     'course' in arg.event._def.extendedProps ? getStatusSellingCourseString(status) : getStatusBookingString(status);
+
+          //   return title + statusString;
+          // },
           plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
           locale: 'vi',
+          height: 1000,
           initialView: 'timeGridDay',
           firstDay: 1,
+          eventColor: '#096cd8',
+          eventDisplay: 'block',
           dayMaxEvents: true,
           weekNumbers: true,
           weekText: 'Tuần ',
@@ -100,6 +113,13 @@ const TourSchedule = () => {
             timeGrid: {
               slotDuration: '00:15:00'
             }
+          },
+          businessHours: {
+            // days of week. an array of zero-based day of week integers (0=Sunday)
+            daysOfWeek: [0, 1, 2, 3, 4, 5, 6], // Monday - Thursday
+
+            startTime: startTime, // a start time (10am in this example)
+            endTime: endTime // an end time (6pm in this example)
           },
           eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
           buttonText: {
@@ -145,7 +165,7 @@ const TourSchedule = () => {
         calendar.render();
 
         return () => {
-          calendar.destroy(); // Hủy bỏ đối tượng lịch khi component bị hủy
+          calendar.destroy();
         };
       } catch (error) {
         console.error(error);
@@ -171,16 +191,30 @@ const TourSchedule = () => {
         <DialogContent>{selectedEvent && <TourDetail selectedEvent={selectedEvent} />}</DialogContent>
         <DialogActions>
           {role === 'staff' && (
-            <Button
-              sx={{ mr: 5 }}
-              size="medium"
-              variant="contained"
-              component={Link}
-              to={`${Path.TourSchedule}/edit/${selectedEvent?._id}`}
-            >
-              <EditIcon />
-              vào trang Cập nhật
-            </Button>
+            <>
+              <Button
+                sx={{ mr: 5 }}
+                size="medium"
+                variant="outlined"
+                target="_blank"
+                component={Link}
+                to={`${Path.PayBill}/add/${selectedEvent?._id}`}
+              >
+                <PaymentsIcon sx={{ mr: 1 }} />
+                Hoá đơn thanh toán
+              </Button>
+              <Button
+                sx={{ mr: 5 }}
+                size="medium"
+                variant="outlined"
+                target="_blank"
+                component={Link}
+                to={`${Path.TourSchedule}/edit/${selectedEvent?._id}`}
+              >
+                <EditIcon sx={{ mr: 1 }} />
+                vào trang Cập nhật
+              </Button>
+            </>
           )}
 
           <Button onClick={() => setDialogOpenInfo(false)} color="primary">

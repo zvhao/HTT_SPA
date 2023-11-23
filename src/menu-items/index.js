@@ -8,11 +8,12 @@ import staff from './staff';
 import crm from './crm';
 import seniorManager from './senior-manager';
 import calendar from './calendar';
+import budget from './budget';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, seniorManager, services, staff, crm, calendar]
+  items: [dashboard, seniorManager, services, staff, crm, calendar, budget]
   // items: [dashboard, seniorManager, services, staff, utilities, pages, support, calendar]
 };
 

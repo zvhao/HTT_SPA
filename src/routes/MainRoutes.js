@@ -55,6 +55,10 @@ const SellingCourseForm = Loadable(lazy(() => import('pages/calendar/course-sche
 const TourSchedule = Loadable(lazy(() => import('pages/calendar/tour-schedule/TourSchedule')));
 const TourForm = Loadable(lazy(() => import('pages/calendar/tour-schedule/TourForm')));
 
+// budget
+const PayBill = Loadable(lazy(() => import('pages/budget/pay-bill/PayBill')));
+const PayBillForm = Loadable(lazy(() => import('pages/budget/pay-bill/PayBillForm')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -242,6 +246,24 @@ const MainRoutes = {
         {
           path: 'edit/:id',
           element: <SellingCourseForm />
+        }
+      ]
+    },
+    {
+      path: Path.PayBill,
+      children: [
+        { index: true, element: <PayBill /> },
+        {
+          path: 'add/:idBooking',
+          element: <PayBillForm />
+        },
+        {
+          path: 'add',
+          element: <PayBillForm />
+        },
+        {
+          path: 'edit/:id',
+          element: <PayBillForm />
         }
       ]
     }
