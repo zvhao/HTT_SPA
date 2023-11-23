@@ -3,8 +3,8 @@
 const { Router } = require("express");
 const { asyncHandler } = require("../utils/asyncHandler.util");
 const { validateResource } = require("../middleware/request.middleware");
-const sellingCourseController = require("../controllers/sellingCourse.controller");
-const { SellingCourseSchemaInput } = require("../schema/sellingCourse.schema");
+const billController = require("../controllers/bill.controller");
+// const { BookingSchemaInput } = require("../schema/booking.schema");
 
 const {
   authentication,
@@ -20,24 +20,24 @@ router
   .route("/")
   .post(
     asyncHandler(checkPermission("booking.add")),
-    // validateResource(SellingCourseSchemaInput),
-    asyncHandler(sellingCourseController.create)
+    // validateResource(BookingSchemaInput),
+    asyncHandler(billController.create)
   )
   .get(
     asyncHandler(checkPermission("booking.view")),
-    asyncHandler(sellingCourseController.getAll)
+    asyncHandler(billController.getAll)
   );
 
 router
   .route("/:id")
   .get(
     asyncHandler(checkPermission("booking.view")),
-    asyncHandler(sellingCourseController.getById)
+    asyncHandler(billController.getById)
   )
   .patch(
     asyncHandler(checkPermission("booking.update")),
-    // validateResource(SellingCourseSchemaInput),
-    asyncHandler(sellingCourseController.update)
+    // validateResource(BookingSchemaInput),
+    asyncHandler(billController.update)
   );
 
 module.exports = router;
