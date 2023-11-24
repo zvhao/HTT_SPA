@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import formatCurrency from 'utils/formatCurrency';
 import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
 import { SellingCourseDetail } from './components';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 const CourseSchedule = () => {
   const CssTextField = styled(TextField)({ '& > div > input': { lineHeight: 2 }, '& > label': { lineHeight: 'normal' } });
@@ -205,16 +206,29 @@ const CourseSchedule = () => {
         <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={selectedSellingCourse} />}</DialogContent>
         <DialogActions>
           {role === 'staff' && (
-            <Button
-              sx={{ mr: 5 }}
-              size="medium"
-              variant="contained"
-              component={Link}
-              to={`${Path.CourseSchedule}/edit/${selectedSellingCourse?.id}`}
-            >
-              <EditIcon />
-              vào trang Cập nhật
-            </Button>
+            <>
+              <Button
+                sx={{ mr: 5 }}
+                size="medium"
+                variant="outlined"
+                target="_blank"
+                component={Link}
+                to={`${Path.PayBill}/add/${selectedSellingCourse?.id}`}
+              >
+                <PaymentsIcon sx={{ mr: 1 }} />
+                Hoá đơn thanh toán
+              </Button>
+              <Button
+                sx={{ mr: 5 }}
+                size="medium"
+                variant="contained"
+                component={Link}
+                to={`${Path.CourseSchedule}/edit/${selectedSellingCourse?.id}`}
+              >
+                <EditIcon />
+                vào trang Cập nhật
+              </Button>
+            </>
           )}
 
           <Button onClick={() => setDialogOpenInfo(false)} color="primary">

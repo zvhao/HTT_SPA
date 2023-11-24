@@ -1,4 +1,4 @@
-import { bookingApi, staffApi } from 'api';
+import { bookingApi, customerApi, sellingCourseApi, staffApi } from 'api';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -30,9 +30,13 @@ import { DateTimeField, DateTimePicker, LocalizationProvider } from '@mui/x-date
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
+import cusLevel from 'utils/cusLevel';
+import { Path } from 'constant/path';
+import { SellingCourseDetail } from 'pages/calendar/course-schedule/components';
+import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
 
 const validationSchema = yup.object({});
-const PayBillForm = () => {
+const PayBillForm = ({ selectBill }) => {
   const CssTextField = styled(TextField)({ '& > div > input': { lineHeight: 2 }, '& > label': { lineHeight: 'normal' } });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,34 +58,91 @@ const PayBillForm = () => {
     paymentMethods: 'Tiền mặt'
   });
   const [bookingInfo, setBookingInfo] = useState(null);
-  const [maxValue, setMaxValue] = useState(undefined);
+  const [sellingCourseInfo, setSellingCourseInfo] = useState(null);
+  // const [maxValue, setMaxValue] = useState(undefined);
   const [totalPaymentBill, setTotalPaymentBill] = useState(0);
 
   useEffect(() => {
     const getBooking = async () => {
       if (hasBooking) {
-        const getBooking = await bookingApi.getById(idBooking);
-        const metadata = getBooking.metadata;
-        const createdAtBooking = metadata.createdAt;
-        const totalPayment = metadata.services.reduce((sum, service) => sum + service.price, 0);
+        try {
+          const fetchDataAccount = await staffApi.getByToken();
+          const metadataAccount = fetchDataAccount.metadata;
+          const codeBranch = metadataAccount.branch.code;
+          const idBranch = metadataAccount.branch._id;
+          const getAllBills = await payBillApi.fetchData();
+          const lengthBills = getAllBills.metadata.length;
+          const code = `${codeBranch}-HD${String(lengthBills + 1).padStart(9, '0')}`;
+          const getBooking = await bookingApi.getById(idBooking);
+          const getSellingCourse = await sellingCourseApi.getById(idBooking);
+          if (getBooking && getBooking?.metadata !== null) {
+            // console.log(getBooking);
+            const metadata = getBooking.metadata;
+            const createdAtBooking = metadata.createdAt;
+            const totalPayment = metadata.services.reduce((sum, service) => sum + service.price, 0);
+            setInitialValues({
+              ...initialValues,
+              bookingTime: createdAtBooking,
+              totalPayment,
+              code,
+              branch: idBranch,
+              bookingInfomation: idBooking
+            });
+            setBookingInfo(metadata);
+          }
+          if (getSellingCourse && getSellingCourse?.metadata !== null) {
+            console.log(getSellingCourse);
+            const metadata = getSellingCourse.metadata;
+            setInitialValues({
+              ...initialValues,
+              bookingTime: metadata.createdAt,
+              totalPayment: metadata.package_detail.price,
+              code,
+              branch: idBranch,
+              bookingInfomation: idBooking
+            });
+            setSellingCourseInfo(metadata);
+          }
+          // console.log(metadata);
+        } catch (error) {
+          console.error(error);
+          Swal.fire('Lỗi xuất dữ liệu', '', 'error');
+        }
         // console.log(metadata);
-        const fetchDataAccount = await staffApi.getByToken();
-        const metadataAccount = fetchDataAccount.metadata;
-        const codeBranch = metadataAccount.branch.code;
-        const idBranch = metadataAccount.branch._id;
-        const getAllBills = await payBillApi.fetchData();
-        const lengthBills = getAllBills.metadata.length;
-        const code = `${codeBranch}-HD${String(lengthBills + 1).padStart(9, '0')}`;
-        setInitialValues({
-          ...initialValues,
-          bookingTime: createdAtBooking,
-          totalPayment,
-          code,
-          branch: idBranch,
-          bookingInfomation: idBooking
-        });
-        setBookingInfo(metadata);
-        // console.log(metadata);
+      } else {
+        if (isEditMode || selectBill) {
+          let byId;
+          if (selectBill && selectBill?.id) {
+            byId = selectBill?.id;
+            console.log(selectBill);
+          } else {
+            byId = id;
+          }
+          try {
+            const oneBill = await payBillApi.getById(byId);
+            const metadata = oneBill.metadata;
+            // console.log(metadata);
+            setPayBill(metadata);
+            let totalPaymentV1;
+            if (metadata.bookingInfomation?._id) {
+              const getBooking = await bookingApi.getById(metadata.bookingInfomation._id);
+              const metadataBooking = getBooking.metadata;
+              setBookingInfo(metadataBooking);
+              totalPaymentV1 = metadataBooking.services.reduce((sum, service) => sum + service.price, 0);
+            }
+
+            setInitialValues({
+              ...metadata,
+              branch: metadata.branch._id,
+              discount: metadata.paymentInformation.discount,
+              value: metadata.paymentInformation.value,
+              totalPayment: totalPaymentV1
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire('Lỗi xuất dữ liệu', '', 'error');
+          }
+        }
       }
     };
 
@@ -108,16 +169,17 @@ const PayBillForm = () => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    Swal.fire({
-      title: 'Loading...',
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      showCancelButton: false,
-      onBeforeOpen: () => {
-        Swal.showLoading();
-      }
-    });
+    // Swal.fire({
+    //   title: 'Loading...',
+    //   allowOutsideClick: false,
+    //   showConfirmButton: false,
+    //   showCancelButton: false,
+    //   onBeforeOpen: () => {
+    //     Swal.showLoading();
+    //   }
+    // });
     let formData = { ...values };
+    let formDataScoreLevel = {};
     try {
       if (values.discount === 'Phần trăm' && values.value > 100) {
         setIsLoading(false);
@@ -139,32 +201,112 @@ const PayBillForm = () => {
       delete formData.value;
       formData.totalPayment = totalPaymentBill;
     } catch (error) {
+      console.error(error);
+
       setIsLoading(false);
 
-      Swal.fire('Lỗi nhập dữ liệu', '', 'error');
+      return Swal.fire('Lỗi nhập dữ liệu', '', 'error');
     }
-    try {
-      const created = await payBillApi.create(formData);
-      console.log(created);
-      if (created && created?.status === 201) {
-        const metadata = created.metadata;
-        console.log(metadata);
+    if (hasBooking) {
+      // try {
+      //   if (bookingInfo?._id) {
+      //     const id = bookingInfo._id;
+      //     const formData = { status: 3 };
+      //     // console.log(bookingInfo);
+      //     const updated = await bookingApi.update(id, formData);
+      //     // console.log(updated);
+      //   } else if (sellingCourseInfo?._id) {
+      //     let statusOld = sellingCourseInfo.status;
+      //     let statusNew = 2;
+      //     switch (statusOld) {
+      //       case 1:
+      //         statusNew = 2;
+      //         break;
+      //       case 3:
+      //         statusNew = 4;
+      //         break;
+
+      //       default:
+      //         break;
+      //     }
+      //     const formData = { status: statusNew };
+      //     const updated = await bookingApi.update(sellingCourseInfo._id, formData);
+      //   }
+      // } catch (error) {
+      //   console.error(error);
+      //   setIsLoading(false);
+      //   return Swal.fire('Lỗi nhập dữ liệu', '', 'error');
+      // }
+      // try {
+      //   if (bookingInfo?.account && Object.keys(bookingInfo?.account).length !== 0) {
+      //     // console.log(bookingInfo.account);
+      //     let scoreOld = bookingInfo.account.score;
+      //     let score = scoreOld + values.totalPayment / 1000;
+      //     let customerLevel = cusLevel.setLevel(score);
+      //     formDataScoreLevel = { score, customerLevel };
+      //     const updated = await customerApi.update(bookingInfo.account._id, formDataScoreLevel);
+      //     console.log(updated);
+      //   } else if (sellingCourseInfo?.account && Object.keys(sellingCourseInfo?.account).length !== 0) {
+      //     // console.log(sellingCourseInfo);
+      //     let scoreOld = sellingCourseInfo.account.score;
+      //     let score = scoreOld + values.totalPayment / 1000;
+      //     let customerLevel = cusLevel.setLevel(score);
+      //     formDataScoreLevel = { score, customerLevel };
+      //     // console.log(formDataScoreLevel);
+      //     const updated = await customerApi.update(sellingCourseInfo.account._id, formDataScoreLevel);
+      //     console.log(updated);
+      //   }
+      // } catch (error) {
+      //   // console.error(error);
+      //   setIsLoading(false);
+      //   return Swal.fire('Lỗi nhập dữ liệu', '', 'error');
+      // }
+      try {
         setIsLoading(false);
-        Swal.fire({
-          title: 'Thành công!',
-          text: '',
-          icon: 'success',
-          customClass: {
-            container: 'custom-z-index'
-          }
-        });
+
+        console.log(formData);
+        // const created = await payBillApi.create(formData);
+        // console.log(created);
+        // if (created && created?.status === 201) {
+        //   const metadata = created.metadata;
+        //   console.log(created);
+        //   setIsLoading(false);
+        //   Swal.fire({
+        //     title: 'Thành công!',
+        //     text: '',
+        //     icon: 'success',
+        //     customClass: {
+        //       container: 'custom-z-index'
+        //     }
+        //   });
+        //   navigation(Path.PayBill, { replace: true });
+        // }
+      } catch (error) {
+        setIsLoading(false);
+        return Swal.fire('Lỗi nhập dữ liệu', '', 'error');
       }
-    } catch (error) {
-      setIsLoading(false);
-
-      Swal.fire('Lỗi nhập dữ liệu', '', 'error');
+    } else {
+      try {
+        formData.bookingInfomation = values.bookingInfomation._id;
+        const updated = await payBillApi.update(id, formData);
+        if (updated && updated?.status === 200) {
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Thành công!',
+            text: '',
+            icon: 'success',
+            customClass: {
+              container: 'custom-z-index'
+            }
+          });
+          navigation(Path.PayBill, { replace: true });
+        }
+        console.log(formData);
+      } catch (error) {
+        setIsLoading(false);
+        return Swal.fire('Lỗi nhập dữ liệu', '', 'error');
+      }
     }
-
   };
   const onSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
@@ -181,8 +323,15 @@ const PayBillForm = () => {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} sx={{ padding: 1 }}>
-              <Grid item xs={9}>
-                <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} hoá đơn</Typography>
+              <Grid item xs={12}>
+                {' '}
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                  <Grid item xs={9}>
+                    <Typography variant="h4">
+                      {isEditMode && 'Cập nhật'} {hasBooking && 'Thêm'} {selectBill && 'Chi tiết'} hoá đơn
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} sx={{ padding: 1 }}>
@@ -218,115 +367,133 @@ const PayBillForm = () => {
                       helperText={touched.totalPayment && errors.totalPayment}
                     />
                   </Grid>
-                  <Grid item xs={6} style={{ pointerEvents: 'none' }}>
+                  <Grid item xs={12} style={{ pointerEvents: 'none' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
                       <DemoContainer components={['DateTimeField']}>
                         <DateTimePicker label="Thời gian tạo lịch hẹn" value={dayjs(values.bookingTime)} format="DD/MM/YYYY HH:mm:ss" />
                       </DemoContainer>
                     </LocalizationProvider>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="h6" fontWeight={'bold'}>
-                      Giảm giá
-                    </Typography>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-                      <Grid item xs={6}>
-                        <CssTextField
-                          fullWidth
-                          margin="dense"
-                          id="discount"
-                          name="discount"
-                          label="Phương thức giảm giá"
-                          variant="outlined"
-                          value={values.discount}
-                          select
-                          onBlur={handleBlur}
-                          onChange={(value) => {
-                            handleChange(value);
-                          }}
-                          error={touched.discount && Boolean(errors.discount)}
-                          helperText={touched.discount && errors.discount}
-                        >
-                          <MenuItem value="Giảm thẳng">Giảm thẳng</MenuItem>
-                          <MenuItem value="Phần trăm">Phần trăm</MenuItem>
-                        </CssTextField>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          fullWidth
-                          margin="dense"
-                          id="value"
-                          name="value"
-                          label="Giá trị giảm giá"
-                          variant="outlined"
-                          value={values.value}
-                          onBlur={handleBlur}
-                          type="number"
-                          onChange={handleChange}
-                          inputProps={{ min: 0 }}
-                          error={touched.value && Boolean(errors.value)}
-                          helperText={touched.value && errors.value}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={6}>
-                <CssTextField
-                  fullWidth
-                  margin="dense"
-                  id="paymentMethods"
-                  name="paymentMethods"
-                  label="Phương thức thanh toán"
-                  variant="outlined"
-                  value={values.paymentMethods}
-                  select
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={touched.paymentMethods && Boolean(errors.paymentMethods)}
-                  helperText={touched.paymentMethods && errors.paymentMethods}
-                >
-                  <MenuItem value="Tiền mặt">Tiền mặt</MenuItem>
-                  <MenuItem value="Chuyển khoản">Chuyển khoản</MenuItem>
-                  <MenuItem value="MOMO">MOMO</MenuItem>
-                  <MenuItem value="VNPAY">VNPAY</MenuItem>
-                </CssTextField>
-                <TableContainer sx={{ mt: 2 }} component={Paper}>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Tổng tiền dịch vụ</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }} align="right">
-                          {formatCurrency(values.totalPayment)}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Điểm thành viên</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }} align="right">
-                          {values.totalPayment / 1000} điểm
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Giảm giá</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }} align="right">
-                          {formatCurrency(setDiscount(values.discount, values.value, values.totalPayment))}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow sx={{ backgroundColor: '#0a6cd8' }}>
-                        <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Thành tiền</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: 'white' }} align="right">
-                          {formatCurrency(setTotalPayment(values.discount, values.value, values.totalPayment))}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <Grid item xs={12} mt={2}>
-                  <LoadingButton type="submit" fullWidth size="large" loading={isLoading} variant="contained">
-                    <Typography variant="h4">THANH TOÁN</Typography>
-                  </LoadingButton>
-                </Grid>
+                <Box sx={{ m: 1, mt: -1, p: 2, borderRadius: 1, boxShadow: '2px 4px 10px 2px #888888' }}>
+                  <Grid container>
+                    <CssTextField
+                      fullWidth
+                      margin="dense"
+                      id="paymentMethods"
+                      name="paymentMethods"
+                      label="Phương thức thanh toán"
+                      variant="outlined"
+                      value={values.paymentMethods}
+                      select
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={touched.paymentMethods && Boolean(errors.paymentMethods)}
+                      helperText={touched.paymentMethods && errors.paymentMethods}
+                    >
+                      <MenuItem value="Tiền mặt">Tiền mặt</MenuItem>
+                      <MenuItem value="Chuyển khoản">Chuyển khoản</MenuItem>
+                      <MenuItem value="MOMO">MOMO</MenuItem>
+                      <MenuItem value="VNPAY">VNPAY</MenuItem>
+                    </CssTextField>
+                    <Grid item xs={12}>
+                      <Typography variant="h6" fontWeight={'bold'}>
+                        Giảm giá
+                      </Typography>
+                      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+                        <Grid item xs={6}>
+                          <CssTextField
+                            fullWidth
+                            margin="dense"
+                            id="discount"
+                            name="discount"
+                            label="Phương thức giảm giá"
+                            variant="outlined"
+                            value={values.discount}
+                            select
+                            onBlur={handleBlur}
+                            onChange={(value) => {
+                              handleChange(value);
+                            }}
+                            error={touched.discount && Boolean(errors.discount)}
+                            helperText={touched.discount && errors.discount}
+                            InputProps={{
+                              style: {
+                                borderColor: 'green' // Màu xanh cho đường viền
+                              }
+                            }}
+                          >
+                            <MenuItem value="Giảm thẳng">Giảm thẳng</MenuItem>
+                            <MenuItem value="Phần trăm">Phần trăm</MenuItem>
+                          </CssTextField>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            fullWidth
+                            margin="dense"
+                            id="value"
+                            name="value"
+                            label="Giá trị giảm giá"
+                            variant="outlined"
+                            value={values.value}
+                            onBlur={handleBlur}
+                            type="number"
+                            onChange={handleChange}
+                            inputProps={{ min: 0 }}
+                            error={touched.value && Boolean(errors.value)}
+                            helperText={touched.value && errors.value}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <TableContainer sx={{ mt: 2 }} component={Paper}>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Tổng tiền dịch vụ</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                              {formatCurrency(values.totalPayment)}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Điểm thành viên</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                              {values.totalPayment / 1000} điểm
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Giảm giá</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                              {formatCurrency(setDiscount(values.discount, values.value, values.totalPayment))}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow sx={{ backgroundColor: '#0a6cd8' }}>
+                            <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Thành tiền</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', color: 'white' }} align="right">
+                              {formatCurrency(setTotalPayment(values.discount, values.value, values.totalPayment))}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {hasBooking && (
+                      <Grid item xs={12} mt={2}>
+                        <LoadingButton type="submit" fullWidth size="large" loading={isLoading} variant="contained">
+                          <Typography variant="h4">THANH TOÁN</Typography>
+                        </LoadingButton>
+                      </Grid>
+                    )}
+                    {isEditMode && (
+                      <Grid item xs={12} mt={2}>
+                        <LoadingButton type="submit" fullWidth size="large" loading={isLoading} variant="contained">
+                          <Typography variant="h4">CẬP NHẬT</Typography>
+                        </LoadingButton>
+                      </Grid>
+                    )}
+                  </Grid>
+                </Box>
               </Grid>
 
               {bookingInfo && (
@@ -338,6 +505,32 @@ const PayBillForm = () => {
                       </Typography>
                     </Grid>
                     <TourDetail selectedEvent={bookingInfo} />
+                  </Grid>
+                </Grid>
+              )}
+              {sellingCourseInfo && (
+                <Grid item xs={12}>
+                  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }} sx={{ padding: 1 }}>
+                    <Grid item xs={12}>
+                      <Typography mb={1} variant="h5">
+                        Thông tin liệu trình
+                      </Typography>
+                    </Grid>
+                    <SellingCourseDetail
+                      selectedEvent={{
+                        ...sellingCourseInfo,
+                        course: [sellingCourseInfo.course.code, sellingCourseInfo.course.name, sellingCourseInfo.course.duration],
+                        status: getStatusSellingCourseString(sellingCourseInfo.status),
+                        account: [
+                          sellingCourseInfo.customerInfo?.name,
+                          sellingCourseInfo.customerInfo?.gender,
+                          sellingCourseInfo.customerInfo?.phone,
+                          sellingCourseInfo.account?.fullname,
+                          sellingCourseInfo.account?.gender,
+                          sellingCourseInfo.account?.phone
+                        ]
+                      }}
+                    />
                   </Grid>
                 </Grid>
               )}
