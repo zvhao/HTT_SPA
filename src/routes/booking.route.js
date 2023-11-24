@@ -36,7 +36,7 @@ router
   )
   .patch(
     asyncHandler(checkPermission("booking.update")),
-    validateResource(BookingSchemaInput),
+    // validateResource(BookingSchemaInput),
     asyncHandler(bookingController.update)
   );
 

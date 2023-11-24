@@ -62,39 +62,43 @@ const sellingCourseService = {
 
   getById: async (id) => {
     let sellingCourse = await SellingCourseModel.findById(id).lean();
-    // let technician = {};
-    let account = {};
-    let course = await CourseModel.findById(sellingCourse.course).lean();
-    // if (sellingCourse.technician !== "") {
-    //   technician = await StaffModel.findById(sellingCourse.technician);
-    // }
-    if (sellingCourse.account !== "") {
-      account = await CustomerModel.findById(sellingCourse.account);
-    }
-    if (sellingCourse.branch !== "") {
-      sellingCourse.branch = await BranchModel.findById(sellingCourse.branch);
-    }
-    let updatedDetailsOfTurns = [];
-    if (sellingCourse.detailsOfTurns !== undefined) {
-      updatedDetailsOfTurns = await Promise.all(
-        sellingCourse.detailsOfTurns.map(async (turn) => {
-          if (turn.technician) {
-            const technician = await StaffModel.findById(
-              turn.technician
-            ).lean();
-            turn.technician = technician; // Gán thông tin kỹ thuật viên
-          }
-          return turn;
-        })
-      );
-    }
+    if (sellingCourse) {
+      let account = {};
+      let course = await CourseModel.findById(sellingCourse.course).lean();
+      // if (sellingCourse.technician !== "") {
+      //   technician = await StaffModel.findById(sellingCourse.technician);
+      // }
+      if (sellingCourse.account !== "") {
+        account = await CustomerModel.findById(sellingCourse.account);
+      }
+      if (sellingCourse.branch !== "") {
+        sellingCourse.branch = await BranchModel.findById(sellingCourse.branch);
+      }
+      let updatedDetailsOfTurns = [];
+      if (sellingCourse.detailsOfTurns !== undefined) {
+        updatedDetailsOfTurns = await Promise.all(
+          sellingCourse.detailsOfTurns.map(async (turn) => {
+            if (turn.technician) {
+              const technician = await StaffModel.findById(
+                turn.technician
+              ).lean();
+              turn.technician = technician; // Gán thông tin kỹ thuật viên
+            }
+            return turn;
+          })
+        );
+      }
 
-    return {
-      ...sellingCourse,
-      account,
-      course,
-      detailsOfTurns: updatedDetailsOfTurns,
-    };
+      return {
+        ...sellingCourse,
+        account,
+        course,
+        detailsOfTurns: updatedDetailsOfTurns,
+      };
+    } else {
+      return sellingCourse
+    }
+    // let technician = {};
   },
 
   update: async (id, data) => {

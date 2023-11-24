@@ -15,6 +15,8 @@ const {
   BadRequestError,
 } = require("../utils/error.util");
 const { findStaffById } = require("../repositories/staff.resp");
+const bookingService = require("./booking.service");
+const sellingCourseService = require("./sellingCourse.service");
 
 const billService = {
   add: async ({
@@ -46,53 +48,40 @@ const billService = {
       filters.branch = manager.branch;
     }
     const allBills = await BillModel.find(filters).lean();
-    return allBills;
-    // return await Promise.all(
-    //   allBills.map(
-    //     (u) =>
-    //       new Promise(async (resolve, reject) => {
-    //         try {
-    //           resolve(await billService.getById(u._id));
-    //         } catch (error) {
-    //           reject(error);
-    //         }
-    //       })
-    //   )
-    // );
+    // return allBills;
+    return await Promise.all(
+      allBills.map(
+        (u) =>
+          new Promise(async (resolve, reject) => {
+            try {
+              resolve(await billService.getById(u._id));
+            } catch (error) {
+              reject(error);
+            }
+          })
+      )
+    );
   },
 
   getById: async (id) => {
-    let booking = await BillModel.findById(id).lean();
-    let technician = {};
-    let account = {};
-    if (booking.technician !== "") {
-      technician = await StaffModel.findById(booking.technician);
-    }
-    if (booking.account !== "") {
-      account = await CustomerModel.findById(booking.account);
-    }
-    if (booking.branch !== "") {
-      booking.branch = await BranchModel.findById(booking.branch);
-    }
+    let bill = await BillModel.findById(id).lean();
 
-    const services = [];
-
-    for (const serviceId of booking.services) {
-      // Kiểm tra model tương ứng dựa trên ID
-      const service = await ServiceModel.findById(serviceId);
-      const combo = await ComboModel.findById(serviceId);
-      const course = await CourseModel.findById(serviceId);
-
-      // Kiểm tra và đưa dữ liệu vào mảng chi tiết
-      if (service) {
-        services.push(service);
-      } else if (combo) {
-        services.push(combo);
-      } else if (course) {
-        services.push(course);
+    if (bill.branch !== "") {
+      bill.branch = await BranchModel.findById(bill.branch);
+    }
+    if (bill.bookingInfomation) {
+      const booking = await bookingService.getById(bill.bookingInfomation);
+      const sellingCourse = await sellingCourseService.getById(
+        bill.bookingInfomation
+      );
+      if (booking) {
+        bill.bookingInfomation = booking;
+      } else {
+        bill.bookingInfomation = sellingCourse;
       }
     }
-    return { ...booking, technician, account, services };
+
+    return bill;
   },
 
   update: async (id, data) => {

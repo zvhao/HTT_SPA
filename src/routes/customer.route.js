@@ -38,7 +38,7 @@ router
   .route("/:id")
   .get(asyncHandler(customerController.getById))
   .patch(
-    validateResource(CustomerSchemaInput),
+    // validateResource(CustomerSchemaInput),
     asyncHandler(customerController.update)
   );
 

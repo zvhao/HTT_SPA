@@ -116,6 +116,16 @@ const customerService = {
         { $set: data },
         { new: true }
       ).lean();
+    } else if (
+      Object.keys(data).length === 2 &&
+      data?.customerLevel &&
+      data?.score
+    ) {
+      return await CustomerModel.findByIdAndUpdate(
+        id,
+        { $set: data },
+        { new: true }
+      ).lean();
     } else {
       throw new BadRequestError("Lỗi");
     }
