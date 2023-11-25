@@ -8,6 +8,7 @@ const ComboModel = require("../models/Combo.model");
 const CourseModel = require("../models/Course.model");
 const BranchModel = require("../models/Branch.model");
 const BillModel = require("../models/Bill.model");
+const CommissionModel = require("../models/Commission.model");
 
 const {
   ConflictRequestError,
@@ -18,31 +19,16 @@ const { findStaffById } = require("../repositories/staff.resp");
 const bookingService = require("./booking.service");
 const sellingCourseService = require("./sellingCourse.service");
 
-const billService = {
-  add: async ({
-    code,
-    bookingInfomation,
-    bookingTime,
-    branch,
-    totalPayment,
-    counselorInfomation,
-    paymentInformation,
-    paymentMethods,
-  }) => {
-    if (await BillModel.findOne({ bookingInfomation })) {
-      throw new ConflictRequestError("Đã tạo hoá đơn trước đó");
-    }
+const commissionService = {
+  add: async ({ technician, commission, executionTime, type, booking }) => {
     let data = {
-      code,
-      bookingInfomation,
-      bookingTime,
-      branch,
-      totalPayment,
-      counselorInfomation,
-      paymentInformation,
-      paymentMethods,
+      technician,
+      commission,
+      executionTime,
+      type,
+      booking,
     };
-    const res = await BillModel(data).save();
+    const res = await CommissionModel(data).save();
     return res;
   },
   getAll: async (dataAccount, filters = {}) => {
@@ -50,14 +36,14 @@ const billService = {
       const manager = await findStaffById(dataAccount.id);
       filters.branch = manager.branch;
     }
-    const allBills = await BillModel.find(filters).lean();
-    // return allBills;
+    const commissions = await CommissionModel.find(filters).lean();
+    return commissions;
     return await Promise.all(
       allBills.map(
         (u) =>
           new Promise(async (resolve, reject) => {
             try {
-              resolve(await billService.getById(u._id));
+              resolve(await commissionService.getById(u._id));
             } catch (error) {
               reject(error);
             }
@@ -67,7 +53,7 @@ const billService = {
   },
 
   getById: async (id) => {
-    let bill = await BillModel.findById(id).lean();
+    let bill = await CommissionModel.findById(id).lean();
 
     if (bill.branch !== "") {
       bill.branch = await BranchModel.findById(bill.branch);
@@ -88,7 +74,7 @@ const billService = {
   },
 
   update: async (id, data) => {
-    return await BillModel.findByIdAndUpdate(
+    return await CommissionModel.findByIdAndUpdate(
       id,
       { $set: data },
       { new: true }
@@ -96,4 +82,4 @@ const billService = {
   },
 };
 
-module.exports = billService;
+module.exports = commissionService;

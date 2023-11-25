@@ -88,15 +88,17 @@ const sellingCourseService = {
           })
         );
       }
+      const customerInfo = [sellingCourse.customerInfo];
 
       return {
         ...sellingCourse,
         account,
         course,
         detailsOfTurns: updatedDetailsOfTurns,
+        customerInfo,
       };
     } else {
-      return sellingCourse
+      return sellingCourse;
     }
     // let technician = {};
   },

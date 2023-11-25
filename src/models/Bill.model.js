@@ -28,12 +28,7 @@ var BillSchema = new mongoose.Schema(
       required: true,
     },
     counselorInfomation: {
-      staff: {
-        type: String,
-      },
-      percent: {
-        type: Number,
-      },
+      type: String,
     },
     paymentInformation: {
       discount: {
