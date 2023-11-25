@@ -39,7 +39,7 @@ const SellingCourseDetail = ({ selectedEvent }) => {
           label="Thông tin khách hàng"
           variant="outlined"
           value={
-            selectedEvent.account[0] !== ''
+            selectedEvent.account[0] !== '' && selectedEvent.account[0] !== undefined
               ? `${selectedEvent.account[0]} - ${selectedEvent.account[1]} - ${selectedEvent.account[2]}`
               : `${selectedEvent.account[3]} - ${selectedEvent.account[4]} - ${selectedEvent.account[5]}`
           }

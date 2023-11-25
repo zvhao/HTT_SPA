@@ -5,7 +5,8 @@ import listPlugin from '@fullcalendar/list'; // Import plugin danh sách
 import timeGridPlugin from '@fullcalendar/timegrid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, CardActions, Typography } from '@mui/material';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import { Box, CardActions } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,17 +14,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { bookingApi, sellingCourseApi, staffApi } from 'api';
 import { Path } from 'constant/path';
-import 'dayjs/locale/en-gb';
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import TourForm from './TourForm';
-import { TourDetail } from './components';
 import dayjs from 'dayjs';
+import 'dayjs/locale/en-gb';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../../components/css/sweetAlert2.css';
-import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
-import getStatusBookingString from 'utils/getStatusBookingString';
-import PaymentsIcon from '@mui/icons-material/Payments';
+import TourForm from './TourForm';
+import { TourDetail } from './components';
 
 const TourSchedule = () => {
   const navigation = useNavigate();

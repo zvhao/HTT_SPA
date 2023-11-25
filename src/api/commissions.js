@@ -1,5 +1,5 @@
 import TokenAuth from 'utils/TokenAuth';
-const baseUrl = '/api/v1/bills';
+const baseUrl = '/api/v1/commissions';
 
 const fetchData = async () => {
   try {
@@ -13,8 +13,8 @@ const create = async (data) => {
   try {
     return TokenAuth.create(baseUrl, data);
   } catch (error) {
-    return { error: error.response.data.message };
-    // return console.error(error);
+    // return { error: error.response.data.message };
+    return console.error(error);
   }
 };
 
@@ -34,5 +34,5 @@ const getById = async (id) => {
   }
 };
 
-const payBillApi = { fetchData, create, getById, update };
-export default payBillApi;
+const bookingApi = { fetchData, create, getById, update };
+export default bookingApi;

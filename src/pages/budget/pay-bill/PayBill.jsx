@@ -20,6 +20,7 @@ const PayBill = () => {
   const [isDialogOpenInfo, setDialogOpenInfo] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
   const [role, setRole] = useState('owner');
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,8 +29,28 @@ const PayBill = () => {
         setRole(role);
         const fetchData = await payBillApi.fetchData();
         const metadata = fetchData.metadata;
-        console.log(metadata);
+        // console.log(metadata);
         setPayBills(metadata);
+        const r = metadata.map((e, index) => ({
+          id: e._id,
+          stt: index + 1,
+          code: e.code,
+          bookingInfomation: [
+            e.bookingInfomation.account?.fullname,
+            e.bookingInfomation.account?.phone,
+            [e.bookingInfomation.customerInfo]
+          ],
+          bookingTime: e.bookingTime,
+          branch: e.branch,
+          totalPayment: e.totalPayment,
+          counselorInfomation: e.counselorInfomation,
+          paymentInformation: e.paymentInformation,
+          paymentMethods: e.paymentMethods,
+          customerInfo: [e.bookingInfomation.customerInfo[0]?.name, e.bookingInfomation.customerInfo[0]?.gender],
+          time: [dayjs(e.bookingTime).format('DD/MM/YYYY HH:mm:ss'), dayjs(e.createdAt).format('DD/MM/YYYY HH:mm:ss')]
+        }));
+        console.log(r);
+        setRows(r);
       } catch (error) {
         console.error(error);
         Swal.fire({
@@ -93,18 +114,18 @@ const PayBill = () => {
         <Grid container>
           {
             <Grid item xs={12}>
-              <Typography>{params.row.bookingInfomation[0]}</Typography>
-              <Typography>{params.row.bookingInfomation[1]}</Typography>
+              <Typography>{params.row.bookingInfomation[0] !== undefined ? 'Tài khoản tích điểm:' : 'Không có tài khoản'}</Typography>
+              <Typography sx={{ fontWeight: 'bold', color: 'blue' }}>{params.row.bookingInfomation[0]}</Typography>
+              <Typography sx={{ fontWeight: 'bold', color: 'blue' }}>{params.row.bookingInfomation[1]}</Typography>
             </Grid>
           }
-          {params.row.bookingInfomation[2].map(
-            (e, index) =>
-              index === 0 && (
-                <Grid key={index} item xs={12}>
-                  <Typography>{e.name}</Typography>
-                  <Typography>{e.gender}</Typography>
-                </Grid>
-              )
+          {params.row?.customerInfo[0] && (
+            <Grid item xs={12}>
+              <Typography>đặt hộ:</Typography>
+              <Typography sx={{ fontWeight: 'bold', color: 'blue' }}>
+                {params.row?.customerInfo[0]}-{params.row?.customerInfo[1]}
+              </Typography>
+            </Grid>
           )}
         </Grid>
       )
@@ -154,20 +175,6 @@ const PayBill = () => {
     }
   ];
 
-  const rows = PayBills.map((e, index) => ({
-    id: e._id,
-    stt: index + 1,
-    code: e.code,
-    bookingInfomation: [e.bookingInfomation.account?.fullname, e.bookingInfomation.account?.phone, e.bookingInfomation.customerInfo],
-    bookingTime: e.bookingTime,
-    branch: e.branch,
-    totalPayment: e.totalPayment,
-    counselorInfomation: e.counselorInfomation,
-    paymentInformation: e.paymentInformation,
-    paymentMethods: e.paymentMethods,
-    // customer: [e?.account, e.customerInfo]
-    time: [dayjs(e.bookingTime).format('DD/MM/YYYY HH:mm:ss'), dayjs(e.createdAt).format('DD/MM/YYYY HH:mm:ss')]
-  }));
   return (
     <MainCard>
       <Grid container sx={{ alignItems: 'center', width: '100%' }}>
