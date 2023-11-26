@@ -28,6 +28,9 @@ const commissionService = {
       type,
       booking,
     };
+    if (await CommissionModel.findOne(data)) {
+      return {};
+    }
     const res = await CommissionModel(data).save();
     return res;
   },

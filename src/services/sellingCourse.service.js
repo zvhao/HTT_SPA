@@ -8,7 +8,7 @@ const ComboModel = require("../models/Combo.model");
 const CourseModel = require("../models/Course.model");
 const BranchModel = require("../models/Branch.model");
 const SellingCourseModel = require("../models/SellingCourse.model");
-
+const courseService = require("../services/course.service");
 const {
   ConflictRequestError,
   NotFoundRequestError,
@@ -64,7 +64,7 @@ const sellingCourseService = {
     let sellingCourse = await SellingCourseModel.findById(id).lean();
     if (sellingCourse) {
       let account = {};
-      let course = await CourseModel.findById(sellingCourse.course).lean();
+      let course = await courseService.getById(sellingCourse.course);
       // if (sellingCourse.technician !== "") {
       //   technician = await StaffModel.findById(sellingCourse.technician);
       // }
