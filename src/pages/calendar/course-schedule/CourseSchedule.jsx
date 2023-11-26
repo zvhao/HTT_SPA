@@ -75,7 +75,7 @@ const CourseSchedule = () => {
       //   align: 'center',
       renderCell: (params) => (
         <div>
-          {params.row?.account[0] !== '' ? (
+          {params.row.account[0] !== '' ? (
             <div>
               {' '}
               {params.row.account[0]}
@@ -151,9 +151,9 @@ const CourseSchedule = () => {
     note: e.note,
     customerInfo: e.customerInfo,
     account: [
-      e.customerInfo[0]?.name,
-      e.customerInfo[0]?.gender,
-      e.customerInfo[0]?.phone,
+      e.customerInfo?.name,
+      e.customerInfo?.gender,
+      e.customerInfo?.phone,
       e.account?.fullname,
       e.account?.gender,
       e.account?.phone

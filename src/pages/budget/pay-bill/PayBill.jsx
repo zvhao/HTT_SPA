@@ -38,7 +38,7 @@ const PayBill = () => {
           bookingInfomation: [
             e.bookingInfomation.account?.fullname,
             e.bookingInfomation.account?.phone,
-            [e.bookingInfomation.customerInfo]
+            e.bookingInfomation.customerInfo[0]
           ],
           bookingTime: e.bookingTime,
           branch: e.branch,
@@ -46,7 +46,10 @@ const PayBill = () => {
           counselorInfomation: e.counselorInfomation,
           paymentInformation: e.paymentInformation,
           paymentMethods: e.paymentMethods,
-          customerInfo: [e.bookingInfomation.customerInfo[0]?.name, e.bookingInfomation.customerInfo[0]?.gender],
+          customerInfo: [
+            e.bookingInfomation.customerInfo[0]?.name,
+            e.bookingInfomation.customerInfo[0]?.gender
+          ],
           time: [dayjs(e.bookingTime).format('DD/MM/YYYY HH:mm:ss'), dayjs(e.createdAt).format('DD/MM/YYYY HH:mm:ss')]
         }));
         console.log(r);
@@ -88,7 +91,7 @@ const PayBill = () => {
   const handleViewClick = async (data) => {
     setSelectedBill(data);
     setDialogOpenInfo(true);
-    // console.log(data);
+    console.log(data);
   };
 
   const columns = [
@@ -119,11 +122,11 @@ const PayBill = () => {
               <Typography sx={{ fontWeight: 'bold', color: 'blue' }}>{params.row.bookingInfomation[1]}</Typography>
             </Grid>
           }
-          {params.row?.customerInfo[0] && (
+          {params?.row?.bookingInfomation[2] !== undefined && params?.row?.bookingInfomation[2]?.name !== '' && (
             <Grid item xs={12}>
               <Typography>đặt hộ:</Typography>
               <Typography sx={{ fontWeight: 'bold', color: 'blue' }}>
-                {params.row?.customerInfo[0]}-{params.row?.customerInfo[1]}
+                {params.row?.bookingInfomation[2]?.name}-{params.row?.bookingInfomation[2]?.phone || params.row?.customerInfo[1]}
               </Typography>
             </Grid>
           )}

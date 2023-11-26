@@ -1,19 +1,9 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  Paper,
-  TextField,
-  Typography,
-  styled
-} from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, Grid, MenuItem, Paper, TextField, Typography, styled } from '@mui/material';
 import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { courseApi, customerApi, sellingCourseApi, staffApi } from 'api';
+import { commissionApi, courseApi, customerApi, sellingCourseApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import dayjs from 'dayjs';
@@ -85,7 +75,7 @@ const SellingCourseForm = () => {
           if (Object.keys(metadata.account).length !== 0) {
             setSelectedAccount(metadata.account);
           }
-          if (metadata?.customerInfo?.name !==  '' && Object.keys(metadata.account).length !== 0) {
+          if (metadata?.customerInfo?.name !== '' && Object.keys(metadata.account).length !== 0) {
             setCheckedAccount(true);
           }
           setCustomerInfo(metadata.customerInfo);
@@ -215,15 +205,15 @@ const SellingCourseForm = () => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    Swal.fire({
-      title: 'Loading...',
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      showCancelButton: false,
-      onBeforeOpen: () => {
-        Swal.showLoading();
-      }
-    });
+    // Swal.fire({
+    //   title: 'Loading...',
+    //   allowOutsideClick: false,
+    //   showConfirmButton: false,
+    //   showCancelButton: false,
+    //   onBeforeOpen: () => {
+    //     Swal.showLoading();
+    //   }
+    // });
     let formData = { ...values };
     try {
       formData.course = selectedCourse._id;
@@ -253,13 +243,38 @@ const SellingCourseForm = () => {
         setIsLoading(false);
         return Swal.fire('Lỗi rồi?', 'Tạo ít nhất 1 lượt thực hiện tour', 'error');
       }
-      formData.detailsOfTurns = detailsOfTurns;
+      let updatedDetailsOfTurns = detailsOfTurns.map((turn) => {
+        // Nếu technician là một object, thay thế nó bằng _id
+        if (turn.technician && typeof turn.technician === 'object') {
+          return { ...turn, technician: turn.technician._id };
+        }
+        // Nếu không phải là object, giữ nguyên đối tượng
+        return turn;
+      });
+      formData.detailsOfTurns = updatedDetailsOfTurns;
       formData.customerInfo = customerInfo;
+      setIsLoading(false);
+      console.log(formData);
       if (isEditMode) {
-        console.log(formData);
         try {
           const updated = await sellingCourseApi.update(id, formData);
           if (updated?.status === 200) {
+            try {
+              let filteredDetailsOfTurns = detailsOfTurns.filter(function (turn) {
+                return turn.status === 2;
+              });
+              let servicesByCourse = values.course.services;
+              const totalPriceService = servicesByCourse.reduce((sum, service) => sum + service.price, 0);
+              let commission = parseInt(totalPriceService / 10);
+              let commissions = filteredDetailsOfTurns.map(function (turn) {
+                return { booking: id, technician: turn.technician?._id, executionTime: turn.startTime, type: 'course-tour', commission };
+              });
+              let arr = [];
+              commissions.forEach(async (commission) => {
+                const cre = await commissionApi.create(commission);
+                arr.push(cre);
+              });
+            } catch (error) {}
             setIsLoading(false);
             Swal.fire({
               title: 'Cập nhật thành công!',
@@ -268,20 +283,20 @@ const SellingCourseForm = () => {
             navigation(Path.CourseSchedule, { replace: true });
           }
         } catch (error) {
-          Swal.fire('Lỗi rồi?', '', 'error');
+          return Swal.fire('Lỗi rồi?', '', 'error');
         }
       } else {
-        const created = await sellingCourseApi.create(formData);
-        console.log(created);
-        if (created?.status === 201) {
-          setIsLoading(false);
-          Swal.fire({
-            title: 'Tạo thành công!',
-            icon: 'success'
-          });
-          navigation(Path.CourseSchedule, { replace: true });
-        }
-        console.log(formData);
+        // const created = await sellingCourseApi.create(formData);
+        // console.log(created);
+        // if (created?.status === 201) {
+        //   setIsLoading(false);
+        //   Swal.fire({
+        //     title: 'Tạo thành công!',
+        //     icon: 'success'
+        //   });
+        //   navigation(Path.CourseSchedule, { replace: true });
+        // }
+        // console.log(formData);
       }
     } catch (error) {
       console.error(error);

@@ -331,7 +331,7 @@ const PayBillForm = ({ selectBill }) => {
               formData = {
                 technician: selectedTechnician._id,
                 commission: (sellingCourseInfo.package_detail.price * values.commission) / 100,
-                type: 'course',
+                type: 'course-consultation',
                 booking: sellingCourseInfo._id,
                 executionTime: sellingCourseInfo.createdAt
               };
@@ -494,7 +494,7 @@ const PayBillForm = ({ selectBill }) => {
                         />
                       </Grid>
                     </Grid>
-                    {sellingCourseInfo?._id && (
+                    {sellingCourseInfo?._id && hasBooking && (
                       <Grid container rowSpacing={1} sx={{ mt: 1 }} columnSpacing={{ xs: 1, sm: 2 }}>
                         <Grid item xs={6}>
                           <Autocomplete
@@ -509,12 +509,12 @@ const PayBillForm = ({ selectBill }) => {
                             margin="dense"
                             id="technician"
                             name="technician"
-                            label="Yêu cầu kỹ thuật viên"
+                            label="Kỹ thuật viên tư vấn"
                             options={staffs}
                             getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
                             value={selectedTechnician}
                             onChange={handleStaffChange}
-                            renderInput={(params) => <CssTextField {...params} variant="outlined" label="Yêu cầu kỹ thuật viên" />}
+                            renderInput={(params) => <CssTextField {...params} variant="outlined" label="Kỹ thuật viên tư vấn" />}
                           />
                         </Grid>
                         <Grid item xs={6}>
