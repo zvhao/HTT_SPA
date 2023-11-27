@@ -59,6 +59,8 @@ const TourForm = Loadable(lazy(() => import('pages/calendar/tour-schedule/TourFo
 const PayBill = Loadable(lazy(() => import('pages/budget/pay-bill/PayBill')));
 const PayBillForm = Loadable(lazy(() => import('pages/budget/pay-bill/PayBillForm')));
 
+const Salary = Loadable(lazy(() => import('pages/budget/salary/Salary')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -102,7 +104,6 @@ const MainRoutes = {
       path: Path.Service,
       children: [
         {
-          // path: '',
           index: true,
           element: <Service />
         },
@@ -266,7 +267,8 @@ const MainRoutes = {
           element: <PayBillForm />
         }
       ]
-    }
+    },
+    { path: Path.Salary, children: [{ index: true, element: <Salary /> }] }
   ]
 };
 

@@ -399,7 +399,8 @@ const SellingCourseForm = () => {
               <Grid item xs={12}>
                 <Grid container alignItems={'center'}>
                   <Grid item xs={6}>
-                    <Typography variant="h5">Khách đi cùng</Typography>
+                    <Typography variant="h5">{selectedAccount ? 'Thông tin khách hàng được đặt hộ' : 'Thông tin khách hàng'}
+                      </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     {selectedAccount && (

@@ -2,6 +2,7 @@
 import { Path } from 'constant/path';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 const budget = {
   id: 'budget',
   title: 'Quản lý ngân sách',
@@ -13,7 +14,12 @@ const budget = {
       url: Path.PayBill,
       icon: PaymentsIcon
     },
-    
+    {
+      id: 'salary',
+      title: 'Lương nhân viên',
+      url: Path.Salary,
+      icon: LocalAtmIcon
+    }
   ]
 };
 

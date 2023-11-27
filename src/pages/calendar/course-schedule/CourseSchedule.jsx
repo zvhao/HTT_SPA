@@ -32,7 +32,6 @@ const CourseSchedule = () => {
         let fetchData = await sellingCourseApi.fetchData();
         let metadata = fetchData.metadata;
         setSellingCourse(metadata);
-        console.log(fetchData);
       } catch (error) {
         console.error(error);
       }
@@ -151,9 +150,9 @@ const CourseSchedule = () => {
     note: e.note,
     customerInfo: e.customerInfo,
     account: [
-      e.customerInfo?.name,
-      e.customerInfo?.gender,
-      e.customerInfo?.phone,
+      e.customerInfo[0]?.name,
+      e.customerInfo[0]?.gender,
+      e.customerInfo[0]?.phone,
       e.account?.fullname,
       e.account?.gender,
       e.account?.phone
@@ -201,9 +200,9 @@ const CourseSchedule = () => {
           />
         </Grid>
       </Grid>
-      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)}>
-        <DialogTitle variant="h4">Chi tiết lịch hẹn</DialogTitle>
-        <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={{...selectedSellingCourse}} />}</DialogContent>
+      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)}  sx={{ '.MuiDialog-paper': { maxWidth: '80vw' } }}>
+        <DialogTitle variant="h4">Chi tiết lượt mua gói - liệu trình</DialogTitle>
+        <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={{ ...selectedSellingCourse }} />}</DialogContent>
         <DialogActions>
           {role === 'staff' && (
             <>

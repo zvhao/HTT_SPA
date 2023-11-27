@@ -15,5 +15,6 @@ export const Path = {
   LeaveSchedule: '/leave-schedule',
   TourSchedule: '/tour-schedule',
   CourseSchedule: '/course-schedule',
-  PayBill: '/pay-bill'
+  PayBill: '/pay-bill',
+  Salary: '/sarary'
 };
