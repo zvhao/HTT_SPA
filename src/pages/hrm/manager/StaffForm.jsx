@@ -30,11 +30,21 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Swal from 'sweetalert2';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const validationSchema = yup.object({});
+const validationSchema = yup.object({
+  fullname: yup.string().required('Họ Tên là bắt buộc'),
+  username: yup.string().required('Usernam là bắt buộc'),
+  phone: yup.string().required('Số điện thoại là bắt buộc'),
+  numPaidLeave: yup.number().required('Ngày nghỉ có lương là bắt buộc'),
+  basicSalary: yup.number().required('Lương cơ bản là bắt buộc'),
+  position: yup.string().required('Vị trí làm việc là bắt buộc'),
+  consultingCommission: yup.number().required('Hoa hồng tư vấn là bắt buộc'),
+  serviceCommission: yup.number().required('Hoa hồng dịch vụ là bắt buộc')
+});
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
   const { onChange, ...other } = props;
 
@@ -176,7 +186,8 @@ const StaffForm = () => {
   };
 
   const handleSubmit = async (values) => {
-    const newdata = { ...values };
+    let newdata = { ...values };
+    newdata.basicSalary = parseInt(values.basicSalary);
     // console.log(JSON.stringify(newdata, null, 4));
     if (selectedBranch && selectedBranch !== null) {
       newdata.branch = selectedBranch._id;
@@ -193,27 +204,29 @@ const StaffForm = () => {
     if (isEditMode) {
       try {
         // console.log(newdata);
-        const rs = await staffApi.update(id, newdata);
-        if (rs && rs?.status) {
-          navigation(Path.Staff, { replace: true });
-        } else {
-          console.log('Error');
-        }
-
-        return rs;
+        // const rs = await staffApi.update(id, newdata);
+        // if (rs && rs?.status) {
+        //   if (rs?.status === 200) {
+        //     Swal.fire('Thành công', '', 'success');
+        //     navigation(Path.Staff, { replace: true });
+        //   }
+        // } else {
+        //   Swal.fire('Lỗi', '', 'error');
+        // }
+        // return rs;
       } catch (error) {
-        console.error(error);
+        Swal.fire('Lỗi', '', 'error');
       }
     } else {
       try {
-        const rs = await staffApi.create(newdata);
-        if (rs.metadata) {
-          navigation(Path.Staff, { replace: true });
-        }
-        console.log(rs);
-        return rs;
+        // const rs = await staffApi.create(newdata);
+        // if (rs?.status === 201) {
+        //   Swal.fire('Thành công', '', 'success');
+        //   navigation(Path.Staff, { replace: true });
+        // }
+        console.log(newdata);
       } catch (error) {
-        alert(error.response.data.message);
+        Swal.fire('Lỗi', '', 'error');
       }
     }
   };
@@ -244,6 +257,8 @@ const StaffForm = () => {
                       value={values.username}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={touched.username && Boolean(errors.username)}
+                      helperText={touched.username && errors.username}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -269,8 +284,6 @@ const StaffForm = () => {
                             {...params}
                             variant="outlined"
                             label="Chi nhánh"
-                            error={touched.manager && Boolean(errors.manager)}
-                            helperText={touched.manager && errors.manager}
                           />
                         )}
                       />
@@ -320,6 +333,8 @@ const StaffForm = () => {
                       value={values.position}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={touched.position && Boolean(errors.position)}
+                      helperText={touched.position && errors.position}
                     >
                       {role === 'owner' ? <MenuItem value="manager">Nhân viên quản lý</MenuItem> : ''}
                       <MenuItem value="technicians">Kĩ thuật viên</MenuItem>
@@ -340,6 +355,8 @@ const StaffForm = () => {
                       value={values.fullname}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={touched.fullname && Boolean(errors.fullname)}
+                      helperText={touched.fullname && errors.fullname}
                     />
                   </Grid>
 
@@ -354,6 +371,8 @@ const StaffForm = () => {
                       value={values.email}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -367,6 +386,8 @@ const StaffForm = () => {
                       value={values.phone}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={touched.phone && Boolean(errors.phone)}
+                      helperText={touched.phone && errors.phone}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -399,6 +420,8 @@ const StaffForm = () => {
                           InputProps={{
                             inputComponent: NumericFormatCustom
                           }}
+                          error={touched.basicSalary && Boolean(errors.basicSalary)}
+                      helperText={touched.basicSalary && errors.basicSalary}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -416,6 +439,8 @@ const StaffForm = () => {
                           InputProps={{
                             endAdornment: <InputAdornment position="start">%</InputAdornment>
                           }}
+                          error={touched.consultingCommission && Boolean(errors.consultingCommission)}
+                      helperText={touched.consultingCommission && errors.consultingCommission}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -434,6 +459,8 @@ const StaffForm = () => {
                           InputProps={{
                             endAdornment: <InputAdornment position="end">/tháng</InputAdornment>
                           }}
+                          error={touched.numPaidLeave && Boolean(errors.numPaidLeave)}
+                      helperText={touched.numPaidLeave && errors.numPaidLeave}
                         />
                       </Grid>
 
@@ -452,6 +479,8 @@ const StaffForm = () => {
                           InputProps={{
                             endAdornment: <InputAdornment position="start">%</InputAdornment>
                           }}
+                          error={touched.serviceCommission && Boolean(errors.serviceCommission)}
+                      helperText={touched.serviceCommission && errors.serviceCommission}
                         />
                       </Grid>
                     </Grid>

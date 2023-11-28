@@ -605,6 +605,9 @@ const LeaveSchedule = () => {
                 <MenuItem value={0} sx={{ color: 'red' }}>
                   Không duyệt
                 </MenuItem>
+                <MenuItem value={3} sx={{ color: 'red' }}>
+                  Nghỉ không phép
+                </MenuItem>
               </CssTextField>
               {/* <Typography>Lượt đăng ký ngày nghỉ trong tháng</Typography> */}
               {/* Các trường thông tin khác */}
@@ -691,6 +694,9 @@ const LeaveSchedule = () => {
                   </MenuItem>
                   <MenuItem value={0} sx={{ color: 'red' }}>
                     Không duyệt
+                  </MenuItem>
+                  <MenuItem value={3} sx={{ color: 'red' }}>
+                    Nghỉ không phép
                   </MenuItem>
                 </CssTextField>
               </Grid>
