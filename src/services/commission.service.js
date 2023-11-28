@@ -35,14 +35,15 @@ const commissionService = {
     return res;
   },
   getAll: async (dataAccount, filters = {}) => {
+    let idBranch;
     if (dataAccount !== null && dataAccount.role === "staff") {
       const manager = await findStaffById(dataAccount.id);
-      filters.branch = manager.branch;
+      idBranch = manager.branch;
     }
     const commissions = await CommissionModel.find(filters).lean();
-    return commissions;
-    return await Promise.all(
-      allBills.map(
+    // return commissions;
+    let arr = await Promise.all(
+      commissions.map(
         (u) =>
           new Promise(async (resolve, reject) => {
             try {
@@ -53,27 +54,22 @@ const commissionService = {
           })
       )
     );
+    let filteredCommissions = arr.filter((commission) => {
+      return idBranch.equals(commission.branch);
+    });
+    return filteredCommissions;
   },
 
   getById: async (id) => {
-    let bill = await CommissionModel.findById(id).lean();
-
-    if (bill.branch !== "") {
-      bill.branch = await BranchModel.findById(bill.branch);
-    }
-    if (bill.bookingInfomation) {
-      const booking = await bookingService.getById(bill.bookingInfomation);
-      const sellingCourse = await sellingCourseService.getById(
-        bill.bookingInfomation
-      );
-      if (booking) {
-        bill.bookingInfomation = booking;
-      } else {
-        bill.bookingInfomation = sellingCourse;
-      }
+    let commission = await CommissionModel.findById(id).lean();
+    let technician;
+    let branch;
+    if (commission.technician) {
+      technician = await StaffModel.findById(commission.technician).lean();
+      branch = technician.branch;
     }
 
-    return bill;
+    return { ...commission, technician, branch };
   },
 
   update: async (id, data) => {

@@ -1,0 +1,11 @@
+@url=http://localhost:8888/api/v1/salary
+
+### GET
+GET {{url}}
+Content-Type: application/json
+x-client-id:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDZkMDM4Y2MzMTU0NzA1Njc3NzcxOCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTcwMDQ2OTQyNCwiZXhwIjoxNzA1NjUzNDI0fQ.LZ2xM__MKb54SYd5Jj962uSyGmwLFcag9bycXGE9aQo
+
+{
+    "startOfMonth": "2023-09-16T13:03:00.000Z",
+    "endOfMonth": "2023-12-16T13:03:00.000Z"
+}
