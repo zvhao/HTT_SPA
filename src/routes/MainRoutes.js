@@ -7,6 +7,7 @@ import { Path } from 'constant/path';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
+const Statistical = Loadable(lazy(() => import('pages/dashboard/Statistical')));
 
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
@@ -83,6 +84,10 @@ const MainRoutes = {
           element: <DashboardDefault />
         }
       ]
+    },
+    {
+      path: 'statistical',
+      element: <Statistical />
     },
     {
       path: 'sample-page',

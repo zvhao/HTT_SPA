@@ -443,6 +443,8 @@ const PayBillForm = ({ selectBill }) => {
                       onChange={handleChange}
                       error={touched.paymentMethods && Boolean(errors.paymentMethods)}
                       helperText={touched.paymentMethods && errors.paymentMethods}
+                      color="secondary"
+                      focused
                     >
                       <MenuItem value="Tiền mặt">Tiền mặt</MenuItem>
                       <MenuItem value="Chuyển khoản">Chuyển khoản</MenuItem>
@@ -464,6 +466,8 @@ const PayBillForm = ({ selectBill }) => {
                           label="Phương thức giảm giá"
                           variant="outlined"
                           value={values.discount}
+                          color="secondary"
+                          focused
                           select
                           onBlur={handleBlur}
                           onChange={(value) => {
@@ -485,6 +489,8 @@ const PayBillForm = ({ selectBill }) => {
                           label="Giá trị giảm giá"
                           variant="outlined"
                           value={values.value}
+                          color="secondary"
+                          focused
                           onBlur={handleBlur}
                           type="number"
                           onChange={handleChange}
@@ -509,12 +515,13 @@ const PayBillForm = ({ selectBill }) => {
                             margin="dense"
                             id="technician"
                             name="technician"
-                            label="Kỹ thuật viên tư vấn"
                             options={staffs}
                             getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
                             value={selectedTechnician}
                             onChange={handleStaffChange}
-                            renderInput={(params) => <CssTextField {...params} variant="outlined" label="Kỹ thuật viên tư vấn" />}
+                            renderInput={(params) => (
+                              <CssTextField {...params} color="secondary" focused variant="outlined" label="Kỹ thuật viên tư vấn" />
+                            )}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -525,6 +532,8 @@ const PayBillForm = ({ selectBill }) => {
                             id="commission"
                             name="commission"
                             label="% tư vấn liệu trình"
+                            color="secondary"
+                            focused
                             variant="outlined"
                             value={values.commission}
                             onBlur={handleBlur}

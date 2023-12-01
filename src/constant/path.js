@@ -16,5 +16,5 @@ export const Path = {
   TourSchedule: '/tour-schedule',
   CourseSchedule: '/course-schedule',
   PayBill: '/pay-bill',
-  Salary: '/sarary'
+  Salary: '/salary'
 };

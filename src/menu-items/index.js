@@ -13,7 +13,7 @@ import budget from './budget';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, seniorManager, services, staff, crm, calendar, budget, utilities]
+  items: [dashboard, seniorManager, services, staff, crm, calendar, budget]
   // items: [dashboard, seniorManager, services, staff, utilities, pages, support, calendar]
 };
 

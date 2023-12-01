@@ -6,7 +6,6 @@ const icons = {
   AreaChartOutlined
 };
 
-
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const dashboard = {
@@ -16,9 +15,15 @@ const dashboard = {
   children: [
     {
       id: 'dashboard',
-      title: 'Tổng quan',
+      title: 'Tổng quan Template',
       url: '',
-      icon: icons.AreaChartOutlined,
+      icon: icons.AreaChartOutlined
+    },
+    {
+      id: 'tatistical',
+      title: 'Thống kê SPA',
+      url: '/Statistical',
+      icon: icons.AreaChartOutlined
     }
   ]
 };
