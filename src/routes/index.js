@@ -21,5 +21,6 @@ router.use("/api/v1/sellingCourses", require("./sellingCourse.route"));
 router.use("/api/v1/bills", require("./bill.route"));
 router.use("/api/v1/commissions", require("./commission.route"));
 router.use("/api/v1/salary", require("./salary.route"));
+router.use("/api/v1/statistical", require("./statistical.route"));
 
 module.exports = router;

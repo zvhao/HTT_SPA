@@ -6,6 +6,8 @@ const { findStaffById } = require("../repositories/staff.resp");
 const commissionService = require("./commission.service");
 const { late } = require("zod");
 const staffService = require("./staff.service");
+const SalaryModel = require("../models/Salary.model");
+const StaffModel = require("../models/Staff.model");
 // const salaryService = require
 
 const salaryService = {
@@ -28,9 +30,14 @@ const salaryService = {
       for (const staff1 of commissions) {
         const staff2 = dayOff.find((staff) => staff.staff === staff1.staff);
 
+        const totalCommission = staff1.commission.reduce(
+          (total, commissionObj) => total + commissionObj.commission,
+          0
+        );
         mergedArray.push({
           staff: staff1.staff,
           commission: staff1.commission || [],
+          totalCommission: totalCommission,
           dayOff: staff2?.dayOff || [],
         });
       }
@@ -39,12 +46,49 @@ const salaryService = {
           mergedArray.push({
             staff: item2.staff,
             commission: [],
+            totalCommission: 0,
             dayOff: item2?.dayOff || [],
           });
         }
       });
 
-      return mergedArray;
+      const mergedArray1 = [];
+      for (const staff1 of mergedArray) {
+        const staff2 = staffs.find(
+          (staff) => staff._id.toString() === staff1.staff
+        );
+        const totalCommission = staff1.commission.reduce(
+          (total, commissionObj) => total + commissionObj.commission,
+          0
+        );
+        mergedArray1.push({
+          staff: staff2,
+          commission: staff1.commission || [],
+          dayOff: staff1.dayOff || [],
+          totalCommission: totalCommission,
+          numPaidLeave: staff2?.numPaidLeave || 0,
+        });
+      }
+      staffs.forEach((item2) => {
+        if (
+          !mergedArray1.find(
+            (item) => item.staff._id.toString() === item2._id.toString()
+          )
+        ) {
+          mergedArray1.push({
+            staff: item2,
+            commission: [],
+            dayOff: [],
+            totalCommission: 0,
+            numPaidLeave: item2?.numPaidLeave || 0,
+          });
+        }
+      });
+      const sortedData = mergedArray1
+        .slice()
+        .sort((a, b) => b.totalCommission - a.totalCommission);
+
+      return sortedData;
     } else {
       return await StaffDayOffModel.find().lean();
     }
@@ -82,7 +126,7 @@ const salaryService = {
     let data = await StaffDayOffModel.find({
       branch: filters.branch,
       dayOff: { $gte: filters.startOfMonth, $lte: filters.endOfMonth },
-      status: 2,
+      status: { $in: [2, 3] },
     });
     const staffDayOffMap = {};
     data.forEach((entry) => {
@@ -100,6 +144,44 @@ const salaryService = {
         dayOff: dayOffArray,
       })
     );
+    return result;
+  },
+  paidSalary: async (dataAccount, filters = {}) => {
+    if (Object.keys(filters).length !== 0) {
+      let has = await SalaryModel.find(filters).lean();
+      return await Promise.all(
+        has.map(
+          (u) =>
+            new Promise(async (resolve, reject) => {
+              try {
+                resolve(await salaryService.getSalaryById(u._id));
+              } catch (error) {
+                reject(error);
+              }
+            })
+        )
+      );
+    }
+    return null;
+  },
+  getSalaryById: async (id) => {
+    let salary = await SalaryModel.findById(id).lean();
+    const staff = await StaffModel.findById(salary.staff).lean();
+    return { ...salary, staff };
+  },
+
+  add: async (data) => {
+    const salaryInfo = data.salaryInfo;
+    const month = data.month;
+    let has = await SalaryModel.find({ month: month }).lean();
+    if (has.length !== 0) {
+      const res = await SalaryModel.deleteMany({ month: month });
+      if (res) {
+        const result = await SalaryModel.insertMany(salaryInfo);
+        return result;
+      }
+    }
+    const result = await SalaryModel.insertMany(salaryInfo);
     return result;
   },
 };
