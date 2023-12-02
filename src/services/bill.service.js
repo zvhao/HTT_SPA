@@ -51,9 +51,12 @@ const billService = {
       filters.branch = manager.branch;
     }
     const allBills = await BillModel.find(filters).lean();
+    const sortedData = allBills
+      .slice()
+      .sort((a, b) => b.createdAt - a.createdAt);
     // return allBills;
     return await Promise.all(
-      allBills.map(
+      sortedData.map(
         (u) =>
           new Promise(async (resolve, reject) => {
             try {

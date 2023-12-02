@@ -12,6 +12,7 @@ const { regexData } = require("../core/fuction.code");
 const CustomerModel = require("../models/Customer.model");
 const { hashPassword } = require("../utils/hash.util");
 const RoleModel = require("../models/Role.model");
+const { comparePasswords } = require("../repositories/staff.resp");
 
 const customerService = {
   add: async ({
@@ -130,6 +131,27 @@ const customerService = {
       throw new BadRequestError("Lỗi");
     }
     // return console.log(data);
+  },
+  login: async (data) => {
+    console.log(data);
+    let user = await CustomerModel.findOne({ phone: data.phone }).lean();
+    if (!user) {
+      throw new NotFoundRequestError("Số điện thoại không đúng!");
+    }
+    const passwordMatch = await comparePasswords(data.password, user.password);
+    if (!passwordMatch) {
+      throw new NotFoundRequestError("Sai mật khẩu");
+    }
+    const token = jwt.sign({ id: user._id, role: "customer" }, "httspa", {
+      expiresIn: "60d",
+    });
+
+    return await {
+      message: "Login successful",
+      user: user.fullname,
+      token: token,
+      accInfo: user,
+    };
   },
 
   // login: async (data) => {

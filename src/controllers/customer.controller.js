@@ -50,13 +50,13 @@ module.exports = {
     }).send(res);
   },
 
-  // async login(req, res) {
-  //   const body = req.body;
-  //   return new OKResponse({
-  //     message: "Login customer success",
-  //     metadata: await customerService.login(body),
-  //   }).send(res);
-  // },
+  async login(req, res) {
+    const body = req.body;
+    return new OKResponse({
+      message: "Login customer success",
+      metadata: await customerService.login(body),
+    }).send(res);
+  },
 
   // async logout(req, res) {
   //   res.clearCookie("token");
