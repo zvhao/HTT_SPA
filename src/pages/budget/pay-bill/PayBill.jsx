@@ -46,10 +46,7 @@ const PayBill = () => {
           counselorInfomation: e.counselorInfomation,
           paymentInformation: e.paymentInformation,
           paymentMethods: e.paymentMethods,
-          customerInfo: [
-            e.bookingInfomation.customerInfo[0]?.name,
-            e.bookingInfomation.customerInfo[0]?.gender
-          ],
+          customerInfo: [e.bookingInfomation.customerInfo[0]?.name, e.bookingInfomation.customerInfo[0]?.gender],
           time: [dayjs(e.bookingTime).format('DD/MM/YYYY HH:mm:ss'), dayjs(e.createdAt).format('DD/MM/YYYY HH:mm:ss')]
         }));
         console.log(r);
@@ -67,21 +64,24 @@ const PayBill = () => {
       }
     };
     const accountData = async () => {
-      try {
-        const fetchData = await staffApi.getByToken();
-        const metadata = fetchData.metadata;
-        setBranch(metadata.branch);
-        // console.log(metadata);
-        // setPayBills(metadata);
-      } catch (error) {
-        Swal.fire({
-          title: 'Lỗi từ máy chủ',
-          text: 'Lỗi khi hiển thị dữ liệu',
-          icon: 'error',
-          customClass: {
-            container: 'custom-z-index'
-          }
-        });
+      const role = JSON.parse(localStorage.getItem('data')).role;
+      if (role === 'staff') {
+        try {
+          const fetchData = await staffApi.getByToken();
+          const metadata = fetchData.metadata;
+          setBranch(metadata.branch);
+          // console.log(metadata);
+          // setPayBills(metadata);
+        } catch (error) {
+          Swal.fire({
+            title: 'Lỗi từ máy chủ',
+            text: 'Lỗi khi hiển thị dữ liệu',
+            icon: 'error',
+            customClass: {
+              container: 'custom-z-index'
+            }
+          });
+        }
       }
     };
     fetchData();

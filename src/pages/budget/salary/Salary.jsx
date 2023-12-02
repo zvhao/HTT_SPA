@@ -25,12 +25,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { branchApi, salaryApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
+import { Path } from 'constant/path';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import { Field, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import NumericFormat from 'react-number-format';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import formatCurrency from 'utils/formatCurrency';
 import * as yup from 'yup';
@@ -101,8 +103,17 @@ const Salary = () => {
   const [branch, setBranch] = useState(null);
   const [role, setRole] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigate();
 
   useEffect(() => {
+    const FORBIDDEN = async () => {
+      const role = JSON.parse(localStorage.getItem('data')).role;
+      setRole(role);
+      if (role && role !== 'staff') {
+        navigation(Path.FORBIDDEN, { replace: true });
+      }
+    };
+    FORBIDDEN();
     const fetchBranch = async () => {
       try {
         const role = JSON.parse(localStorage.getItem('data')).role;

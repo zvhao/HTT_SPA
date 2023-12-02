@@ -22,6 +22,8 @@ import Swal from 'sweetalert2';
 import '../../../components/css/sweetAlert2.css';
 import TourForm from './TourForm';
 import { TourDetail } from './components';
+import getStatusSellingCourseString from 'utils/getStatusSellingCourseString';
+import { SellingCourseDetail } from '../course-schedule/components';
 
 const TourSchedule = () => {
   const navigation = useNavigate();
@@ -33,6 +35,7 @@ const TourSchedule = () => {
   const calendarRef = useRef(null);
   const [allTours, setAllTours] = useState([]);
   const [role, setRole] = useState('owner');
+  const [selectedSellingCourse, setSelectedSellingCourse] = useState(null);
 
   useEffect(() => {
     const getAllTours = async () => {
@@ -72,10 +75,12 @@ const TourSchedule = () => {
         // console.log(eventsData);
         setAllTours(eventsData);
 
-        const accountData = await staffApi.getByToken();
-        const branchMetadata = accountData.metadata.branch;
-        const startTime = branchMetadata.startTime;
-        const endTime = branchMetadata.endTime;
+        let openClose = { startTime: '00:00', endTime: '23:59' };
+        if (role === 'staff') {
+          const accountData = await staffApi.getByToken();
+          const branchMetadata = accountData.metadata.branch;
+          openClose = { startTime: branchMetadata.startTime, endTime: branchMetadata.endTime };
+        }
 
         const calendarEl = calendarRef.current;
         const calendar = new Calendar(calendarEl, {
@@ -116,8 +121,8 @@ const TourSchedule = () => {
             // days of week. an array of zero-based day of week integers (0=Sunday)
             daysOfWeek: [0, 1, 2, 3, 4, 5, 6], // Monday - Thursday
 
-            startTime: startTime, // a start time (10am in this example)
-            endTime: endTime // an end time (6pm in this example)
+            startTime: openClose.startTime, // a start time (10am in this example)
+            endTime: openClose.endTime // an end time (6pm in this example)
           },
           eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
           buttonText: {
@@ -128,24 +133,33 @@ const TourSchedule = () => {
             list: 'Lịch biểu'
           },
           eventClick: function (info) {
+            setSelectedSellingCourse(null);
+            setSelectedEvent(null);
             const event = info.event;
             const filter = eventsData.filter((e) => e._id === event.extendedProps._id);
             if ('course' in filter[0]) {
-              Swal.fire({
-                title: 'Đây là gói - liệu trình',
-                text: 'Bạn muốn đến trang xem - cập nhật liệu trình?',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'OK, chuyển hướng!',
-                cancelButtonText: 'Quay lại'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // navigation(`${Path.CourseSchedule}/edit/${filter[0]._id}`, { replace: true });
-                  window.open(`${Path.CourseSchedule}/edit/${filter[0]._id}`, '_blank').focus();
-                }
-              });
+              // console.log(filter[0]);
+              const rows = {
+                id: filter[0]._id,
+                // stt: index + 1,
+                course: [filter[0].course.code, filter[0].course.name, filter[0].course.duration],
+                status: getStatusSellingCourseString(filter[0].status),
+                branch: filter[0].branch,
+                note: filter[0].note,
+                customerInfo: filter[0].customerInfo,
+                account: [
+                  filter[0].customerInfo[0]?.name,
+                  filter[0].customerInfo[0]?.gender,
+                  filter[0].customerInfo[0]?.phone,
+                  filter[0].account?.fullname,
+                  filter[0].account?.gender,
+                  filter[0].account?.phone
+                ],
+                package_detail: filter[0].package_detail,
+                detailsOfTurns: filter[0].detailsOfTurns
+              };
+              setSelectedSellingCourse(rows);
+              setDialogOpenInfo(true);
             } else {
               setSelectedEvent(filter[0]);
               setDialogOpenInfo(true);
@@ -184,9 +198,11 @@ const TourSchedule = () => {
 
       <Box sx={{ height: '100vh' }} ref={calendarRef}></Box>
 
-      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)} sx={{ '.MuiPaper-root': { width: '100%' } }}>
+      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)} sx={{ '.MuiDialog-paper': { maxWidth: '80vw' } }}>
         <DialogTitle variant="h4">Chi tiết lịch hẹn</DialogTitle>
         <DialogContent>{selectedEvent && <TourDetail selectedEvent={selectedEvent} />}</DialogContent>
+        <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={{ ...selectedSellingCourse }} />}</DialogContent>
+
         <DialogActions>
           {role === 'staff' && (
             <>
@@ -196,7 +212,7 @@ const TourSchedule = () => {
                 variant="outlined"
                 target="_blank"
                 component={Link}
-                to={`${Path.PayBill}/add/${selectedEvent?._id}`}
+                to={selectedEvent?._id ? `${Path.PayBill}/add/${selectedEvent?._id}` : `${Path.PayBill}/add/${selectedSellingCourse?.id}`}
               >
                 <PaymentsIcon sx={{ mr: 1 }} />
                 Hoá đơn thanh toán
@@ -207,7 +223,11 @@ const TourSchedule = () => {
                 variant="outlined"
                 target="_blank"
                 component={Link}
-                to={`${Path.TourSchedule}/edit/${selectedEvent?._id}`}
+                to={
+                  selectedEvent?._id
+                    ? `${Path.TourSchedule}/edit/${selectedEvent?._id}`
+                    : `${Path.CourseSchedule}/edit/${selectedSellingCourse?.id}`
+                }
               >
                 <EditIcon sx={{ mr: 1 }} />
                 vào trang Cập nhật

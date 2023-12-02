@@ -62,6 +62,12 @@ const SellingCourseForm = () => {
   const [branch, setBranch] = useState(null);
 
   useEffect(() => {
+    const FORBIDDEN = async () => {
+      const role = JSON.parse(localStorage.getItem('data')).role;
+      if (role && role !== 'staff') {
+        navigation(Path.FORBIDDEN, { replace: true });
+      }
+    };
     const getOneSellingCourse = async () => {
       if (isEditMode) {
         try {
@@ -119,6 +125,7 @@ const SellingCourseForm = () => {
         Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
       }
     };
+    FORBIDDEN();
     allStaffs();
     getOneSellingCourse();
     getAllCourses();
@@ -399,8 +406,7 @@ const SellingCourseForm = () => {
               <Grid item xs={12}>
                 <Grid container alignItems={'center'}>
                   <Grid item xs={6}>
-                    <Typography variant="h5">{selectedAccount ? 'Thông tin khách hàng được đặt hộ' : 'Thông tin khách hàng'}
-                      </Typography>
+                    <Typography variant="h5">{selectedAccount ? 'Thông tin khách hàng được đặt hộ' : 'Thông tin khách hàng'}</Typography>
                   </Grid>
                   <Grid item xs={6}>
                     {selectedAccount && (

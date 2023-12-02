@@ -25,6 +25,7 @@ const CourseSchedule = () => {
   const [selectedSellingCourse, setSelectedSellingCourse] = useState(null);
 
   useEffect(() => {
+    
     const genderSellingCourses = async () => {
       try {
         const role = JSON.parse(localStorage.getItem('data')).role;
@@ -168,13 +169,22 @@ const CourseSchedule = () => {
             Theo dõi gói - liệu trình
           </Typography>
         </Grid>
-        <Grid item xs={6}>
-          <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Button variant="contained" color="primary" startIcon={<AddIcon></AddIcon>} component={Link} to={Path.CourseSchedule + `/add`}>
-              Mua gói - liệu trình
-            </Button>
-          </CardActions>
-        </Grid>
+        {role === 'staff' && (
+          <Grid item xs={6}>
+            <CardActions sx={{ justifyContent: 'flex-end' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon></AddIcon>}
+                component={Link}
+                to={Path.CourseSchedule + `/add`}
+              >
+                Mua gói - liệu trình
+              </Button>
+            </CardActions>
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <DataGrid
             sx={{
@@ -200,7 +210,7 @@ const CourseSchedule = () => {
           />
         </Grid>
       </Grid>
-      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)}  sx={{ '.MuiDialog-paper': { maxWidth: '80vw' } }}>
+      <Dialog open={isDialogOpenInfo} onClose={() => setDialogOpenInfo(false)} sx={{ '.MuiDialog-paper': { maxWidth: '80vw' } }}>
         <DialogTitle variant="h4">Chi tiết lượt mua gói - liệu trình</DialogTitle>
         <DialogContent>{selectedSellingCourse && <SellingCourseDetail selectedEvent={{ ...selectedSellingCourse }} />}</DialogContent>
         <DialogActions>
