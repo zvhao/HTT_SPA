@@ -84,16 +84,6 @@ const TourSchedule = () => {
 
         const calendarEl = calendarRef.current;
         const calendar = new Calendar(calendarEl, {
-          // eventContent: function (arg) {
-          //   console.log(arg.event._def.extendedProps);
-          //   const title = arg.event._def.title;
-          //   const status = arg.event._def.extendedProps.status;
-
-          //   const statusString =
-          //     'course' in arg.event._def.extendedProps ? getStatusSellingCourseString(status) : getStatusBookingString(status);
-
-          //   return title + statusString;
-          // },
           plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
           locale: 'vi',
           height: 1000,

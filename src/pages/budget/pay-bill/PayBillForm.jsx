@@ -336,8 +336,10 @@ const PayBillForm = ({ selectBill }) => {
                 executionTime: sellingCourseInfo.createdAt
               };
             }
-            const created = await commissionApi.create(formData);
-            console.log(created);
+            if (Object.keys(formData).length !== 0) {
+              const created = await commissionApi.create(formData);
+              console.log(created);
+            }
           } catch (error) {
             setIsLoading(false);
             return Swal.fire('Lỗi nhập dữ liệu', 'Lỗi tạo hoa hồng cho nhân viên', 'error');

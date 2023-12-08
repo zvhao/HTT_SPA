@@ -18,9 +18,11 @@ const NestedList = () => {
           for (let i = children.length - 1; i >= 0; i--) {
             const child = children[i];
             if (child.id === 'salary') {
-              children.splice(i, 1); // Xoá object có id là "salary"
+              children.splice(i, 1);
+            } else if (child.id === 'work-schedule') {
+              children.splice(i, 1);
             } else if (child.children && child.children.length > 0) {
-              removeSalary(child.children); // Gọi đệ quy nếu có children
+              removeSalary(child.children);
             }
           }
         };

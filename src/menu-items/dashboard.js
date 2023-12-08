@@ -15,16 +15,16 @@ const dashboard = {
   children: [
     {
       id: 'dashboard',
-      title: 'Tổng quan Template',
+      title: 'Tổng quan',
       url: '',
       icon: icons.AreaChartOutlined
     },
-    {
-      id: 'tatistical',
-      title: 'Thống kê SPA',
-      url: '/Statistical',
-      icon: icons.AreaChartOutlined
-    }
+    // {
+    //   id: 'tatistical',
+    //   title: 'Thống kê SPA',
+    //   url: '/Statistical',
+    //   icon: icons.AreaChartOutlined
+    // }
   ]
 };
 

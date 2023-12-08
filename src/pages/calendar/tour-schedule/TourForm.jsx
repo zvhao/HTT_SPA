@@ -12,7 +12,7 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import { bookingApi, comboApi, customerApi, serviceApi, staffApi } from 'api';
+import { bookingApi, comboApi, customerApi, dayoffApi, serviceApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
@@ -59,7 +59,7 @@ const TourForm = ({ selectStartTime, idDialog }) => {
     status: 1,
     date: dayjs(),
     startTime: null,
-    endTime: dayjs('2023-10-10 23:55:00'),
+    endTime: null,
     technician: '',
     note: '',
     customerInfo: [{ name: '', gender: '' }],
@@ -72,16 +72,13 @@ const TourForm = ({ selectStartTime, idDialog }) => {
   const [selectedServices, setSelectedServices] = useState([]);
 
   const [staffs, setStaffs] = useState([]);
+  const [staffsByTime, setStaffsByTime] = useState([]);
   const [selectedTechnician, setSelectedTechnician] = useState(null);
 
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const [errorRequired, setErrorRequired] = useState({});
-  // const [totalPriceDuration, setTotalPriceDuration] = useState({
-  //   duration: 0,
-  //   price: 0
-  // });
 
   const [checkedAccount, setCheckedAccount] = useState(true);
   const [isCus, setIsCus] = useState(0);
@@ -96,22 +93,6 @@ const TourForm = ({ selectStartTime, idDialog }) => {
       }
     };
     const getOneTour = async (isEditMode) => {
-      // if (idDialog && idDialog?._id !== undefined) {
-      //   try {
-      //     const oneTourData = await bookingApi.getById(idDialog?._id);
-      //     let metadata = { ...oneTourData.metadata };
-      //     metadata.date = dayjs(metadata.date);
-      //     metadata.startTime = dayjs(metadata.startTime);
-      //     metadata.endTime = dayjs(metadata.endTime);
-      //     setSelectedServices(metadata.services);
-      //     setSelectedTechnician(metadata.technician);
-      //     setSelectedAccount(metadata.account);
-      //     setInitialValues(metadata);
-      //     console.log(metadata);
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // }
       if (isEditMode) {
         try {
           const oneTourData = await bookingApi.getById(id);
@@ -119,6 +100,11 @@ const TourForm = ({ selectStartTime, idDialog }) => {
           metadata.date = dayjs(metadata.date);
           metadata.startTime = dayjs(metadata.startTime);
           metadata.endTime = dayjs(metadata.endTime);
+          try {
+            const fetchStaffs = await staffApi.fetchData();
+            const staffMetadata = fetchStaffs.metadata;
+            await checkTime(metadata.date, metadata.startTime, metadata.endTime, staffMetadata);
+          } catch (error) {}
           setSelectedServices(metadata.services);
           if (Object.keys(metadata.account).length !== 0) {
             setSelectedAccount(metadata.account);
@@ -184,10 +170,6 @@ const TourForm = ({ selectStartTime, idDialog }) => {
 
   const handleServicesChange = (event, value) => {
     setSelectedServices(value);
-    // setTotalPriceDuration({
-    //   price: value.reduce((acc, service) => acc + service.price, 0),
-    //   duration: value.reduce((acc, service) => acc + service.duration, 0)
-    // });
     if (value.length === 0) {
       setErrorRequired((prevErrors) => ({ ...prevErrors, services: 'Cần ít nhất 1 dịch vụ' }));
     } else {
@@ -221,6 +203,41 @@ const TourForm = ({ selectStartTime, idDialog }) => {
     } else {
       console.log(checked);
       setIsCus(0);
+    }
+  };
+
+  const checkTime = async (date, start, end, staffsS) => {
+    let arrDayOff = [];
+    try {
+      const staffDayOff = await dayoffApi.fetchData();
+      const metadataDayOff = staffDayOff.metadata;
+      const filteredData = metadataDayOff.filter(
+        (item) => dayjs(item.dayOff).format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD') && (item.status === 2 || item.status === 3)
+      );
+      filteredData.map((e) => arrDayOff.push(e.staff._id));
+    } catch (error) {}
+    let arrWorkSchedule = [];
+    try {
+      const workSchedule = await bookingApi.fetchData();
+      arrWorkSchedule = workSchedule.metadata;
+    } catch (error) {}
+
+    if (date && start && end) {
+      const ST = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(start).format('HH:mm'), 'YYYY-MM-DD HH:mm');
+      const ET = dayjs(date.format('YYYY-MM-DD') + ' ' + dayjs(end).format('HH:mm'), 'YYYY-MM-DD HH:mm');
+      const currentlyWorkingStaffs = arrWorkSchedule.filter(({ startTime, endTime }) => {
+        const startS = new Date(startTime);
+        const endS = new Date(endTime);
+
+        return (startS <= ST && ST <= endS) || (startS <= ET && ET <= endS);
+      });
+      if (currentlyWorkingStaffs.length !== 0) {
+        currentlyWorkingStaffs.map((e) => arrDayOff.push(e.technician?._id));
+      }
+      const filtered = staffsS.filter((employee) => !arrDayOff.includes(employee._id));
+      console.log(filtered);
+      setStaffsByTime(filtered);
+      // console.log({ date, start, end });
     }
   };
 
@@ -346,12 +363,48 @@ const TourForm = ({ selectStartTime, idDialog }) => {
               <Grid item xs={12}>
                 <Typography variant="h4">{isEditMode ? 'Cập nhật' : 'Thêm'} Tour</Typography>
               </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  fullWidth
+                  sx={{
+                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
+                    '&': { mt: 2, p: 0 },
+                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
+                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
+                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
+                  }}
+                  multiple
+                  name="services"
+                  id="tags-outlined"
+                  options={services}
+                  getOptionLabel={(option) => `${option.code} - ${option.name} - ${option.price / 1000}k - ${option.duration} phút`}
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter(
+                      (option) =>
+                        option.code.toLowerCase().includes(inputValue.toLowerCase()) ||
+                        option.name.toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                  }
+                  onChange={handleServicesChange}
+                  value={selectedServices.length > 0 ? selectedServices : []}
+                  filterSelectedOptions
+                  renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ *" placeholder={values.name} />}
+                />
+                {selectedServices !== '' && (
+                  <FormHelperText sx={{ ml: 3 }} error>
+                    {errorRequired.services}
+                  </FormHelperText>
+                )}
+              </Grid>
               <Grid item xs={3}>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
                       sx={{ width: '100%' }}
-                      onChange={(date) => setFieldValue('date', date)}
+                      onChange={(date) => {
+                        setFieldValue('date', date);
+                        checkTime(date, values.startTime, values.endTime, staffs);
+                      }}
                       label="Ngày"
                       name="date"
                       value={values.date}
@@ -369,7 +422,10 @@ const TourForm = ({ selectStartTime, idDialog }) => {
                   <DemoContainer components={['TimePicker']}>
                     <TimePicker
                       sx={{ width: '100%' }}
-                      onChange={(date) => setFieldValue('startTime', date)}
+                      onChange={(date) => {
+                        setFieldValue('startTime', date);
+                        checkTime(values.date, date, values.endTime, staffs);
+                      }}
                       name="startTime"
                       value={values.startTime}
                       // maxTime={values.endTime || null}
@@ -388,7 +444,10 @@ const TourForm = ({ selectStartTime, idDialog }) => {
                   <DemoContainer components={['TimePicker']}>
                     <TimePicker
                       sx={{ width: '100%' }}
-                      onChange={(date) => setFieldValue('endTime', date)}
+                      onChange={(date) => {
+                        setFieldValue('endTime', date);
+                        checkTime(values.date, values.startTime, date, staffs);
+                      }}
                       name="endTime"
                       value={values.endTime}
                       minTime={values.startTime || null}
@@ -424,39 +483,6 @@ const TourForm = ({ selectStartTime, idDialog }) => {
                   <MenuItem value={4}>Khách không đến</MenuItem>
                   <MenuItem value={0}>Khách huỷ</MenuItem>
                 </CssTextField>
-              </Grid>
-              <Grid item xs={12}>
-                <Autocomplete
-                  fullWidth
-                  sx={{
-                    '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
-                    '&': { mt: 2, p: 0 },
-                    '& .MuiOutlinedInput-root': { pt: '0px', pb: '6px' },
-                    '& .MuiInputLabel-root': { lineHeight: 'normal' },
-                    '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translate(0, -50%)' }
-                  }}
-                  multiple
-                  name="services"
-                  id="tags-outlined"
-                  options={services}
-                  getOptionLabel={(option) => `${option.code} - ${option.name} - ${option.price / 1000}k - ${option.duration} phút`}
-                  filterOptions={(options, { inputValue }) =>
-                    options.filter(
-                      (option) =>
-                        option.code.toLowerCase().includes(inputValue.toLowerCase()) ||
-                        option.name.toLowerCase().includes(inputValue.toLowerCase())
-                    )
-                  }
-                  onChange={handleServicesChange}
-                  value={selectedServices.length > 0 ? selectedServices : []}
-                  filterSelectedOptions
-                  renderInput={(params) => <TextField {...params} label="Chọn nhiều dịch vụ *" placeholder={values.name} />}
-                />
-                {selectedServices !== '' && (
-                  <FormHelperText sx={{ ml: 3 }} error>
-                    {errorRequired.services}
-                  </FormHelperText>
-                )}
               </Grid>
 
               <Grid item xs={6}>
@@ -501,6 +527,7 @@ const TourForm = ({ selectStartTime, idDialog }) => {
               </Grid>
               <Grid item xs={6}>
                 <Autocomplete
+                  disabled={staffsByTime.length === 0}
                   sx={{
                     '& .MuiOutlinedInput-input': { lineHeight: 2, p: '10.5px 14px 10.5px 12px' },
                     '&': { mt: 1, p: 0 },
@@ -513,7 +540,7 @@ const TourForm = ({ selectStartTime, idDialog }) => {
                   id="technician"
                   name="technician"
                   label="Yêu cầu kỹ thuật viên"
-                  options={staffs}
+                  options={staffsByTime}
                   getOptionLabel={(option) => `${option.username} - ${option.fullname}`}
                   value={selectedTechnician}
                   onChange={handleStaffChange}

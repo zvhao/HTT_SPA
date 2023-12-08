@@ -404,7 +404,7 @@ const Salary = () => {
       <Grid container sx={{ alignItems: 'center', width: '100%' }}>
         <Grid item xs={6}>
           <Typography sx={{ mb: 1 }} variant="h4">
-            Thống kê lương
+            Thống kê Sơ bộ
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -464,7 +464,7 @@ const Salary = () => {
         </Grid>
       </Grid>
       <Typography sx={{ mb: 1 }} variant="h4">
-        Thống kê lương
+        Thống kê chi tiết tính lương
       </Typography>
       {Object.keys(initialValues).length !== 0 && (
         <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>

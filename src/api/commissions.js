@@ -1,11 +1,21 @@
 import TokenAuth from 'utils/TokenAuth';
+import api from './axios';
 const baseUrl = '/api/v1/commissions';
 
-const fetchData = async () => {
+const fetchData = async (data) => {
   try {
-    return TokenAuth.getAll(baseUrl);
+    if (localStorage.getItem('data') !== null) {
+      const localStore = JSON.parse(localStorage.getItem('data'));
+      const response = await api.get(baseUrl, {
+        params: { filter: data },
+        headers: {
+          'x-client-id': localStore.token
+        }
+      });
+      return response.data;
+    }
   } catch (error) {
-    return { error: error.response.data.message };
+    return error;
   }
 };
 

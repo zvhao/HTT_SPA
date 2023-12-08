@@ -78,13 +78,13 @@ const SellingCourseForm = () => {
           setPackageDetails(metadata.course.package_details);
           setSelectedPackageDetail(metadata.package_detail);
           setDetailsOfTurns(metadata.detailsOfTurns);
+          setCustomerInfo(metadata.customerInfo[0]);
           if (Object.keys(metadata.account).length !== 0) {
             setSelectedAccount(metadata.account);
           }
-          if (metadata?.customerInfo?.name !== '' && Object.keys(metadata.account).length !== 0) {
+          if (metadata?.customerInfo[0]?.name !== '' && Object.keys(metadata.account).length !== 0) {
             setCheckedAccount(true);
           }
-          setCustomerInfo(metadata.customerInfo);
           console.log(metadata);
         } catch (error) {
           Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
@@ -212,15 +212,15 @@ const SellingCourseForm = () => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    // Swal.fire({
-    //   title: 'Loading...',
-    //   allowOutsideClick: false,
-    //   showConfirmButton: false,
-    //   showCancelButton: false,
-    //   onBeforeOpen: () => {
-    //     Swal.showLoading();
-    //   }
-    // });
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      showCancelButton: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
     let formData = { ...values };
     try {
       formData.course = selectedCourse._id;
@@ -293,17 +293,17 @@ const SellingCourseForm = () => {
           return Swal.fire('Lỗi rồi?', '', 'error');
         }
       } else {
-        // const created = await sellingCourseApi.create(formData);
-        // console.log(created);
-        // if (created?.status === 201) {
-        //   setIsLoading(false);
-        //   Swal.fire({
-        //     title: 'Tạo thành công!',
-        //     icon: 'success'
-        //   });
-        //   navigation(Path.CourseSchedule, { replace: true });
-        // }
-        // console.log(formData);
+        const created = await sellingCourseApi.create(formData);
+        console.log(created);
+        if (created?.status === 201) {
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Tạo thành công!',
+            icon: 'success'
+          });
+          navigation(Path.CourseSchedule, { replace: true });
+        }
+        console.log(formData);
       }
     } catch (error) {
       console.error(error);

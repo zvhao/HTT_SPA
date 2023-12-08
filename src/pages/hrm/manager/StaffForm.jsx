@@ -103,7 +103,7 @@ const StaffForm = () => {
           { day: 'Thursday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
           { day: 'Friday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
           { day: 'Saturday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true },
-          { day: 'Sunday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00', 'HH:mm'), checked: true }
+          { day: 'Sunday', startTime: dayjs('2023-08-07T09:00'), endTime: dayjs('2023-08-07T20:00'), checked: true }
         ]
       }
     ],
@@ -203,27 +203,27 @@ const StaffForm = () => {
     }
     if (isEditMode) {
       try {
-        // console.log(newdata);
-        // const rs = await staffApi.update(id, newdata);
-        // if (rs && rs?.status) {
-        //   if (rs?.status === 200) {
-        //     Swal.fire('Thành công', '', 'success');
-        //     navigation(Path.Staff, { replace: true });
-        //   }
-        // } else {
-        //   Swal.fire('Lỗi', '', 'error');
-        // }
-        // return rs;
+        console.log(newdata);
+        const rs = await staffApi.update(id, newdata);
+        if (rs && rs?.status) {
+          if (rs?.status === 200) {
+            Swal.fire('Thành công', '', 'success');
+            navigation(Path.Staff, { replace: true });
+          }
+        } else {
+          Swal.fire('Lỗi', '', 'error');
+        }
+        return rs;
       } catch (error) {
         Swal.fire('Lỗi', '', 'error');
       }
     } else {
       try {
-        // const rs = await staffApi.create(newdata);
-        // if (rs?.status === 201) {
-        //   Swal.fire('Thành công', '', 'success');
-        //   navigation(Path.Staff, { replace: true });
-        // }
+        const rs = await staffApi.create(newdata);
+        if (rs?.status === 201) {
+          Swal.fire('Thành công', '', 'success');
+          navigation(Path.Staff, { replace: true });
+        }
         console.log(newdata);
       } catch (error) {
         Swal.fire('Lỗi', '', 'error');

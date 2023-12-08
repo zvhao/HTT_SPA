@@ -18,7 +18,7 @@ import {
 import { DateCalendar, StaticDatePicker, pickersLayoutClasses } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { staffApi } from 'api';
+import { commissionApi, dayoffApi, staffApi } from 'api';
 import MainCard from 'components/MainCard';
 import { Path } from 'constant/path';
 import { isAfter, isBefore, isWithinInterval } from 'date-fns';
@@ -34,27 +34,10 @@ import AvTimerRoundedIcon from '@mui/icons-material/AvTimerRounded';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-function ActionList(props) {
-  const { onSetToday, className } = props;
-  const actions = [ { text: 'Today', method: onSetToday }];
-
-  return (
-    // Propagate the className such that CSS selectors can be applied
-    <List className={className}>
-      {actions.map(({ text, method }) => (
-        <ListItem key={text} disablePadding>
-          <ListItemButton onClick={method}>
-            <ListItemText primary={text} />
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
-  );
-}
-
 const WorkSchedule = () => {
   const [allStaffs, setAllStaffs] = useState([]);
   const [staffsByDate, setStaffsByDate] = useState([]);
+  const [dayOffsByDate, setDayOffsByDate] = useState([]);
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   useEffect(() => {
@@ -69,22 +52,72 @@ const WorkSchedule = () => {
           const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
           return new Date(lastStartDate) <= dayjs();
         });
-        setStaffsByDate(filteredStaffs);
+        const fil = await sortStaffByCommission(filteredStaffs, new Date());
         // console.log(filteredStaffs);
-      } catch (error) {}
+        // console.log(fil);
+        setStaffsByDate(fil);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchAllStaffs();
   }, []);
+  const getDayOffByDate = async (date) => {
+    const day = new Date();
+    const staffDayOff = await dayoffApi.fetchData();
+    const metadataDayOff = staffDayOff.metadata;
+    const filteredData = metadataDayOff.filter((item) => dayjs(item.dayOff).format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD'));
+    console.log(filteredData);
+  };
 
-  const handleDateChange = (date) => {
+  const sortStaffByCommission = async (data, day) => {
+    const yesterday = dayjs(day).subtract(1, 'day').startOf('day');
+    const today = dayjs(day).startOf('day');
+    // console.log({ yesterday, today });
+    const filters = {
+      executionTime: {
+        $gte: yesterday,
+        $lte: today
+      }
+    };
+    let arr = [];
+    try {
+      const staffDayOff = await dayoffApi.fetchData();
+      const metadataDayOff = staffDayOff.metadata;
+      const filteredData = metadataDayOff.filter(
+        (item) => dayjs(item.dayOff).format('YYYY-MM-DD') === dayjs(day).format('YYYY-MM-DD') && (item.status === 2 || item.status === 3)
+      );
+      filteredData.map((e) => arr.push(e.staff._id));
+    } catch (error) {}
+    let commissions = await commissionApi.fetchData(filters);
+    let listCom = commissions.metadata;
+    listCom.map((e) => (e.technician = e.technician._id));
+
+    const technicianCommissions = data.map((technician) => {
+      const technicianId = technician._id;
+      const technicianCommission = listCom
+        .filter((commission) => commission.technician === technicianId)
+        .reduce((totalCommission, commission) => totalCommission + commission.commission, 0);
+
+      return { ...technician, commission: technicianCommission };
+    });
+    const filtered = technicianCommissions.filter((employee) => !arr.includes(employee._id));
+
+    console.log(filtered);
+    // technicianCommissions.filter((e)=>)
+    return filtered.sort((a, b) => a.commission - b.commission);
+  };
+
+  const handleDateChange = async (date) => {
     setSelectedDate(date);
     const filteredStaffs = allStaffs.filter((staff) => {
       const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
       return new Date(lastStartDate) <= date;
     });
-    // console.log(filteredStaffs);
-    setStaffsByDate(filteredStaffs);
+    console.log(date);
+    const fil = await sortStaffByCommission(filteredStaffs, date);
+    setStaffsByDate(fil);
   };
 
   const fnGetTime = (staff) => {
@@ -184,18 +217,8 @@ const WorkSchedule = () => {
             <StaticDatePicker
               value={selectedDate}
               onChange={handleDateChange}
-              slotProps={{
-                layout: {
-                  sx: {
-                    [`.${pickersLayoutClasses.actionBar}`]: {
-                      gridColumn: 1,
-                      gridRow: 2
-                    }
-                  }
-                }
-              }}
               slots={{
-                actionBar: ActionList
+                actionBar: 'none'
               }}
             />
           </LocalizationProvider>
