@@ -13,18 +13,18 @@ const dashboard = {
   title: 'Thống kê',
   icon: AnalyticsOutlinedIcon,
   children: [
-    {
-      id: 'dashboard',
-      title: 'Tổng quan',
-      url: '',
-      icon: icons.AreaChartOutlined
-    },
     // {
-    //   id: 'tatistical',
-    //   title: 'Thống kê SPA',
-    //   url: '/Statistical',
+    //   id: 'dashboard',
+    //   title: 'Tổng quan',
+    //   url: '',
     //   icon: icons.AreaChartOutlined
-    // }
+    // },
+    {
+      id: 'statistical',
+      title: 'Thống kê SPA',
+      url: '/Statistical',
+      icon: icons.AreaChartOutlined
+    }
   ]
 };
 

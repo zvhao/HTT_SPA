@@ -17,8 +17,22 @@ const statistical = async (data) => {
     return error;
   }
 };
+const ownerStatistical = async (data) => {
+  try {
+    if (localStorage.getItem('data') !== null) {
+      const localStore = JSON.parse(localStorage.getItem('data'));
+      const response = await api.get(baseUrl + '/owner', {
+        params: { filter: data },
+        headers: {
+          'x-client-id': localStore.token
+        }
+      });
+      return response.data;
+    }
+  } catch (error) {
+    return error;
+  }
+};
 
-
-
-const statisticalApi = { statistical };
+const statisticalApi = { statistical, ownerStatistical };
 export default statisticalApi;

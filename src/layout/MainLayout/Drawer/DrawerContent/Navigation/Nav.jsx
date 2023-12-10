@@ -31,7 +31,7 @@ const NestedList = () => {
             removeSalary(item.children);
           }
         });
-        console.log(menuItems.items);
+        // console.log(menuItems.items);
         setItems(menuItems.items);
       }
     } catch (error) {}

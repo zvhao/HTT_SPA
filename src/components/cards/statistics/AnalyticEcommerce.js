@@ -12,7 +12,7 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 // ==============================|| STATISTICS - ECOMMERCE CARD  ||============================== //
 
 const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) => (
-  <MainCard contentSX={{ p: 2.25 }}>
+  <MainCard sx={{ borderLeft: '2px solid #0a6cd9', borderBottom: '2px solid #0a6cd9' }} contentSX={{ p: 2.25 }}>
     <Stack spacing={0.5}>
       <Typography variant="h6" color="textSecondary">
         {title}
@@ -42,14 +42,13 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
         )}
       </Grid>
     </Stack>
-    
   </MainCard>
 );
 
 AnalyticEcommerce.propTypes = {
   color: PropTypes.string,
   title: PropTypes.string,
-  count: PropTypes.string,
+  count: PropTypes.number,
   percentage: PropTypes.number,
   isLoss: PropTypes.bool,
   extra: PropTypes.oneOfType([PropTypes.node, PropTypes.string])

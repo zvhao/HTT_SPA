@@ -70,7 +70,7 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
+      element: <Statistical />
     },
     {
       path: 'color',

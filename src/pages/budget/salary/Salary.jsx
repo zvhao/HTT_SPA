@@ -143,6 +143,11 @@ const Salary = () => {
       };
       const rs = await salaryApi.fetchData(data);
       const metadata = rs.metadata;
+      const filteredStaffs = metadata.filter((staff) => {
+        const lastStartDate = staff?.staff?.createdAt;
+        return new Date(lastStartDate) <= dayjs(ngayCuoiThang);
+      });
+
       const paidSalary = await salaryApi.paidSalary({ month: dayjs(ngayDauThang) });
       let salaryInfo = [];
       let salary = [];
@@ -150,40 +155,40 @@ const Salary = () => {
         const meta = paidSalary.metadata;
         meta.map((e) => {
           salaryInfo.push({
-            staff: e.staff._id,
-            basicSalary: e.staff.basicSalary,
-            allowance: e.allowance,
-            commission: e.commission,
-            dayOff: e.dayOff,
-            bonus: e.bonus,
-            fine: e.fine,
-            salary: calcSalary([e.staff.basicSalary, e.allowance, e.commission, e.dayOff, 0, 0]),
-            paid: Boolean(e.paid)
+            staff: e?.staff?._id,
+            basicSalary: e?.staff?.basicSalary,
+            allowance: e?.allowance,
+            commission: e?.commission,
+            dayOff: e?.dayOff,
+            bonus: e?.bonus,
+            fine: e?.fine,
+            salary: calcSalary([e?.staff?.basicSalary, e?.allowance, e?.commission, e?.dayOff, 0, 0]),
+            paid: Boolean(e?.paid)
           });
           salary.push({
-            bonus: e.bonus,
-            fine: e.fine,
-            salary: calcSalary([e.staff.basicSalary, e.allowance, e.commission, e.dayOff, 0, 0]),
-            paid: Boolean(e.paid)
+            bonus: e?.bonus,
+            fine: e?.fine,
+            salary: calcSalary([e?.staff?.basicSalary, e?.allowance, e?.commission, e?.dayOff, 0, 0]),
+            paid: Boolean(e?.paid)
           });
         });
 
         console.log(paidSalary);
       } else {
-        metadata.map((e) => {
+        filteredStaffs.map((e) => {
           salaryInfo.push({
-            staff: e.staff._id,
-            basicSalary: e.staff.basicSalary,
-            allowance: totalAllowances(e.staff.allowances),
-            commission: e.totalCommission,
-            dayOff: deductionDayOff(dayOffStaff(e.dayOff), e.staff.numPaidLeave),
+            staff: e?.staff?._id,
+            basicSalary: e?.staff?.basicSalary,
+            allowance: totalAllowances(e?.staff?.allowances),
+            commission: e?.totalCommission,
+            dayOff: deductionDayOff(dayOffStaff(e?.dayOff), e?.staff?.numPaidLeave),
             bonus: 0,
             fine: 0,
             salary: calcSalary([
-              e.staff.basicSalary,
-              totalAllowances(e.staff.allowances),
-              e.totalCommission,
-              deductionDayOff(dayOffStaff(e.dayOff), e.staff.numPaidLeave),
+              e?.staff?.basicSalary,
+              totalAllowances(e?.staff?.allowances),
+              e?.totalCommission,
+              deductionDayOff(dayOffStaff(e?.dayOff), e?.staff?.numPaidLeave),
               0,
               0
             ]),
@@ -193,10 +198,10 @@ const Salary = () => {
             bonus: 0,
             fine: 0,
             salary: calcSalary([
-              e.staff.basicSalary,
-              totalAllowances(e.staff.allowances),
-              e.totalCommission,
-              deductionDayOff(dayOffStaff(e.dayOff), e.staff.numPaidLeave),
+              e?.staff?.basicSalary,
+              totalAllowances(e?.staff?.allowances),
+              e?.totalCommission,
+              deductionDayOff(dayOffStaff(e?.dayOff), e?.staff?.numPaidLeave),
               0,
               0
             ]),
@@ -206,9 +211,9 @@ const Salary = () => {
       }
       setSalaryArr(salary);
       setInitialValues({ ...initialValues, salaryInfo });
-      setDataByMonth(metadata);
-      console.log(salaryInfo);
-      console.log(salary);
+      setDataByMonth(filteredStaffs);
+      // console.log(salaryInfo);
+      // console.log('metadata', filteredStaffs);
     } catch (error) {
       console.error(error);
     }
@@ -573,7 +578,7 @@ const Salary = () => {
                         <TableCell align="right">
                           {salaryArr.length !== 0 && (
                             <Typography variant="h5" color={'blue'}>
-                              {formatCurrency(salaryArr[index].salary + salaryArr[index].bonus - salaryArr[index].fine)}
+                              {formatCurrency(salaryArr[index]?.salary + salaryArr[index]?.bonus - salaryArr[index]?.fine)}
                             </Typography>
                           )}
                         </TableCell>
@@ -581,9 +586,9 @@ const Salary = () => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={values.salaryInfo[index].paid}
+                                checked={values.salaryInfo[index]?.paid}
                                 onChange={() => {
-                                  const checked = values.salaryInfo[index].paid;
+                                  const checked = values.salaryInfo[index]?.paid;
                                   setFieldValue(`salaryInfo[${index}].paid`, !checked);
                                 }}
                               ></Checkbox>

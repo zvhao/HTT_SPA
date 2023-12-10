@@ -85,7 +85,7 @@ const SellingCourseForm = () => {
           if (metadata?.customerInfo[0]?.name !== '' && Object.keys(metadata.account).length !== 0) {
             setCheckedAccount(true);
           }
-          console.log(metadata);
+          // console.log(metadata);
         } catch (error) {
           Swal.fire('Lỗi rồi?', 'Không tìm thấy dữ liệu', 'error');
         }
@@ -178,7 +178,7 @@ const SellingCourseForm = () => {
   };
 
   const handleDetailsOfTurnsChange = (index, key, value) => {
-    console.log(value);
+    // console.log(value);
     setDetailsOfTurns((prevAppointments) => {
       const updatedAppointments = [...prevAppointments];
       updatedAppointments[index] = {
@@ -203,7 +203,7 @@ const SellingCourseForm = () => {
   };
 
   const handleChangeCustomerInfo = async (key, value) => {
-    console.log(key, value);
+    // console.log(key, value);
     setCustomerInfo((prevCustomerInfo) => ({
       ...prevCustomerInfo,
       [key]: value
@@ -261,7 +261,7 @@ const SellingCourseForm = () => {
       formData.detailsOfTurns = updatedDetailsOfTurns;
       formData.customerInfo = customerInfo;
       setIsLoading(false);
-      console.log(formData);
+      // console.log(formData);
       if (isEditMode) {
         try {
           const updated = await sellingCourseApi.update(id, formData);
@@ -294,7 +294,7 @@ const SellingCourseForm = () => {
         }
       } else {
         const created = await sellingCourseApi.create(formData);
-        console.log(created);
+        // console.log(created);
         if (created?.status === 201) {
           setIsLoading(false);
           Swal.fire({
@@ -303,7 +303,7 @@ const SellingCourseForm = () => {
           });
           navigation(Path.CourseSchedule, { replace: true });
         }
-        console.log(formData);
+        // console.log(formData);
       }
     } catch (error) {
       console.error(error);

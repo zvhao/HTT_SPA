@@ -37,40 +37,42 @@ dayjs.extend(timezone);
 const WorkSchedule = () => {
   const [allStaffs, setAllStaffs] = useState([]);
   const [staffsByDate, setStaffsByDate] = useState([]);
-  const [dayOffsByDate, setDayOffsByDate] = useState([]);
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   useEffect(() => {
-    const fetchAllStaffs = async () => {
-      try {
-        const data = await staffApi.fetchData();
-        const allStaffs = data.metadata;
-        // console.log(allStaffs);
-        setAllStaffs(allStaffs);
-        // setSelectedDate(dayjs());
-        const filteredStaffs = allStaffs.filter((staff) => {
-          const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
-          return new Date(lastStartDate) <= dayjs();
-        });
-        const fil = await sortStaffByCommission(filteredStaffs, new Date());
-        // console.log(filteredStaffs);
-        // console.log(fil);
-        setStaffsByDate(fil);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    fetchAllStaffs(selectedDate);
+  }, [selectedDate]);
 
-    fetchAllStaffs();
-  }, []);
-  const getDayOffByDate = async (date) => {
-    const day = new Date();
-    const staffDayOff = await dayoffApi.fetchData();
-    const metadataDayOff = staffDayOff.metadata;
-    const filteredData = metadataDayOff.filter((item) => dayjs(item.dayOff).format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD'));
-    console.log(filteredData);
+  const fetchAllStaffs = async (selectedDate) => {
+    try {
+      const data = await staffApi.fetchData();
+      const allStaffs = data.metadata;
+      // console.log(allStaffs);
+      setAllStaffs(allStaffs);
+      // setSelectedDate(dayjs());
+      const filteredStaffs = allStaffs.filter((staff) => {
+        const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
+        if (new Date(lastStartDate) <= selectedDate) {
+          const workTime = staff.workTime.find((e) =>
+            e.weekSchedule.some(
+              (schedule) =>
+                schedule.day === new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }) && schedule.checked === true
+            )
+          );
+          if (workTime) {
+            return true;
+          }
+        }
+        return false;
+      });
+      console.log(filteredStaffs);
+      const fil = await sortStaffByCommission(filteredStaffs, new Date(selectedDate));
+      // console.log(fil);
+      setStaffsByDate(fil);
+    } catch (error) {
+      console.log(error);
+    }
   };
-
   const sortStaffByCommission = async (data, day) => {
     const yesterday = dayjs(day).subtract(1, 'day').startOf('day');
     const today = dayjs(day).startOf('day');
@@ -111,22 +113,18 @@ const WorkSchedule = () => {
 
   const handleDateChange = async (date) => {
     setSelectedDate(date);
-    const filteredStaffs = allStaffs.filter((staff) => {
-      const lastStartDate = staff.workTime.map((e) => e.startDate).pop();
-      return new Date(lastStartDate) <= date;
-    });
-    console.log(date);
-    const fil = await sortStaffByCommission(filteredStaffs, date);
-    setStaffsByDate(fil);
+    fetchAllStaffs(date);
   };
 
   const fnGetTime = (staff) => {
     // const final = staff.workTime.pop()
     const workTime = staff.workTime.map((e) =>
-      e.weekSchedule.find((schedule) => schedule.day === new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }))
+      e.weekSchedule.find(
+        (schedule) => schedule.day === new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }) && schedule.checked === true
+      )
     );
     // console.log(workTime);
-    return `${dayjs(workTime[workTime.length - 1].startTime).format('HH:mm')} - ${dayjs(workTime[workTime.length - 1].endTime).format(
+    return `${dayjs(workTime[workTime.length - 1]?.startTime).format('HH:mm')} - ${dayjs(workTime[workTime.length - 1]?.endTime).format(
       'HH:mm'
     )}`;
   };

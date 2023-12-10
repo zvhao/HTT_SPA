@@ -25,7 +25,6 @@ const CourseSchedule = () => {
   const [selectedSellingCourse, setSelectedSellingCourse] = useState(null);
 
   useEffect(() => {
-    
     const genderSellingCourses = async () => {
       try {
         const role = JSON.parse(localStorage.getItem('data')).role;
@@ -33,6 +32,7 @@ const CourseSchedule = () => {
         let fetchData = await sellingCourseApi.fetchData();
         let metadata = fetchData.metadata;
         setSellingCourse(metadata);
+        console.log(metadata);
       } catch (error) {
         console.error(error);
       }
@@ -52,6 +52,21 @@ const CourseSchedule = () => {
       headerName: 'STT',
       width: 70,
       align: 'center'
+    },
+    {
+      field: 'branch',
+      headerName: 'Chi nhánh',
+      width: 150,
+      align: 'center',
+      renderCell: (params) => (
+        <div>
+          {params.row.branch[0]}
+          <br />
+          {params.row.branch[1]}
+          <br />
+          {params.row.branch[2]}
+        </div>
+      )
     },
     {
       field: 'course',
@@ -150,6 +165,7 @@ const CourseSchedule = () => {
     branch: e.branch,
     note: e.note,
     customerInfo: e.customerInfo,
+    branch: [e.branch.code, e.branch.name, e.branch.desc],
     account: [
       e.customerInfo[0]?.name,
       e.customerInfo[0]?.gender,

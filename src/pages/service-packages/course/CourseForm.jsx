@@ -181,10 +181,10 @@ const CourseForm = () => {
       } catch (error) {
         console.log(error);
         setIsLoading(false);
-          Swal.fire({
-            title: 'Lỗi rồi!',
-            icon: 'error'
-          });
+        Swal.fire({
+          title: 'Lỗi rồi!',
+          icon: 'error'
+        });
       }
     };
 
@@ -322,9 +322,9 @@ const CourseForm = () => {
           icon: 'error'
         });
       }
+    } else {
+      handleSubmitV2(data);
     }
-    handleSubmitV2(data);
-
   };
 
   return (
