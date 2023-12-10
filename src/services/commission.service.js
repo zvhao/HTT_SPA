@@ -40,6 +40,7 @@ const commissionService = {
       const manager = await findStaffById(dataAccount.id);
       idBranch = manager.branch;
     }
+    console.log(filters);
     const commissions = await CommissionModel.find(filters).lean();
     // return commissions;
     let arr = await Promise.all(

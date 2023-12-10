@@ -50,6 +50,9 @@ const billService = {
       const manager = await findStaffById(dataAccount.id);
       filters.branch = manager.branch;
     }
+    console.log('====================================');
+    console.log(filters);
+    console.log('====================================');
     const allBills = await BillModel.find(filters).lean();
     const sortedData = allBills
       .slice()

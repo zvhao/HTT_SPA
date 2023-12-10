@@ -184,6 +184,14 @@ const salaryService = {
     const result = await SalaryModel.insertMany(salaryInfo);
     return result;
   },
+
+  statistical: async (dataAccount, filters = {}) => {
+    if (dataAccount !== null && dataAccount.role === "staff") {
+      const manager = await findStaffById(dataAccount.id);
+      filters.branch = manager.branch;
+    }
+    return filters;
+  },
 };
 
 module.exports = salaryService;

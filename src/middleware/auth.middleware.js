@@ -9,6 +9,7 @@ const {
   UnauthorizedRequestError,
   ForbiddenRequestError,
 } = require("../utils/error.util");
+const customerService = require("../services/customer.service");
 
 const Headers = {
   CLIENT_TOKEN: "x-client-id",
@@ -23,7 +24,7 @@ const Headers = {
 
 const authentication = async (req, res, next) => {
   const data = req.headers[Headers.CLIENT_TOKEN];
-  // console.log(req.headers);
+  console.log(data);
 
   if (!data) {
     throw new UnauthorizedRequestError(
@@ -50,6 +51,8 @@ const authentication = async (req, res, next) => {
       var user = await ownerService.getById(decoded.id);
     } else if (decoded.role == "staff") {
       var user = await staffService.getById(decoded.id);
+    }else if (decoded.role == "customer") {
+      var user = await customerService.getById(decoded.id);
     } else {
       throw new ForbiddenRequestError(`Not allowed!`);
     }

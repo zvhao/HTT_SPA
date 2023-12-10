@@ -10,6 +10,8 @@ const billService = require("./bill.service");
 const SalaryModel = require("../models/Salary.model");
 const StaffModel = require("../models/Staff.model");
 const BillModel = require("../models/Bill.model");
+const bookingService = require("./booking.service");
+const salariesService = require("./salary.service");
 // const salaryService = require
 
 const salaryService = {
@@ -29,8 +31,6 @@ const salaryService = {
     if (dataAccount !== null && dataAccount.role === "staff") {
       const manager = await findStaffById(dataAccount.id);
       filters.branch = manager.branch;
-      // LastMonth.branch = manager.branch;
-      // ThisMonth.branch = manager.branch;
     }
     const allBillsbyLastMonth = await billService.getAll(
       dataAccount,
@@ -40,10 +40,37 @@ const salaryService = {
       dataAccount,
       ThisMonth
     );
+    const allSalariessbyLastMonth = await salariesService.getAll(
+      dataAccount,
+      LastMonth
+    );
+    const allSalariessbyThisMonth = await salariesService.getAll(
+      dataAccount,
+      ThisMonth
+    );
     return {
-      LastMonth: { allBillsbyLastMonth },
-      ThisMonth: { allBillsbyThisMonth },
+      LastMonth: { allBillsbyLastMonth, allSalariessbyLastMonth },
+      ThisMonth: { allBillsbyThisMonth, allSalariessbyThisMonth },
     };
+  },
+  ownerStatistical: async (dataAccount, filters = {}) => {
+    if (dataAccount !== null && dataAccount.role === "staff") {
+      const manager = await findStaffById(dataAccount.id);
+      filters.branch = manager.branch;
+    }
+    let fils = {
+      branch: filters.branch,
+      createdAt: {
+        $gte: filters.startTime,
+        $lte: filters.endTime,
+      },
+    };
+    const allBills = await billService.getAll(dataAccount, fils);
+    const allTours = await bookingService.getAll(dataAccount, fils);
+    // console.log("====================================");
+    // console.log(time);
+    // console.log("====================================");
+    return { allBills, allTours };
   },
 };
 

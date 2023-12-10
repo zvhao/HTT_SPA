@@ -15,6 +15,7 @@ const router = Router();
 // auth
 router.use(asyncHandler(authentication));
 
+router.route("/owner").get(asyncHandler(statisticalController.ownerStatistical));
 router.route("/").get(asyncHandler(statisticalController.statistical));
 
 module.exports = router;

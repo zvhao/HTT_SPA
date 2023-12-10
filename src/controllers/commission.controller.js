@@ -13,7 +13,7 @@ module.exports = {
     }).send(res);
   },
   async getAll(req, res) {
-    const filters = req.body.filters;
+    const filters = req.query.filter;
     const dataAccount = req.dataAccount;
     return new OKResponse({
       message: "Get commission success",
