@@ -37,7 +37,7 @@ const Statistical = () => {
         const statistical = await statisticalApi.statistical(data);
         if (statistical && statistical?.status === 200 && statistical?.metadata) {
           const metadata = statistical.metadata;
-          console.log(metadata.ThisMonth);
+          console.log(metadata);
 
           setDataLastMonth(metadata.LastMonth);
           setDataThisMonth(metadata.ThisMonth);
@@ -54,7 +54,7 @@ const Statistical = () => {
         } else {
           const AccountData = await staffApi.getByToken();
           // selectedBranch(AccountData.metadata.branch);
-          console.log(AccountData.metadata.branch);
+          // console.log(AccountData.metadata.branch);
           setBranches([AccountData.metadata.branch]);
         }
       } catch (error) {}
@@ -72,31 +72,39 @@ const Statistical = () => {
     fetchBranch();
     fetchBranches();
     statistical();
+    handleFilter();
     checkDis(selectedBranch, formData);
   }, [selectedBranch, formData]);
 
   const revenueMonth = (data = []) => {
     if (data.length !== 0) {
-      return data?.reduce((total, bill) => total + bill.totalPayment, 0);
+      return data?.reduce((total, item) => total + item?.totalPayment, 0);
+    }
+    return 0;
+  };
+  const totalSalaryMonth = (data = []) => {
+    if (data.length !== 0) {
+      return data?.reduce((total, item) => total + item?.salary, 0);
     }
     return 0;
   };
 
   const handleFilter = async () => {
     let data = { ...formData };
+    const role = JSON.parse(localStorage.getItem('data')).role;
     if (role === 'staff') {
       const AccountData = await staffApi.getByToken();
       data.branch = AccountData.metadata.branch._id;
     } else {
-      data.branch = selectedBranch._id;
+      data.branch = selectedBranch?._id;
     }
-    console.log(data);
+    // console.log(data);
     try {
       const res = await statisticalApi.ownerStatistical(data);
       if (res && res?.status === 200 && res?.metadata) {
         setDataFinalByFil(res?.metadata);
       }
-      console.log(res);
+      // console.log(res);
     } catch (error) {}
   };
 
@@ -112,27 +120,23 @@ const Statistical = () => {
   };
   const favoriteService = (allTours) => {
     let serviceCount = {};
-
-    // Lặp qua từng lượt booking
     allTours.forEach((booking) => {
-      // Lặp qua từng dịch vụ trong lượt booking
       booking.services.forEach((service) => {
         const serviceId = service._id;
-
-        // Tăng số lượng sử dụng của dịch vụ trong đối tượng serviceCount
         serviceCount[serviceId] = (serviceCount[serviceId] || 0) + 1;
       });
     });
-
-    // Tìm dịch vụ được sử dụng nhiều nhất
     let mostUsedServiceId = Object.keys(serviceCount).reduce((a, b) => (serviceCount[a] > serviceCount[b] ? a : b));
     const mostUsedService = allTours.flatMap((booking) => booking.services).find((service) => service._id === mostUsedServiceId);
-
-    console.log(`Dịch vụ được sử dụng nhiều nhất là dịch vụ ${mostUsedService.name} với ${serviceCount[mostUsedServiceId]} lượt sử dụng.`);
     return {
       name: mostUsedService.name,
       count: serviceCount[mostUsedServiceId]
     };
+  };
+  const percentage = (thu, chi) => {
+    let percent = parseInt((thu / chi) * 100);
+    let loi = thu - chi;
+    return { percent, loi };
   };
   return (
     <>
@@ -147,16 +151,44 @@ const Statistical = () => {
                 <AnalyticEcommerce
                   title={`Số hoá đơn tháng trước`}
                   count={`${dataLastMonth?.allBillsbyLastMonth?.length || 0}   hoá đơn`}
-                  percentage={59.3}
-                  extra="35,000"
+                  // percentage={59.3}
+                  // extra="35,000"
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <AnalyticEcommerce
                   title="Tổng doanh thu tháng trước"
                   count={formatCurrency(revenueMonth(dataLastMonth?.allBillsbyLastMonth) || 0)}
-                  percentage={70.5}
+                  // percentage={70.5}
+                  // extra="8,900"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                <AnalyticEcommerce
+                  title={`Tổng lương nhân viên`}
+                  count={formatCurrency(totalSalaryMonth(dataLastMonth?.allSalariesbyLastMonth) || 0)}
+                  // percentage={59.3}
+                  // extra="35,000"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                <AnalyticEcommerce
+                  title="Lợi nhuận"
+                  count={formatCurrency(
+                    percentage(
+                      revenueMonth(dataLastMonth?.allBillsbyLastMonth) || 0,
+                      totalSalaryMonth(dataLastMonth?.allSalariesbyLastMonth) || 0
+                    ).loi
+                  )}
+                  // percentage={
+                  //   percentage(
+                  //     revenueMonth(dataLastMonth?.allBillsbyLastMonth) || 0,
+                  //     totalSalaryMonth(dataLastMonth?.allSalariesbyLastMonth) || 0
+                  //   ).percent
+                  // }
                   extra="8,900"
+                  isLoss
+                  color="warning"
                 />
               </Grid>
             </Grid>
@@ -172,16 +204,44 @@ const Statistical = () => {
                 <AnalyticEcommerce
                   title={`Số hoá đơn tháng này`}
                   count={`${dataThisMonth?.allBillsbyThisMonth?.length || 0}  hoá đơn`}
-                  percentage={16}
-                  extra="35,000"
+                  // percentage={16}
+                  // extra="35,000"
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <AnalyticEcommerce
                   title="Tổng doanh thu tháng này"
                   count={formatCurrency(revenueMonth(dataThisMonth?.allBillsbyThisMonth) || 0)}
-                  percentage={20.5}
+                  // percentage={20.5}
+                  // extra="8,900"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                <AnalyticEcommerce
+                  title="Tổng lương nhân viên"
+                  count={formatCurrency(totalSalaryMonth(dataThisMonth?.allSalariesbyThisMonth) || 0)}
+                  // percentage={20.5}
+                  // extra="8,900"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                <AnalyticEcommerce
+                  title="Lợi nhuận"
+                  count={formatCurrency(
+                    percentage(
+                      revenueMonth(dataThisMonth?.allBillsbyThisMonth) || 0,
+                      totalSalaryMonth(dataThisMonth?.allSalariesbyThisMonth) || 0
+                    ).loi
+                  )}
+                  // percentage={
+                  //   percentage(
+                  //     revenueMonth(dataThisMonth?.allBillsbyThisMonth) || 0,
+                  //     totalSalaryMonth(dataThisMonth?.allSalariesbyThisMonth) || 0
+                  //   ).percent
+                  // }
                   extra="8,900"
+                  isLoss
+                  color="warning"
                 />
               </Grid>
             </Grid>

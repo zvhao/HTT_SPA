@@ -287,12 +287,12 @@ const ServiceForm = () => {
                 formats={formats}
               />
 
-              <ReactQuill theme="bubble" readOnly value={desc.value} />
+              {/* <ReactQuill theme="bubble" readOnly value={desc.value} /> */}
 
-              <div className="ql-editor" style={{ padding: 0 }}></div>
+              {/* <div className="ql-editor" style={{ padding: 0 }}></div>
               <ReactMarkdown className="ql-editor" rehypePlugins={[rehypeRaw, rehypeHighlight]}>
                 {desc.value}
-              </ReactMarkdown>
+              </ReactMarkdown> */}
             </Box>
 
             <LoadingButton sx={{ mt: 3 }} type="submit" fullWidth size="large" loading={isSubmitting} variant="contained">
