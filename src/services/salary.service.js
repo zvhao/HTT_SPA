@@ -190,7 +190,8 @@ const salaryService = {
       const manager = await findStaffById(dataAccount.id);
       filters.branch = manager.branch;
     }
-    return filters;
+    let salary = await SalaryModel.find(filters).lean();
+    return salary;
   },
 };
 

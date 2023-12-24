@@ -28,6 +28,12 @@ const salaryService = {
         $lte: filters.firstDayOfNextMonth,
       },
     };
+    let LastMonthSlr = {
+      month: filters.firstDayOfLastMonth,
+    };
+    let ThisMonthSlr = {
+      month: filters.firstDayOfThisMonth,
+    };
     if (dataAccount !== null && dataAccount.role === "staff") {
       const manager = await findStaffById(dataAccount.id);
       filters.branch = manager.branch;
@@ -40,17 +46,17 @@ const salaryService = {
       dataAccount,
       ThisMonth
     );
-    const allSalariessbyLastMonth = await salariesService.getAll(
+    const allSalariesbyLastMonth = await salariesService.statistical(
       dataAccount,
-      LastMonth
+      { month: filters.firstDayOfLastMonth }
     );
-    const allSalariessbyThisMonth = await salariesService.getAll(
+    const allSalariesbyThisMonth = await salariesService.statistical(
       dataAccount,
-      ThisMonth
+      { month: filters.firstDayOfThisMonth }
     );
     return {
-      LastMonth: { allBillsbyLastMonth, allSalariessbyLastMonth },
-      ThisMonth: { allBillsbyThisMonth, allSalariessbyThisMonth },
+      LastMonth: { allBillsbyLastMonth, allSalariesbyLastMonth },
+      ThisMonth: { allBillsbyThisMonth, allSalariesbyThisMonth },
     };
   },
   ownerStatistical: async (dataAccount, filters = {}) => {
